@@ -1,0 +1,36 @@
+.centre_navbar {
+    /* background-color: red; */
+    height: 3.88rem;
+    width: 100%;
+    padding-left: 15px;
+    position: sticky;
+    top: 0;
+    transition: 0.5s;
+    z-index: 50;
+}
+
+.scroll_effect {
+    background-color: #515860;
+}
+
+.centre_navlinks {
+    padding: 5px 12px;
+    margin: 0 5px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    background-color: rgba(170, 170, 170, 0.2);
+}
+
+.centre_navlinks:hover {
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
+.active_centre {
+    background-color: white;
+    color: black;
+}
+
+.active_centre:hover {
+    background-color: #ececec;
+}

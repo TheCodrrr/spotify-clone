@@ -1,0 +1,39 @@
+.left_loading_card:hover {
+    background-color: transparent;
+    cursor: default;
+    /* background-color: red; */
+}
+
+.left_card_img_outer_loading_container {
+    /* background-color: yellow; */
+    cursor: default;
+}
+
+.left_card_img_inner_loading_container {
+    cursor: default;
+    background-color: rgb(35, 35, 35);
+}
+
+.left_loading_card:hover .left_card_img_inner_loading_container {
+    border-radius: 5px;
+}
+
+.left_card_description_loading_container {
+    padding-left: 10px;
+    /* flex-direction: row; */
+}
+
+.left_card_loading_description_upper {
+    background-color: rgb(35, 35, 35);
+    width: 140px;
+    height: 15px;
+    border-radius: 5px;
+}
+
+.left_card__loading_description_lower {
+    width: 110px;
+    height: 12px;
+    border-radius: 5px 4px 4px 5px;
+    margin-top: 8px;
+    background-color: rgb(35, 35, 35);
+}

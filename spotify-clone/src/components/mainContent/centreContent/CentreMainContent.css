@@ -1,0 +1,15 @@
+.centre_main_content_container {
+    /* width: 51.2%; */
+    width: 100%;
+    height: calc(100% - 6.7rem);
+    overflow-y: scroll;
+    border-radius: 10px;
+    /* transition: 0.5s; */
+    /* scrollbar-width: none; */
+    background: linear-gradient(#515860, #42494e 20%, #363c3e 30%, #262b2f 40%, #1b1c1e 50%, #121212 60%, #121212 100%);
+}
+
+.content_scroll_effect {
+    /* transition: 0.5s; */
+    background: #121212;
+}

@@ -1,0 +1,20 @@
+.enlarged_section_card_container {
+    background-color: #121212;
+    border-radius: 10px;
+    flex-direction: column;
+    overflow-y: scroll;
+    /* height: 90000px; */
+    /* background-color: red; */
+}
+
+.section_head {
+    /* font-size: ; */
+    /* background-color: yellow; */
+    padding-left: 20px;
+    margin-top: 60px;
+}
+
+.enlarged_section_playlists_container {
+    flex-wrap: wrap;
+    padding: 27px 5px 10px 10px;
+}

@@ -1,0 +1,9 @@
+.my_playlist_container {
+    height: 6.6rem;
+    width: 95%;
+    /* background-color: red; */
+    margin: 0.8rem auto;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}

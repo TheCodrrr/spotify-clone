@@ -1,0 +1,95 @@
+.left_card {
+    height: 63.5px;
+    width: 95%;
+    /* min-width: 270px; */
+    /* background-color: red; */
+    margin: 0 auto;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.left_card:hover {
+    background-color: #1f1f1f;
+}
+
+.left_card_img_outer_container {
+    height: 63.5px;
+    width: 63.5px;
+}
+
+.left_card_img_inner_container {
+    height: 80%;
+    aspect-ratio: 1/1;
+    border-radius: 5px;
+    background-color: black;
+    /* background: url('../../../../public/test.jpg'); */
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.left_card:hover .left_card_img_inner_container {
+    border-radius: 0;
+}
+
+.play_pause_button_container {
+    height: 100%;
+    aspect-ratio: 1/1;
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+}
+
+.play_pause_button_container i {
+    color: white;
+    font-size: 1.2rem;
+}
+
+.left_card:hover .play_pause_button_container {
+    visibility: visible;
+}
+
+.left_card_description_container {
+    height: 80%;
+    width: calc(100% - 63.5px);
+    flex-direction: column;
+}
+
+.left_card_description_child {
+    height: 50%;
+    width: 100%;
+}
+
+.left_card_description_head {
+    font-weight: 400;
+    margin: 0 5px;
+}
+
+.paint_active {
+    color: #25c558;
+}
+
+.card_pinned {
+    transform: rotate(45deg);
+}
+
+.left_card_description_lower i {
+    margin: 0 5px;
+    font-size: 0.8rem;
+    color: #25c558;
+}
+
+.left_card_description_lower p {
+    margin: 0 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #a5a29c;
+}
+
+.left_card_description_lower li {
+    width: 6px;
+    color: #a5a29c;
+}
+
+/* .para_card_type {
+    color: black;
+} */

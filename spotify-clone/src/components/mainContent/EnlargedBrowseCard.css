@@ -1,0 +1,61 @@
+.enlarged_browser_card_container {
+    background-color: #121212;
+    border-radius: 10px;
+    flex-direction: column;
+    overflow-y: scroll;
+    /* height: 90000px; */
+    /* background-color: red; */
+}
+
+.browse_head {
+    height: 40px;
+    width: 100%;
+    margin-top: 50px;
+    padding-left: 22px;
+    font-size: 1.3rem;
+}
+
+.browse_elms_container {
+    min-height: 150px;
+    /* overflow-y: scroll; */
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding-bottom: 20px 0;
+}
+
+.browse_elm {
+    width: 250px;
+    height: 150px;
+    border-radius: 10px;
+    background-color: white;
+    cursor: pointer;
+    margin: 15px 0;
+}
+
+.browse_elm_head {
+    color: black;
+    margin: 15px 0 0 15px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    /* background-color: red; */
+    width: 140px;
+    height: 120px;
+}
+
+.browse_elm_img_container {
+    height: 120px;
+    aspect-ratio: 1/1;
+    background-color: orange;
+    box-shadow: 0 2px 5px rgb(52, 52, 52);
+    position: relative;
+    left: 160px;
+    top: -100px;
+    transform: rotate(23deg);
+    border-radius: 5px;
+}
+
+.browse_elm_img {
+    height: 100%;
+    width: 100%;
+}

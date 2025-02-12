@@ -1,0 +1,131 @@
+.music_player_container {
+    height: 89px;
+    /* margin-top: 4px; */
+    width: 100vw;
+    background-color: #000;
+    /* background-color: yellow; */
+    justify-content: space-between;
+}
+
+.music_player_child_container {
+    height: 100%;
+}
+
+.music_player_left_container {
+    width: 20.5%;
+    justify-content: flex-end;
+    /* background-color: blue; */
+}
+
+.music_player_img_container {
+    background-color: white;
+    height: 62%;
+    border-radius: 5px;
+    aspect-ratio: 1/1;
+}
+
+.music_player_content_container {
+    flex-direction: column;
+    width: 70%;
+    /* background-color: red; */
+    padding-left: 15px;
+}
+
+.music_player_song_name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.music_player_song_name:hover {
+    text-decoration: underline;
+}
+
+.music_player_song_singer {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #a8a8a8;
+}
+
+.btn_song_saved_music_player_container {
+    margin-left: 5px;
+}
+
+.music_player_centre_container {
+    width: 35.9%;
+    /* background-color: blue; */
+    flex-direction: column;
+}
+
+.music_player_centre_child {
+    width: 100%;
+}
+
+.music_player_centre_upper_container {
+    height: 50%;
+    margin-top: 10px;
+    /* background-color: red; */
+}
+
+.music_player_centre_upper_container > div {
+    margin: 0 6px;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+}
+
+.btn_shuffle_container {
+    flex-direction: column;
+}
+
+.btn_shuffle_container, .btn_song_loop_container {
+    height: 30px;
+}
+
+.btn_shuffle_svg, .btn_song_loop_svg {
+    height: 1.1rem;
+    aspect-ratio: 1/1;
+}
+
+.btn_shuffle_svg path, .btn_song_loop_svg path {
+    fill: white;
+}
+
+.btn_3_mains {
+    border-radius: 50%;
+    height: 35px;
+    aspect-ratio: 1/1;
+}
+
+.btn_3_mains i {
+    font-size: 1.3rem;
+}
+
+.btn_backward_container i, .btn_forward_container i {
+    color: #b4b4b4;
+}
+
+.btn_backward_container:hover i, .btn_forward_container:hover i {
+    color: white;
+    transform: scale(1.04);
+}
+
+.btn_play_pause_music_player_container {
+    background-color: white;
+}
+
+.btn_play_pause_music_player_container:hover {
+    transform: scale(1.04);
+}
+
+.btn_play_pause_music_player_container i {
+    color: black;
+}
+
+.music_player_centre_lower_container {
+    height: 40%;
+}
+
+.music_player_right_container {
+    width: 22.3%;
+    /* background-color: green; */
+}

@@ -1,0 +1,14 @@
+.left_main_content_container {
+    width: 20.9%;
+    /* background-color: green; */
+    justify-content: flex-end;
+}
+
+.left_content_library {
+    height: 100%;
+    width: 93%;
+    margin-right: 3%;
+    background-color: #121212;
+    /* background-color: red; */
+    border-radius: 10px;
+}

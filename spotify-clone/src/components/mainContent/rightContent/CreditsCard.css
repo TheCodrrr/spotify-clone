@@ -1,0 +1,42 @@
+.credits_card {
+    /* height: 15.5rem; */
+    width: 89%;
+    background-color: #1f1f1f;
+    /* margin: 15px 0; */
+    border-radius: 10px;
+    padding: 0 15px 15px 15px;
+    margin-bottom: 15px;
+}
+
+.credits_card_head_container {
+    height: 3rem;
+    /* background-color: red; */
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.credits_card_head {
+    font-weight: 600;
+}
+
+.btn_credits_card_show {
+    background-color: transparent;
+    border: none;
+    color: #b6b6b6;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn_credits_card_show:hover {
+    color: white;
+    text-decoration: underline;
+    transform: scale(1.03);
+}
+
+.credits_card_singers_container {
+    flex-direction: column;
+    width: 100%;
+    /* height: 76.5%; */
+    /* background-color: red; */
+}

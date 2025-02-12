@@ -1,0 +1,64 @@
+.song_card_navbar {
+    height: 3.88rem;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 12px 0 15px;
+    /* background-color: red; */
+}
+
+.song_navbar_name {
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.song_navbar_name:hover {
+    text-decoration: underline;
+}
+
+.song_navbar_items_container {
+    height: 100%;
+}
+
+.song_navbar_items_container button {
+    cursor: pointer;
+    border: none;
+}
+
+.btn_song_navbar_expand_container {
+    background-color: transparent;
+    font-size: 0.7rem;
+    /* font-weight: 100; */
+    letter-spacing: 2.5px;
+    color: #ababab;
+    height: 2.2rem;
+    /* aspect-ratio: 1/1; */
+}
+
+.btn_song_navbar_expand_container:hover {
+    color: white;
+}
+
+.btn_song_navbar_cancel_container {
+    height: 2.2rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    margin: 0 4px;
+    transition: 0.3s;
+    background-color: transparent;
+}
+
+.btn_song_navbar_cancel_container:hover {
+    background-color: #2a2a2a;
+}
+
+.btn_song_navbar_cancel {
+    font-size: 1.2rem;
+    /* font-weight: 100; */
+    color: #ababab;
+    transition: 0.3s;
+}
+
+.btn_song_navbar_cancel_container:hover .btn_song_navbar_cancel {
+    color: white;
+}

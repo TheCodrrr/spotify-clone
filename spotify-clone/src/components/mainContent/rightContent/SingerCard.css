@@ -1,0 +1,60 @@
+.singer_card {
+    width: 100%;
+    height: 3.8rem;
+}
+
+.singer_card_left {
+    flex-direction: column;
+    height: 100%;
+    width: 55%;
+}
+
+.singer_name {
+    /* background-color: yellow; */
+    width: fit-content;
+    height: 18px;
+    line-height: 18px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.singer_name:hover {
+    text-decoration: underline;
+}
+
+.singer_designation {
+    /* background-color: green; */
+    height: 18px;
+    line-height: 18px;
+    color: #bbbbbb;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.singer_card_right {
+    width: 45%;
+    height: 100%;
+    /* background-color: red; */
+    justify-content: flex-end;
+}
+
+.btn_singer_card_follow {
+    padding: 5px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-right: 4px;
+    background-color: transparent;
+    border: 1px solid #b6b6b6;
+}
+
+.btn_singer_card_follow:hover {
+    transform: scale(1.03);
+    border: 1px solid white;
+}
+
+.btn_singer_card_follow:active {
+    transform: scale(1.03);
+    border: 1px solid #b6b6b6;
+    color: #b6b6b6;
+}

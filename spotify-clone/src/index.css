@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  color: white;
+}
+
+.dff {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.df-ai {
+  display: flex;
+  align-items: center;
+}
+.df-jc {
+  display: flex;
+  justify-content: center;
+}
+.df {
+  display: flex;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.web_elms_container {
+  flex-direction: column;
+}

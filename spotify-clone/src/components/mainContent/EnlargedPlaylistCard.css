@@ -1,0 +1,366 @@
+.enlarged_playlist_container {
+    width: 100%;
+    height: calc(100% - 6.7rem);
+    overflow-y: scroll;
+    border-radius: 10px;
+    /* transition: 0.5s; */
+    /* scrollbar-width: none; */
+    flex-direction: column;
+    background-color: #131313;
+}
+
+.enlarged_playlist_loading_container {
+    background-color: #121212;
+    flex-direction: row;
+}
+
+.load_btn_circle {
+    height: 7px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: grey;
+    /* transition: 0.2s; */
+}
+
+.load_btn_circle1 {
+    animation: load_animate 1.2s ease-in-out infinite;
+}
+.load_btn_circle2 {
+    animation: load_animate 1.2s 0.2s ease-in-out infinite;
+}
+.load_btn_circle3 {
+    animation: load_animate 1.2s 0.4s ease-in-out infinite;
+}
+
+@keyframes load_animate {
+    0% {
+        height: 7px;
+        background-color: grey;
+    }
+    25% {
+        height: 10px;
+        background-color: white;
+    }
+    50% {
+        height: 7px;
+        background-color: grey;
+    }
+}
+
+.enlarged_playlist_upper_container {
+    /* background: linear-gradient(#b2c7d6, #627078 100%); */
+    height: 45.5%;
+    width: 100%;
+}
+
+.enlarged_playlist_img_container {
+    height: 80%;
+    aspect-ratio: 1/1;
+    background-color: white;
+    border-radius: 3px;
+    flex-direction: column;
+    box-shadow: 0 0 50px 1px rgb(35, 35, 35);
+}
+
+.banner_images {
+    height: 100%;
+    aspect-ratio: 1/1;
+}
+
+.enlarged_playlist_head_container {
+    height: 80%;
+    width: 71%;
+    /* background-color: black; */
+    justify-content: flex-end;
+    flex-direction: column;
+    padding-left: 25px;
+}
+
+.enlarged_content_type {
+    width: 100%;
+    text-transform: capitalize;
+    /* background-color: red; */
+}
+
+.enlarged_content_name {
+    font-size: 6rem;
+    height: 110px;
+    /* background-color: red; */
+    cursor: pointer;
+    text-transform: capitalize;
+}
+
+.enlarged_content_other_details_child {
+    margin: 0 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #d1d8dd;
+    color: #bac0c4;
+}
+
+.enlarged_content_owner_image_container {
+    height: 1.5rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: black;
+}
+
+.enlarged_content_owner_name {
+    margin-left: 0;
+    color: white;
+}
+
+.enlarged_content_owner_name:hover {
+    text-decoration: underline;
+}
+
+.enlarged_playlist_lower_container {
+    width: 100%;
+    /* height: 100%; */
+    min-height: 54.5%;
+    /* background: linear-gradient(#4f5960 1%, #393e42 2%, #212121 3%, #121212 4%, #131313 5%); */
+    /* background: linear-gradient(blue, red); */
+    /* background: red; */
+    background: transparent;
+    /* background: yellow; */
+}
+
+.enlarged_playlist_navbar_container {
+    height: 6.7rem;
+    width: 100%;
+    padding: 0 25px;
+    justify-content: space-between;
+    /* background-color: red; */
+}
+
+.enlarged_playlist_navbar_child {
+    height: 100%;
+    padding: 0 5px;
+}
+
+.playlist_play_pause_btn {
+    height: 55px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: #1ed760;
+    cursor: pointer;
+    border: none;
+    overflow: visible;
+}
+
+.playlist_play_pause_btn_icon {
+    font-size: 1.3rem;
+    color: black;
+}
+
+.playlist_play_pause_btn:hover {
+    background-color: #25fa70;
+    transform: scale(1.03);
+}
+
+.playlist_expand_dots_btn {
+    background-color: transparent;
+    margin-left: 30px;
+    border: none;
+    letter-spacing: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #adb2b6;
+    height: 50px;
+    text-align: center;
+    user-select: none;
+}
+
+.playlist_expand_dots_btn:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+.enlarged_playlist_navbar_right_child {
+    color: #adb2b6;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.enlarged_playlist_navbar_right_child:hover {
+    color: white;
+}
+
+.enlarged_playlist_navbar_right_list {
+    margin-left: 7px;
+    color: #adb2b6;
+}
+
+.enlarged_playlist_navbar_right_child:hover .enlarged_playlist_navbar_right_list {
+    color: white;
+}
+
+.enlarged_playlist_table_container {
+    width: 100%;
+    min-height: 500px;
+    flex-direction: column;
+    margin-top: 1vh;
+    padding-bottom: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.table_divider {
+    margin: 0 auto;
+    height: 1px;
+    width: 95%;
+    margin-bottom: 15px;
+    background-color: rgb(119, 119, 119);
+    border: none;
+}
+
+.table_row_head {
+    /* background-color: green; */
+    width: 800px;
+    height: 60px;
+}
+
+.table_row_head th {
+    /* background-color: blue; */
+    font-weight: 500;
+}
+
+.table_row_head th, td {
+    font-size: 0.9rem;
+    color: #adb2b6;
+}
+
+.table_row {
+    height: 40px;
+    /* background-color: red; */
+    width: 95%;
+}
+
+.table_row_item {
+    height: 60px;
+    width: 800px;
+    /* background-color: red; */
+    /* cursor: pointer; */
+    /* margin: 5px 0; */
+    border-radius: 5px;
+}
+
+.table_row_item:hover {
+    background-color: rgba(128, 128, 128, 0.252);
+}
+
+.table_row_item:hover .enlarged_card_col3 {
+    color: white;
+}
+
+.table_row_head .table_row_item:hover {
+    background-color: transparent;
+}
+
+.table_row_head .table_row_item:hover .enlarged_card_col3 {
+    color: #adb2b6;
+}
+
+.table_row_head .table_row_item .enlarged_card_col3:hover {
+    text-decoration: none;
+    cursor: unset;
+}
+
+.enlarged_card_col {
+    height: 100%;
+}
+
+.enlarged_card_col1 {
+    width: 6%;
+    font-weight: 600;
+    /* background-color: green; */
+}
+
+.enlarged_card_col2 {
+    width: 35%;
+    padding-left: 5px;
+    /* background-color: blue; */
+}
+
+.enlarged_card_col_img_container {
+    height: 75%;
+    aspect-ratio: 1/1;
+    background-color: black;
+    border-radius: 5px;
+    margin-right: 13px;
+}
+
+.enlarged_card_col_content {
+    /* width: 400px; */
+    flex-direction: column;
+    /* background-color: red; */
+}
+
+.enlarged_card_col_content_name:hover {
+    cursor: pointer;
+    text-decoration: 1.5px underline;
+}
+
+.enlarged_card_col_content_singer {
+    font-size: 0.8rem;
+    height: fit-content;
+    color: #adb2b6;
+}
+
+.enlarged_card_col3 {
+    height: fit-content;
+    width: 24%;
+    padding-left: 5px;
+    /* background-color: green; */
+}
+
+.enlarged_card_col3:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.enlarged_card_col4 {
+    width: 18%;
+    padding-left: 5px;
+    /* background-color: blue; */
+}
+
+.playlist_bookmark {
+    width: 7%;
+    /* background-color: red; */
+    justify-content: flex-end;
+}
+
+.btn_playlist_saved {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 1rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: #25fa70;
+    cursor: pointer;
+}
+
+.btn_playlist_saved:hover {
+    transform: scale(1.06);
+}
+
+.table_row_item:hover .btn_playlist_saved {
+    display: flex;
+}
+
+.btn_playlist_saved_icon {
+    color: black;
+    font-size: 0.7rem;
+}
+
+.enlarged_card_col5 {
+    width: 70px;
+    /* background-color: green; */
+}
+
+.extra_col {
+    width: 5%;
+}

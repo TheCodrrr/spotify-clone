@@ -1,0 +1,5 @@
+.main_content_container {
+    height: calc(100vh - 4rem - 89px);
+    width: 100vw;
+    background-color: #000;
+}

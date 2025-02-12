@@ -1,0 +1,99 @@
+.song_card_details_container {
+    height: calc(100% - 3.88rem);
+    width: 100%;
+    overflow-y: scroll;
+    /* background-color: red; */
+    padding-bottom: 15px;
+}
+
+.song_pic_container {
+    width: 88.5%;
+    cursor: pointer;
+    margin: auto;
+    aspect-ratio: 1/1;
+    background-color: black;
+    border-radius: 12px;
+}
+
+.song_first_detail_container {
+    height: 3.3rem;
+    width: 88.5%;
+    margin: 1rem auto;
+    /* background-color: red; */
+}
+
+.song_first_detail_container_left {
+    flex-direction: column;
+    height: 100%;
+    width: 77%;
+    /* background-color: red; */
+}
+
+.song_detail_name, .song_detail_singer {
+    cursor: pointer;
+    width: fit-content;
+}
+
+.song_detail_name {
+    overflow: hidden;
+    font-size: 1.4rem;
+    height: 60%;
+    width: 100%;
+}
+
+.song_detail_name:hover {
+    text-decoration: 2px underline;
+}
+
+.song_detail_singer {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #b9b9b9;
+}
+
+.song_first_detail_container_right {
+    height: 100%;
+    width: 23%;
+    /* background-color: yellow; */
+    justify-content: flex-end;
+    padding-right: 3px;
+}
+
+.btn_song_link_container {
+    height: 1rem;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    margin: 0 15px;
+    position: relative;
+    right: -15px;
+    display: none;
+    transition: 0.3s;
+    overflow: hidden;
+}
+
+.btn_song_link_svg path {
+    transition: 0.2s;
+    visibility: hidden;
+    fill: #b7b7b7;
+}
+
+.btn_song_link_container:hover {
+    transform: scale(1.1);
+}
+
+.btn_song_link_container:hover .btn_song_link_svg path {
+    fill: white;
+}
+
+.btn_song_saved_container {
+    height: 1rem;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    background-color: #1ed95a;
+    cursor: pointer;
+}
+
+.btn_song_saved {
+    font-size: 0.7rem;
+    color: black;
+}

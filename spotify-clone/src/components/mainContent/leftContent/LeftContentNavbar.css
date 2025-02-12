@@ -1,0 +1,138 @@
+.left_content_navbar {
+    height: 6.7rem;
+    width: 100%;
+    /* background-color: red; */
+    flex-direction: column;
+}
+
+.navbar_child_container {
+    width: 100%;
+}
+
+.navbar_upper_child_container {
+    width: 100%;
+    height: 58.2%;
+    /* background-color: green; */
+}
+
+.toggle_library_btn_container {
+    height: 55%;
+    margin-right: 55px;
+    cursor: pointer;
+    /* transition: 0.3s; */
+    /* background-color: red; */
+}
+
+.btn_toggle_left_navbar_container {
+    height: 100%;
+    aspect-ratio: 1/1;
+}
+
+.btn_toggle_left_navbar_svg {
+    height: 70%;
+    aspect-ratio: 1/1;
+    /* background-color: red; */
+}
+
+.btn_toggle_left_navbar_path {
+    fill: rgb(180, 180, 180);
+    transition: 0.3s;
+}
+
+.toggle_library_btn_container:hover .btn_toggle_left_navbar_path {
+    fill: #fff;
+}
+
+.left_navbar_head {
+    font-weight: 600;
+    margin: 0 7px;
+    color: rgb(180, 180, 180);
+    transition: 0.3s;
+}
+
+.toggle_library_btn_container:hover .left_navbar_head {
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn_left_navbar_add_container {
+    height: 50%;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.btn_left_navbar_add_container:hover {
+    background-color: #2a2a2a;
+}
+
+.btn_left_navbar_add_svg {
+    height: 50%;
+    aspect-ratio: 1/1;
+    /* transition: 0.3s; */
+}
+
+.btn_left_navbar_add_path {
+    fill: rgb(180, 180, 180);
+    transition: 0.3s;
+}
+
+.btn_left_navbar_add_svg:hover .btn_left_navbar_add_path {
+    fill: #fff;
+}
+
+.btn_left_navbar_left_arrow_container {
+    height: 50%;
+    margin: 0 7px;
+    /* background-color: red; */
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.btn_left_navbar_left_arrow_container:hover {
+    background-color: #2a2a2a;
+}
+
+.btn_left_navbar_left_arrow_svg {
+    height: 50%;
+    /* background-color: red; */
+    aspect-ratio: 1/1;
+}
+
+.btn_left_navbar_left_arrow_path {
+    fill: rgb(180, 180, 180);
+    transition: 0.3s;
+}
+
+.btn_left_navbar_left_arrow_svg:hover .btn_left_navbar_left_arrow_path {
+    fill: #fff;
+}
+
+.navbar_lower_child_container {
+    /* background-color: red; */
+    height: 41.8%;
+}
+
+.left_navbar_elm {
+    background-color: #2a2a2a;
+    border: none;
+    cursor: pointer;
+    height: 33px;
+    padding: 0 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.left_navbar_elm:hover {
+    background-color: #3a3a3a;
+}
+
+.left_navbar_elm1 {
+    margin-left: 13px;
+}
+
+.left_navbar_elm2 {
+    margin-left: 10px;
+}

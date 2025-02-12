@@ -1,0 +1,108 @@
+.queue_card {
+    background-color: #1f1f1f;
+    height: 8rem;
+    width: 89%;
+    border-radius: 10px;
+    padding: 15px;
+    flex-direction: column;
+}
+
+.queue_card_head_container {
+    height: 25%;
+    width: 100%;
+    margin-bottom: 15px;
+    /* background-color: red; */
+    justify-content: space-between;
+}
+
+.queue_card_head {
+    width: fit-content;
+    font-size: 0.9rem;
+}
+
+.btn_queue_card_navigate {
+    background-color: transparent;
+    border: none;
+    color: #bfbfbf;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn_queue_card_navigate:hover {
+    text-decoration: underline;
+    color: white;
+    transform: scale(1.03);
+}
+
+.queue_card_item_container {
+    height: calc(75% - 15px);
+    width: 100%;
+    /* background-color: red; */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.queue_card_item_container:hover {
+    background-color: #3b3b3b;
+}
+
+.queue_song_img_container {
+    height: 100%;
+    aspect-ratio: 1/1;
+    /* background-color: blue; */
+}
+
+.queue_song_img {
+    height: 80%;
+    aspect-ratio: 1/1;
+    background-color: black;
+    border-radius: 5px;
+}
+
+.queue_song_details_container {
+    flex-direction: column;
+    width: 62%;
+    padding-left: 5px;
+    /* background-color: blue; */
+}
+
+.queue_song_name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #e9e9e9;
+    /* background-color: green; */
+}
+
+.queue_song_singers {
+    font-size: 0.8rem;
+    color: #acacac;
+}
+
+.btn_queue_song_expand_container {
+    width: 15%;
+    height: 100%;
+    /* background-color: green; */
+    padding-left: 5px;
+    justify-content: flex-end;
+    padding-right: 6px;
+}
+
+.btn_queue_song_expand {
+    background-color: transparent;
+    border: none;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    display: none;
+    /* font-weight: 100; */
+    cursor: pointer;
+    color: #e9e9e9;
+}
+
+.btn_queue_song_expand:hover {
+    transform: scale(1.03);
+    color: white;
+}
+
+.queue_card_item_container:hover .btn_queue_song_expand {
+    display: initial;
+}

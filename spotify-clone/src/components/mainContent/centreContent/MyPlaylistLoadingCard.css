@@ -1,0 +1,64 @@
+.my_playlist_loading_card {
+    height: 46%;
+    width: 24.2%;
+    justify-content: space-between;
+    /* background-color: red; */
+}
+
+.my_playlist_loading_card:hover {
+    background-color: rgba(170, 170, 170, 0.2);
+    cursor: default;
+}
+
+.my_playlist_loading_img_container {
+    background-color: rgba(170, 170, 170, 0.6);
+    height: 65%;
+    margin-left: 8px;
+    border-radius: 2px;
+    aspect-ratio: 1/1;
+}
+
+.my_playlist_loading_content_container {
+    background: linear-gradient(90deg, rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2));
+    width: 120px;
+    height: 65%;
+    margin-right: 30px;
+    border-radius: 25px;
+    animation: slide 1.3s ease-in-out infinite;
+}
+
+@keyframes slide {
+    0% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3));
+    }
+    10% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4));
+    }
+    20% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5));
+    }
+    30% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6));
+    }
+    40% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2));
+    }
+    50% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3));
+    }
+    60% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4));
+    }
+    70% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5));
+    }
+    80% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6));
+    }
+    90% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3), rgba(170, 170, 170, 0.2));
+    }
+    100% {
+        background: linear-gradient(90deg, rgba(170, 170, 170, 0.2), rgba(170, 170, 170, 0.6), rgba(170, 170, 170, 0.5), rgba(170, 170, 170, 0.4), rgba(170, 170, 170, 0.3));
+    }
+}
