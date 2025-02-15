@@ -6,9 +6,9 @@ export default function MediumCardItem(props) {
     // console.log("From MediumCardItem: " + JSON.stringify(props));
     let MediumCardData = props['MediumCardDetails'];
     console.log("From MediumCardItem: " + JSON.stringify(MediumCardData));
-    if (MediumCardData['caption'].length > 25) {
-        MediumCardData['caption'] = MediumCardData['caption'].slice(0, 25) + '...';
-    }
+    // if (MediumCardData['caption'].length > 25) {
+    //     MediumCardData['caption'] = MediumCardData['caption'].slice(0, 25) + '...';
+    // }
 
     let bgImage = '';
 
@@ -37,7 +37,7 @@ export default function MediumCardItem(props) {
 
     return (
         <>
-            <Link to={`/playlist/public/${MediumCardData['id']}`} className="medium_card_item dff" style={ {backgroundColor: 'red'} }>
+            <Link to={`/playlist/public/${MediumCardData.category_item_card_name}`} className="medium_card_item dff">
                 <div className="medium_card_img_container df" style={backgroundImageStyle}>
                     <div className="medium_card_name_container">
                         
@@ -47,7 +47,7 @@ export default function MediumCardItem(props) {
                     </div>
                 </div>
                 <div className="medium_card_content_container">
-                    { MediumCardData['caption'] }
+                    { MediumCardData.category_item_card_name }
                 </div>
             </Link>
         </>

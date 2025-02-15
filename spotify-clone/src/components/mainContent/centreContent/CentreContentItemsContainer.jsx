@@ -4,7 +4,7 @@ import MyPlaylistContainer from "./MyPlaylistContainer";
 import category_details from "./category_details";
 import MediumCategoryCard from "./MediumCategoryCard";
 import LargeCardContainer from "./LargeCardContainer";
-import { loadMediumPlaylistDetails } from "./medium_category_card_details";
+import { fetchRandomPlaylistsOrPodcasts } from "./medium_category_card_details";
 
 export default function CentreContentItemsContainer() {
     const [loading, setLoading] = useState(true);
@@ -12,59 +12,24 @@ export default function CentreContentItemsContainer() {
     const [partitionedPlaylists, setPartitionedPlaylists] = useState([]);
 
     useEffect(() => {
-        async function loadMediumPlaylists() {
-            setLoading(true);
-            const MediumPlaylists = await loadMediumPlaylistDetails(); // Fetch the playlist details
-            console.log("Loaded Medium Playlists:", MediumPlaylists);
-            setMediumCategoryDetails(MediumPlaylists); // Update state
-            setLoading(false);
+      const fetchData = async () => {
+        try {
+            const result = await fetchRandomPlaylistsOrPodcasts();
+            setMediumCategoryDetails(result);
+            // console.log(`Data from the CentreContentItemsContainer: ${JSON.stringify(result)}`);
+            console.log(`Data from the CentreContentItemsContainer: ${JSON.stringify(mediumCategoryDetails)}`);
+        } catch (error) {
+            console.log(`Error from the CentreContentItemsContainer: ${error}`);
         }
+      }
 
-        loadMediumPlaylists();
-    }, []); // Runs only on initial render
+      fetchData();
 
-    useEffect(() => {
-        if (!loading && mediumCategoryDetails.length > 0) {
-            let alter = true;
-            let bunchPlaylists = [];
-            let individualPlaylists = [];
-
-            for (let i = 0, j = mediumCategoryDetails.length - 1; i <= 50 && i <= j; ) {
-                if (individualPlaylists.length < 10) {
-                    if (alter) {
-                        individualPlaylists.push(mediumCategoryDetails[i]);
-                        i++;
-                    } else {
-                        individualPlaylists.push(mediumCategoryDetails[j]);
-                        j--;
-                    }
-                } else {
-                    bunchPlaylists.push(individualPlaylists);
-                    individualPlaylists = [];
-                }
-                alter = !alter;
-            }
-
-            if (individualPlaylists.length > 0) {
-                bunchPlaylists.push(individualPlaylists); // Push remaining playlists
-            }
-
-            console.log("Partitioned Playlists:", bunchPlaylists);
-            setPartitionedPlaylists(bunchPlaylists); // Update partitioned playlists
-        }
-    }, [loading, mediumCategoryDetails]); // Depend on `loading` and `mediumCategoryDetails`
-
-    partitionedPlaylists.forEach(element => {
-        if (element) {
-            console.log(
-                "RIGHTRIGHTRIGHTRIGHTRIGHTRIGHTRIGHTRIGHTRIGHTRIGHTRIGHTRIGHT" +
-                    JSON.stringify(element)
-            );
-        }
-    });
-
+    }, [])
+    
 
     if (loading) {
+        console.log("This is from loading in CentreContentItemsContainer: " + JSON.stringify(category_details))
         return (
             <div className="centre_content_items_container dff">
                 <MyPlaylistContainer/>
@@ -75,18 +40,18 @@ export default function CentreContentItemsContainer() {
                 <LargeCardContainer/>
                 <LargeCardContainer/>
                 <LargeCardContainer/>
-                {/* <MediumCategoryCard cat_details={category_details[8]} /> */}
+                <MediumCategoryCard />
             </div>
         )
     }
     else {
-        console.log("This is the partitionedPlaylists: " + JSON.stringify(partitionedPlaylists));
-        console.log("This is the category_details: " + JSON.stringify(category_details));
+        // console.log("This is the partitionedPlaylists: " + JSON.stringify(partitionedPlaylists));
+        // console.log("This is the category_details: " + JSON.stringify(category_details));
     }
 
-    const MediumCategoryCards = partitionedPlaylists.map((element, index) => (
-        <MediumCategoryCard key={index} category_details={element} category_number={index} />
-    ));
+    // const MediumCategoryCards = partitionedPlaylists.map((element, index) => (
+    //     <MediumCategoryCard key={index} category_details={element} category_number={index} />
+    // ));
 
     // const MediumCategoryCards = category_details.map((item) => (
     //     <MediumCategoryCard cat_details={item} />
@@ -96,14 +61,20 @@ export default function CentreContentItemsContainer() {
         <>
             <div className="centre_content_items_container dff">
                 <MyPlaylistContainer/>
-                { MediumCategoryCards }
+                {/* { MediumCategoryCards } */}
+                <MediumCategoryCard />
+                <MediumCategoryCard />
+                <MediumCategoryCard />
+                <MediumCategoryCard />
+                <MediumCategoryCard />
+                <MediumCategoryCard />
                 <div className="space_between_cards">
                     
                 </div>
                 <LargeCardContainer/>
                 <LargeCardContainer/>
                 <LargeCardContainer/>
-                {/* <MediumCategoryCard cat_details={category_details[8]} /> */}
+                <MediumCategoryCard />
             </div>
         </>
     )
