@@ -48,6 +48,8 @@ export default function EnlargedMediumPlaylist(props) {
     console.log("From EnlargedMediumPlaylist: " + JSON.stringify(playlist_data['caption']));
     console.log("From EnlargedMediumPlaylist: " + JSON.stringify(playlist_data['image']));
 
+    let hello = {"id":"5XaktD0OvRHXutgd7Zzcvp","name":"Best Bengali Folk Songs","description":"No description available","image":"https://mosaic.scdn.co/640/ab67616d00001e02320efb2984e18c12f840b3c0ab67616d00001e0254be0cdd073692af64eec7b8ab67616d00001e02be31c9379f7ec7a8e5fed8f9ab67616d00001e02f67094507f4c02b89ffebea7","total_songs":49,"spotifyUrl":"https://open.spotify.com/playlist/5XaktD0OvRHXutgd7Zzcvp","genre":"mixed","type":"playlist"}
+
     return (
         <div className="enlarged_section_playlist">
             <div className="enlarged_section_playlist_img_container dff">
@@ -58,7 +60,9 @@ export default function EnlargedMediumPlaylist(props) {
                 </div>
             </div>
             <h5 className="enlarged_section_playlist_tagline">
-                {playlist_data['caption']}
+                {
+                playlist_data['description'] == "No description available" ? playlist_data['name'] : playlist_data['description']
+                }
             </h5>
         </div>
     );

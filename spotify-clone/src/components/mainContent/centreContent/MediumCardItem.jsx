@@ -35,9 +35,20 @@ export default function MediumCardItem(props) {
         borderRadius: '5px',
     }
 
+    // let hello = {
+    //     "id":"0bTdYMSrhA1Z6oMXrqDyvX",
+    //     "name":"Freaking out ",
+    //     "description":"#pop#hiphop#rap#rao#xxxsectiondeath #freestyle__rapper #trap__metal #2024 #new #newmusic #bandlab #vocal #singer #viral #song#beat #like #comment #follow #music #romantic #rapper #trending #producer #share #love #like #comment",
+    //     "image":"https://i.scdn.co/image/ab6765630000ba8ab221a46c37b24237a1fc3c52",
+    //     "total_songs":1,
+    //     "spotifyUrl":"https://open.spotify.com/show/0bTdYMSrhA1Z6oMXrqDyvX",
+    //     "genre":"mixed",
+    //     "type":"podcast"
+    // }
+
     return (
         <>
-            <Link to={`/playlist/public/${MediumCardData.category_item_card_name}`} className="medium_card_item dff">
+            <Link to={`/playlist/public/${MediumCardData.name}`} className="medium_card_item dff">
                 <div className="medium_card_img_container df" style={backgroundImageStyle}>
                     <div className="medium_card_name_container">
                         
@@ -47,7 +58,7 @@ export default function MediumCardItem(props) {
                     </div>
                 </div>
                 <div className="medium_card_content_container">
-                    { MediumCardData.category_item_card_name }
+                    { MediumCardData.name }
                 </div>
             </Link>
         </>

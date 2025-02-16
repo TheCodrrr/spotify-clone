@@ -6,7 +6,9 @@ import MediumCardItem2 from "./MediumCardItem2";
 // import { loadMediumPlaylistDetails } from "./medium_category_card_details";
 
 export default function MediumCategoryCard(props) {
-    let data;
+    console.log(`This is from MediumCategoryCard.jsx: ${JSON.stringify(props)}`);
+    const [sectionData, setSectionData] = useState(props.section_details)
+    console.log("Section Data: " + JSON.stringify(sectionData[0]))
     // async function hello(params) {
     //     data = await loadMediumPlaylistDetails();
     //     console.log("This is the loadMediumPlaylistDetails from MediumCategoryCard: " + JSON.stringify(data));
@@ -59,10 +61,7 @@ export default function MediumCategoryCard(props) {
 
 
     // console.log("HELLLLLLLOOOO: "+ props.cat_details.category_item_cards_details);
-    // let MediumCardItems = props.category_details.map((item) => (
-    //         <MediumCardItem MediumCardDetails={item} />
-    //     )
-    // );
+    
     // if (props.category_details.category_type == 'outline') {
     //     MediumCardItems = props.category_details.category_item_cards_details.map((item) => (
     //         <MediumCardItem2 MediumCardDetails={item} />
@@ -73,41 +72,56 @@ export default function MediumCategoryCard(props) {
 
     // console.log("From MediumCategoryCard Length: " + JSON.stringify(props.category_details.length));
 
-    // let section_details = {
-    //     section_name: section_names[props.category_number],
-    //     section_playlists: props.category_details
-    // }
+    let section_details = {
+        section_name: section_names[props.category_number],
+        section_playlists: props.section_details
+    }
+
+    let MediumCardItems = section_details.section_playlists.map((item) => (
+        <MediumCardItem MediumCardDetails={item} />
+    ));
+
+    console.log("This is section length: " + section_details.section_playlists.length);
     return (
         <>
             <div className="medium_category_card_container dff">
                 <div className="medium_category_card_head_container df">
-                    <Link to="/section" /* state={section_details} */ className="medium_category_card_head">
+                    <Link to="/section" state={section_details} className="medium_category_card_head">
                         {/* { section_names[props.category_number] } */}
-                        Section Name
+                        { section_details.section_name }
+                        {/* Section Name */}
                     </Link>
                     { 
-                    // props.category_details.length > 5 ? (
-                    //     <Link to="/section" /* state={section_details} */ className="show_more_btn">Show All</Link>
-                    // ) : (
-                    //     <></>
-                    // ) 
+                    section_details.section_playlists.length > 5 ? (
+                        <Link to="/section" state={section_details} className="show_more_btn">Show All</Link>
+                    ) : (
+                        <></>
+                    ) 
                     }
-                    <Link to="/section" /* state={section_details} */ className="show_more_btn">Show All</Link>
+                    {/* <Link to="/section" state={section_details} className="show_more_btn">Show All</Link> */}
                 </div>
                 <div className="medium_card_item_outer_container dff">
-                    <div className="medium_category_card_arrow_btn medium_category_card_arrow_btn_left df-ai">
-                        <div className="medium_card_arrow_insider dff">
-                            <i class="fa-solid fa-angle-left"></i>
-                        </div>
-                    </div>
-                    <div className="medium_category_card_arrow_btn medium_category_card_arrow_btn_right df-ai">
-                        <div className="medium_card_arrow_insider dff">
-                            <i class="fa-solid fa-angle-right"></i>
-                        </div>
-                    </div>
+                    {
+                        section_details.section_playlists.length > 5 ? (
+                            <>
+                                <div className="medium_category_card_arrow_btn medium_category_card_arrow_btn_left df-ai">
+                                    <div className="medium_card_arrow_insider dff">
+                                        <i class="fa-solid fa-angle-left"></i>
+                                    </div>
+                                </div>
+                                <div className="medium_category_card_arrow_btn medium_category_card_arrow_btn_right df-ai">
+                                    <div className="medium_card_arrow_insider dff">
+                                        <i class="fa-solid fa-angle-right"></i>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <></>
+                        )
+                    }
                     <div className="medium_card_item_container df-ai">
-                        {/* { MediumCardItems } */}
-                        Medium Card Items
+                        { MediumCardItems }
+                        {/* Medium Card Items */}
                     </div>
                 </div>
             </div>

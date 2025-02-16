@@ -53,42 +53,11 @@ async function getAccessToken() {
 }
 
 /**
- * Fetches all artists from a playlist.
- */
-async function fetchPlaylistArtists(playlistId, accessToken) {
-    try {
-        const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        });
-
-        if (!response.ok) throw new Error(`Error fetching playlist tracks: ${response.status}`);
-
-        const data = await response.json();
-        const artistsSet = new Set();
-
-        data.items.forEach(track => {
-            track.track?.artists?.forEach(artist => {
-                if (artist.name) artistsSet.add(artist.name);
-            });
-        });
-
-        return Array.from(artistsSet);
-    } catch (error) {
-        console.error(`❌ Error fetching playlist artists: ${error.message}`);
-        return [];
-    }
-}
-
-/**
- * Fetches 50 random playlists or podcasts from Spotify with caching.
+ * Fetches 100 random playlists or podcasts from multiple genres.
  */
 async function fetchRandomPlaylistsOrPodcasts() {
     const now = Date.now();
 
-    // Use cache if data is less than 10 minutes old
     if (cache.playlistsCache && cache.cacheTimestamp && (now - cache.cacheTimestamp < 10 * 60 * 1000)) {
         console.log("✅ Using cached playlists/podcasts data");
         return cache.playlistsCache;
@@ -98,75 +67,84 @@ async function fetchRandomPlaylistsOrPodcasts() {
         const accessToken = await getAccessToken();
         if (!accessToken) throw new Error('⚠️ Failed to obtain access token');
 
-        const genres = ["pop", "rock", "jazz", "hip-hop", "electronic", "classical", "reggae", "indie", "blues", "metal"];
-        const randomGenre = genres[Math.floor(Math.random() * genres.length)];
-        const offset = Math.floor(Math.random() * 900);
+        const genres = ["pop", "rock", "jazz", "hip-hop", "electronic", "classical", "reggae", "indie", "blues", "metal", "country", "funk", "folk", "punk", "r&b", "lofi"];
+        const queryTerms = ["best", "top", "chill", "trending", "new", "vibe"];
 
-        const endpoint = `https://api.spotify.com/v1/search?q=${randomGenre}&type=playlist,show&limit=10&offset=${offset}`;
-
-        console.log(`🔍 Fetching from: ${endpoint}`);
-
-        const response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
+        // Select 5 random genres to fetch from
+        const selectedGenres = [];
+        while (selectedGenres.length < 5) {
+            const randomGenre = genres[Math.floor(Math.random() * genres.length)];
+            if (!selectedGenres.includes(randomGenre)) {
+                selectedGenres.push(randomGenre);
             }
+        }
+
+        // Fetch 20 results per genre (10 playlists + 10 podcasts)
+        const requests = selectedGenres.flatMap(genre => {
+            const randomQuery = queryTerms[Math.floor(Math.random() * queryTerms.length)];
+            const searchQuery = `${randomQuery} ${genre}`;
+
+            return [0, 10].map(offset =>
+                fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=playlist,show&limit=10&offset=${offset}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                }).then(response => response.json())
+            );
         });
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} - ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log("🎵 API Response:", JSON.stringify(data, null, 2));
-
+        const responses = await Promise.all(requests);
         let results = [];
 
-        // Extract playlist data safely
-        if (data.playlists?.items && Array.isArray(data.playlists.items)) {
-            for (const playlist of data.playlists.items) {
-                if (playlist && playlist.id) {
-                    const artists = await fetchPlaylistArtists(playlist.id, accessToken);
-                    results.push({
-                        id: playlist.id,
-                        name: playlist.name,
-                        description: playlist.description || "No description available",
-                        image: playlist.images?.[0]?.url || null,
-                        total_songs: playlist.tracks?.total || 0,
-                        spotifyUrl: playlist.external_urls?.spotify || null,
-                        type: "playlist",
-                        artists: artists // ✅ Added artists list
-                    });
-                }
+        for (const data of responses) {
+            if (data.error) {
+                console.error(`❌ Spotify API Error: ${data.error.message}`);
+                continue; // Skip this response if an error occurred
+            }
+
+            if (data.playlists?.items) {
+                results = results.concat(
+                    data.playlists.items
+                        .filter(playlist => playlist && playlist.id) // ✅ Filter out null/undefined
+                        .map(playlist => ({
+                            id: playlist.id,
+                            name: playlist.name,
+                            description: playlist.description || "No description available",
+                            image: playlist.images?.[0]?.url || null,
+                            total_songs: playlist.tracks?.total || 0,
+                            spotifyUrl: playlist.external_urls?.spotify || null,
+                            genre: playlist.name.toLowerCase().includes("lofi") ? "lofi" : "mixed",
+                            type: "playlist"
+                        }))
+                );
+            }
+
+            if (data.shows?.items) {
+                results = results.concat(
+                    data.shows.items
+                        .filter(show => show && show.id) // ✅ Filter out null/undefined
+                        .map(show => ({
+                            id: show.id,
+                            name: show.name,
+                            description: show.description || "No description available",
+                            image: show.images?.[0]?.url || null,
+                            total_songs: show.total_episodes || 0,
+                            spotifyUrl: show.external_urls?.spotify || null,
+                            genre: show.name.toLowerCase().includes("lofi") ? "lofi" : "mixed",
+                            type: "podcast"
+                        }))
+                );
             }
         }
 
-        // Extract podcast (show) data safely
-        if (data.shows?.items && Array.isArray(data.shows.items)) {
-            results = results.concat(
-                data.shows.items
-                    .filter(show => show && show.id)
-                    .map(show => ({
-                        id: show.id,
-                        name: show.name,
-                        description: show.description || "No description available",
-                        image: show.images?.[0]?.url || null,
-                        total_songs: show.total_episodes || 0,
-                        spotifyUrl: show.external_urls?.spotify || null,
-                        type: "podcast",
-                        artists: [show.publisher] // ✅ Using publisher as "artist" for podcasts
-                    }))
-            );
-        }
+        // Ensure exactly 100 unique results (removes duplicates)
+        const uniqueResults = Array.from(new Map(results.map(item => [item.id, item])).values()).slice(0, 100);
 
-        // Store results in cache
-        cache.playlistsCache = results;
+        cache.playlistsCache = uniqueResults;
         cache.cacheTimestamp = now;
-
-        return results;
+        return uniqueResults;
 
     } catch (error) {
-        console.error(`❌ Error fetching random playlists or podcasts: ${error.message}`);
+        console.error(`❌ Error fetching playlists or podcasts: ${error.message}`);
         return [];
     }
 }
@@ -174,4 +152,4 @@ async function fetchRandomPlaylistsOrPodcasts() {
 // Execute function and log results
 fetchRandomPlaylistsOrPodcasts().then(data => console.log("✅ Random Playlists or Podcasts:", data));
 
-export { fetchRandomPlaylistsOrPodcasts }
+export { fetchRandomPlaylistsOrPodcasts };
