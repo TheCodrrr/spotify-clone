@@ -349,6 +349,24 @@ export default function EnlargedPlaylistCard(props) {
         className="enlarged_playlist_lower_container"
         style={{ ...linear_styles2 }}
       >
+      <div className="middle_navbar_tab_container df-ai">
+        <div className="middle_navbar_child middle_navbar_left_container dff">
+          <div className="middle_navbar_play_btn_container dff">
+            <i class="fa fa-play" aria-hidden="true"></i>
+          </div>
+          <div className="middle_navbar_expand_btn_container dff">
+            . . .
+          </div>
+        </div>
+        <div className="middle_navbar_child middle_navbar_right_container dff">
+          <div className="middle_navbar_content_list_btn dff">
+            List
+            <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" className="Svg-sc-ytk21e-0 cAMMLk btn_left_content_list_svg">
+            <path d="M15 14.5H5V13h10v1.5zm0-5.75H5v-1.5h10v1.5zM15 3H5V1.5h10V3zM3 3H1V1.5h2V3zm0 11.5H1V13h2v1.5zm0-5.75H1v-1.5h2v1.5z" className="btn_left_content_list_path"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
         <table className="enlarged_playlist_table_container df-ai">
           <thead className="table_row_head">
             <tr className="table_row table_row_item df-ai">
@@ -367,6 +385,7 @@ export default function EnlargedPlaylistCard(props) {
               </th>
             </tr>
           </thead>
+          <hr className="table_head_divider" />
           <tbody>{playListSongs}</tbody>
         </table>
       </div>

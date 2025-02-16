@@ -48,7 +48,7 @@ export default function MediumCardItem(props) {
 
     return (
         <>
-            <Link to={`/playlist/public/${MediumCardData.name}`} className="medium_card_item dff">
+            <Link to={`/playlist/public/${MediumCardData.id}`} className="medium_card_item dff">
                 <div className="medium_card_img_container df" style={backgroundImageStyle}>
                     <div className="medium_card_name_container">
                         

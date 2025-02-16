@@ -99,6 +99,90 @@
     color: #bac0c4;
 }
 
+.middle_navbar_tab_container {
+    height: 5.3rem;
+    width: 100%;
+    justify-content: space-between;
+    /* background-color: red; */
+}
+
+.middle_navbar_child {
+    height: 100%;
+}
+
+.middle_navbar_left_container {
+    margin-left: 20px;
+    overflow: visible;
+}
+
+.middle_navbar_right_container {
+    margin-right: 20px;
+}
+
+.middle_navbar_content_list_btn {
+    /* margin-right: 100px; */
+    /* background-color: blue; */
+    height: 40%;
+    width: 70px;
+    cursor: pointer;
+    /* font-size: 0.9rem; */
+    color: #bdbdbd;
+}
+
+.middle_navbar_content_list_btn:hover {
+    /* transform: scale(1.02); */
+    color: white;
+}
+
+.btn_left_content_list_svg {
+    fill: transparent;
+    height: 55%;
+    margin-left: 10px;
+    
+}
+.btn_left_content_list_path {
+    fill: #bdbdbd;
+}
+
+.middle_navbar_content_list_btn:hover .btn_left_content_list_path {
+    fill: white;
+}
+
+.middle_navbar_play_btn_container {
+    height: 3.5rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: #1ed760;
+    cursor: pointer;
+}
+
+.middle_navbar_play_btn_container:hover {
+    background-color: #25fa70;
+    transform: scale(1.02);
+}
+
+.middle_navbar_play_btn_container i {
+    font-size: 1.3rem;
+    color: black;
+}
+
+.middle_navbar_expand_btn_container {
+    height: 3.5rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    cursor: pointer;
+    color: rgb(202, 202, 202);
+    font-size: 1.3rem;
+    font-weight: 900;
+    margin-left: 12px;
+    /* background-color: black; */
+}
+
+.middle_navbar_expand_btn_container:hover {
+    transform: scale(1.02);
+    color: white;
+}
+
 .enlarged_content_owner_image_container {
     height: 1.5rem;
     aspect-ratio: 1/1;
@@ -218,7 +302,8 @@
 .table_row_head {
     /* background-color: green; */
     width: 800px;
-    height: 60px;
+    height: 35px;
+    position: sticky;
 }
 
 .table_row_head th {
@@ -229,6 +314,10 @@
 .table_row_head th, td {
     font-size: 0.9rem;
     color: #adb2b6;
+}
+
+.table_row_head .table_row {
+    height: 30px;
 }
 
 .table_row {
@@ -363,4 +452,12 @@
 
 .extra_col {
     width: 5%;
+}
+
+.table_head_divider {
+    height: 0.5px;
+    width: 95%;
+    background-color: rgb(63, 63, 63);
+    border: none;
+    margin-bottom: 15px;
 }
