@@ -4,10 +4,8 @@ const REFRESH_TOKEN = "AQDJClGX6vWk1SX2hRWG4zM9wzYu275O2v1QWZU8noz9ZdU6HaBjogRdb
 
 let cachedPlaylists = null;
 
-// Utility function to introduce a delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Function to get an access token using the refresh token
 const getAccessToken = async () => {
     try {
         const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -27,7 +25,6 @@ const getAccessToken = async () => {
     }
 };
 
-// Function to fetch user playlists
 async function fetchUserPlaylists() {
     if (cachedPlaylists) {
         return cachedPlaylists;
@@ -38,7 +35,6 @@ async function fetchUserPlaylists() {
 
     try {
         await delay(1000);
-
         const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=50', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${accessToken}` }
@@ -59,23 +55,17 @@ async function fetchUserPlaylists() {
         }));
 
         return cachedPlaylists;
-
     } catch (error) {
         console.error("Error fetching playlists:", error);
     }
 }
 
-// Function to fetch detailed artist bio from Wikipedia
 async function fetchArtistBio(artistName) {
     try {
         const wikiResponse = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(artistName)}`);
         const wikiData = await wikiResponse.json();
 
-        if (wikiData.extract) {
-            return wikiData.extract; // Return the summary from Wikipedia
-        } else {
-            return "No biography available.";
-        }
+        return wikiData.extract || "No biography available.";
     } catch (error) {
         console.error(`Error fetching Wikipedia bio for ${artistName}:`, error);
         return "No biography available.";
@@ -94,10 +84,7 @@ async function fetchRandomSong() {
             if (!accessToken) return;
 
             try {
-                // Pick a random playlist
                 const randomPlaylist = playlists[Math.floor(Math.random() * playlists.length)];
-
-                // Fetch tracks from the selected playlist
                 const tracksResponse = await fetch(randomPlaylist.playlist_tracks_url, {
                     headers: { Authorization: `Bearer ${accessToken}` }
                 });
@@ -105,20 +92,14 @@ async function fetchRandomSong() {
 
                 if (!tracksData.items || tracksData.items.length === 0) return;
 
-                // Pick a random song from the playlist
                 const randomTrack = tracksData.items[Math.floor(Math.random() * tracksData.items.length)].track;
-
-                // Fetch main artist details
                 const mainArtistId = randomTrack.artists[0].id;
                 const artistResponse = await fetch(`https://api.spotify.com/v1/artists/${mainArtistId}`, {
                     headers: { Authorization: `Bearer ${accessToken}` }
                 });
                 const artistData = await artistResponse.json();
-
-                // Fetch artist bio from Wikipedia
                 const artistBio = await fetchArtistBio(artistData.name);
 
-                // Fetch additional artist roles (composer, lyricist, etc.)
                 const creditsResponse = await fetch(`https://api.spotify.com/v1/tracks/${randomTrack.id}`, {
                     headers: { Authorization: `Bearer ${accessToken}` }
                 });
@@ -130,11 +111,12 @@ async function fetchRandomSong() {
                     profile_url: artist.external_urls.spotify
                 }));
 
-                // Build final data structure
                 const detailedSong = {
+                    song_id: randomTrack.id,  // Added song ID
                     song_name: randomTrack.name,
+                    song_duration: randomTrack.duration_ms, // Added song duration
                     song_image: randomTrack.album.images[0]?.url || "No image available",
-                    song_url: randomTrack.external_urls.spotify, // Unique song URL
+                    song_url: randomTrack.external_urls.spotify,
                     playlist_name: randomPlaylist.playlist_name,
                     playlist_owner: randomPlaylist.playlist_owner,
                     artists: randomTrack.artists.map(a => ({
@@ -143,7 +125,7 @@ async function fetchRandomSong() {
                     })),
                     main_artist: {
                         name: artistData.name,
-                        bio: artistBio, // Full Wikipedia bio
+                        bio: artistBio,
                         monthly_listeners: artistData.followers.total,
                         image: artistData.images[0]?.url || "No image available",
                         profile_url: artistData.external_urls.spotify

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import './MusicPlayer.css'
 import { fetchRandomSong } from "../mainContent/rightContent/fetchUserPlayedSong";
 
@@ -7,6 +7,43 @@ export default function MusicPlayer() {
     const [loading, setLoading] = useState(true);
     const [randomSongDetails, setRandomSongDetails] = useState({})
     const [artists, setArtists] = useState([])
+    
+    const [progress, setProgress] = useState(0);
+    const progressBarRef = useRef(null);
+    const isDragging = useRef(false);
+
+    const updateProgress = (e) => {
+        if (!progressBarRef.current) return;
+        const rect = progressBarRef.current.getBoundingClientRect();
+        let newProgress = ((e.clientX - rect.left) / rect.width) * 100;
+        newProgress = Math.max(0, Math.min(100, newProgress));
+        setProgress(newProgress);
+    };
+
+    const handleMouseDown = (e) => {
+        isDragging.current = true;
+        updateProgress(e);
+    };
+
+    const handleMouseMove = (e) => {
+        if (isDragging.current) {
+            updateProgress(e);
+            // document.getElementsByClassName('music_progress').style.backgroundColor = "#24d265";
+        }
+    };
+
+    const handleMouseUp = () => {
+        isDragging.current = false;
+    };
+
+    useEffect(() => {
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -57,7 +94,7 @@ export default function MusicPlayer() {
                     <i className="fa-solid fa-check btn_song_saved"></i>
                 </div>
             </div>
-            <div className="music_player_child_container music_player_centre_container dff">
+            <div className="music_player_child_container music_player_centre_container df-ai">
                 {/* 
 
                     <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" className="Svg-sc-ytk21e-0 dYnaPI"><path d="M13.151.922a.75.75 0 1 0-1.06 1.06L13.109 3H11.16a3.75 3.75 0 0 0-2.873 1.34l-6.173 7.356A2.25 2.25 0 0 1 .39 12.5H0V14h.391a3.75 3.75 0 0 0 2.873-1.34l6.173-7.356a2.25 2.25 0 0 1 1.724-.804h1.947l-1.017 1.018a.75.75 0 0 0 1.06 1.06L15.98 3.75 13.15.922zM.391 3.5H0V2h.391c1.109 0 2.16.49 2.873 1.34L4.89 5.277l-.979 1.167-1.796-2.14A2.25 2.25 0 0 0 .39 3.5z"></path><path d="m7.5 10.723.98-1.167.957 1.14a2.25 2.25 0 0 0 1.724.804h1.947l-1.017-1.018a.75.75 0 1 1 1.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 1 1-1.06-1.06L13.109 13H11.16a3.75 3.75 0 0 1-2.873-1.34l-.787-.938z"></path></svg>
@@ -91,7 +128,21 @@ export default function MusicPlayer() {
                     </div>
                 </div>
                 <div className="music_player_centre_child music_player_centre_lower_container dff">
-
+                <div
+                    className="music_progress_bar df-ai"
+                    ref={progressBarRef}
+                    onClick={updateProgress}
+                    onMouseDown={handleMouseDown}
+                >
+                    <span
+                        className="music_progress"
+                        style={{ width: `${progress}%` }}
+                    ></span>
+                    <span
+                        className="music_progress_point"
+                        // style={{ display: progress > 0 ? "block" : "none" }}
+                    ></span>
+                </div>
                 </div>
             </div>
             <div className="music_player_child_container music_player_right_container dff">
