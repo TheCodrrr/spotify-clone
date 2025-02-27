@@ -40,7 +40,7 @@ export default function CentreMainContent(props) {
 
     useEffect(() => {
       if (!hoverImage) {
-          setLinearStyles({ background: "linear-gradient(#515860, #42494e, #121212)" });
+          setLinearStyles({ background: "linear-gradient(#515860, #42494e, #121212 50%)" });
           return;
       }
   

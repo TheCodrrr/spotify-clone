@@ -4,27 +4,34 @@ import ArtistCard from "./ArtistCard";
 import CreditsCard from "./CreditsCard";
 import QueueCard from "./QueueCard";
 
-export default function SongCardDetails() {
-    let song_card_details = {
-        song_card_detail_name: 'Bandeya - From "Dil Juunglee"',
-        song_card_detail_singer: 'Shaarib Toshi, Arijit Singh',
+export default function SongCardDetails({ fetched_song_card_details }) {
+    console.log("This is from songCardDetails.jsx: " + JSON.stringify(fetched_song_card_details));
+
+    let artistNames = fetched_song_card_details.artists.map(arts => arts.name).join(', ');
+    
+    if (artistNames.length > 25) {
+        artistNames = artistNames.slice(0, 25) + '...'
     }
-    if (song_card_details.song_card_detail_name.length > 23) {
-        song_card_details.song_card_detail_name = song_card_details.song_card_detail_name.slice(0, 23);
+
+    if (fetched_song_card_details.song_name.length > 23) {
+        fetched_song_card_details.song_used_name = fetched_song_card_details.song_name.slice(0, 23);
+    }
+    else {
+        fetched_song_card_details.song_used_name = fetched_song_card_details.song_name;
     }
     return (
         <>
             <div className="song_card_details_container">
-                <div className="song_pic_container dff">
+                <img className="song_pic_container dff" src={`${fetched_song_card_details.song_image}`}>
 
-                </div>
+                </img>
                 <div className="song_first_detail_container dff">
                     <div className="song_first_detail_container_left df-jc">
                         <h2 className="song_detail_name">
-                            { song_card_details.song_card_detail_name }
+                            { fetched_song_card_details.song_used_name }
                         </h2>
                         <div className="song_detail_singer">
-                            { song_card_details.song_card_detail_singer }
+                            { artistNames }
                         </div>
                     </div>
                     <div className="song_first_detail_container_right df-ai">
@@ -37,13 +44,13 @@ export default function SongCardDetails() {
                     </div>
                 </div>
                 <div className="song_artist_card_container dff">
-                    <ArtistCard/>
+                    <ArtistCard fetched_song_card_details = { fetched_song_card_details }/>
                 </div>
                 <div className="song_credits_card_container dff">
-                    <CreditsCard/>
+                    <CreditsCard fetched_song_card_details = { fetched_song_card_details }/>
                 </div>
                 <div className="song_queue_card_container dff">
-                    <QueueCard/>
+                    <QueueCard fetched_song_card_details = { fetched_song_card_details }/>
                 </div>
             </div>
         </>

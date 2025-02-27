@@ -1,12 +1,13 @@
 import React from "react";
 import './SongCardNavbar.css'
 
-export default function SongCardNavbar() {
+export default function SongCardNavbar({ fetched_song_card_details }) {
+
     return (
         <>
             <div className="song_card_navbar df-ai">
                 <a className="song_navbar_name">
-                    Best
+                    { fetched_song_card_details.playlist_name }
                 </a>
                 <div className="song_navbar_items_container dff">
                     <button className="btn_song_navbar_expand_container">

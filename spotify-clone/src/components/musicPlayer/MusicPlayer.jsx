@@ -1,12 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './MusicPlayer.css'
+import { fetchRandomSong } from "../mainContent/rightContent/fetchUserPlayedSong";
 
 export default function MusicPlayer() {
     const [valuePlayPause, setPlayPause] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [randomSongDetails, setRandomSongDetails] = useState({})
+    const [artists, setArtists] = useState([])
 
-    let music_player_details = {
-        music_player_detail_name: 'Bandeya - From "Dil Juunglee"',
-        music_player_detail_singer: 'Shaarib Toshi, Arijit Singh',
+    useEffect(() => {
+        setLoading(true);
+        fetchRandomSong()
+        .then((randomSongs) => {
+            if (randomSongs) {
+                setRandomSongDetails(randomSongs);
+                setArtists(randomSongs.artists)
+            }
+        })
+        .catch((error) => console.error("Error:", error))
+        .finally(() => setLoading(false))
+
+        console.log("The random song details from MUSIC PLAYER is are : " + JSON.stringify(randomSongDetails));
+    }, [])
+
+    // let song_used_name
+
+    let artistNames = artists.map(arts => arts.name).join(', ');
+    
+
+    if (artistNames.length > 25) {
+        artistNames = artistNames.slice(0, 25) + '...'
     }
 
     const togglePlayPause = () => {
@@ -21,15 +44,13 @@ export default function MusicPlayer() {
     return (
         <div className="music_player_container df-ai">
             <div className="music_player_child_container music_player_left_container df-ai">
-                <div className="music_player_img_container">
-
-                </div>
+                <img src={`${randomSongDetails.song_image}`} className="music_player_img_container" />
                 <div className="music_player_content_container df-jc">
                     <a href="#" className="music_player_song_name">
-                        { music_player_details.music_player_detail_name }
+                        { randomSongDetails.song_used_name }
                     </a>
                     <h5 className="music_player_song_singer">
-                        { music_player_details.music_player_detail_singer }
+                        { artistNames }
                     </h5>
                 </div>
                 <div className="btn_song_saved_container btn_song_saved_music_player_container dff">

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import './ArtistCard.css';
 
-export default function ArtistCard() {
-    let artist_detail_info = "Playback Singers & Performers Based in Mumbai One of the most dynamic singer-music director duo of the industry presently. After participating in music reality shows - Shaarib in Sa Re Ga Ma Pa Challenge 2005 and Toshi in Amul Star Voice of India, they produced hits like Maahi (Raaz 2) and for others like Housefull 3, Humpty Sharma ki Dulhania, Fukrey Returns, Vada Raha. Their songs Tu Zaroori, Sharabi, Aaj Ro Len De, Biba, Emotional Fool have gone viral nation wide."
+export default function ArtistCard({ fetched_song_card_details }) {
+    console.log("This is from ArtistCard.jsx: " + JSON.stringify(fetched_song_card_details));
+    let artist_detail_info = fetched_song_card_details.main_artist.bio
     if (artist_detail_info.length > 111) {
         artist_detail_info = artist_detail_info.slice(0, 111) + '...';
     }
@@ -21,12 +22,12 @@ export default function ArtistCard() {
                     About the artist
                 </div>
                 <div className="artist_card_artist_img_container df-ai">
-                    <div className="artist_card_artist_img"></div>
+                    <img src={`${fetched_song_card_details.main_artist.image}`} className="artist_card_artist_img"></img>
                 </div>
-                <a href="#" className="artist_name">Shaarib Toshi</a>
+                <a href="#" className="artist_name">{ fetched_song_card_details.main_artist.name }</a>
                 <div className="artist_brief_detail_container df-ai">
                     <p className="artist_brief_detail_left">
-                        8,705,119 montly listeners
+                        { fetched_song_card_details.main_artist.monthly_listeners.toLocaleString('en-US') } montly listeners
                     </p>
                     <button className="artist_brief_detail_right" onClick={changeFollowArtist}>
                         { isFollow }

@@ -1,22 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import './CreditsCard.css';
 import SingerCard from "./SingerCard";
 
-export default function CreditsCard() {
-    let singers_involved = [
-        { name: 'Shaarib Toshi', designation: 'Main Artist', allowFollow: true},
-        { name: 'Arijit Singh', designation: 'Main Artist', allowFollow: true},
-        { name: 'Sharib Sabri', designation: 'Composer', allowFollow: false},
-    ]
-    const singerCards = singers_involved.map((item) => (
-        <SingerCard singer_details={item} />
+export default function CreditsCard({ fetched_song_card_details }) {
+    const [contributors, setContributors] = useState([]);
+    const [shortContributors, setShortContributors] = useState([]);
+    const [isMore, setIsMore] = useState(false);
+
+    // console.log("This is from CreditsCard.jsx: " + JSON.stringify(fetched_song_card_details));
+    useEffect(() => {
+        setContributors(fetched_song_card_details.contributors);
+    
+        if (fetched_song_card_details.contributors.length > 3) {
+            setShortContributors(fetched_song_card_details.contributors.slice(0, 3));
+            setIsMore(true);
+        } else {
+            setShortContributors(fetched_song_card_details.contributors);
+            setIsMore(false);
+        }
+    }, [fetched_song_card_details]); // Dependency added
+    
+
+
+    const singerCards = shortContributors.map((item) => (
+        <SingerCard singer_details={item} fetched_singer_details = { item } />
     ));
     return (
         <>
             <div className="credits_card">
                 <div className="credits_card_head_container df-ai">
                     <div className="credits_card_head">Credits</div>
-                    <button className="btn_credits_card_show">Show all</button>
+                    { isMore ? (
+                        <button className="btn_credits_card_show">Show all</button>
+                    ) : (
+                        ""
+                    ) }
                 </div>
                 <div className="credits_card_singers_container df-jc">
                     { singerCards }

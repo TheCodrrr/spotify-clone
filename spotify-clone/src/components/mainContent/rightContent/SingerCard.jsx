@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import './SingerCard.css';
 
-export default function SingerCard(props) {
+export default function SingerCard({ fetched_singer_details }) {
     const [isFollow, setFollow] = useState('Follow');
+
+    // console.log("These are the SingerCard.jsx: " + JSON.stringify(fetched_singer_details));
 
     const changeFollow = () => {
         if (isFollow == 'Follow') setFollow('Unfollow');
@@ -13,8 +15,8 @@ export default function SingerCard(props) {
         <>
             <div className="singer_card dff">
                 <div className="singer_card_left df-jc">
-                    <a href="#" className="singer_name">{ props.singer_details.name }</a>
-                    <div className="singer_designation">{ props.singer_details.designation }</div>
+                    <a href="#" className="singer_name">{ fetched_singer_details.name }</a>
+                    <div className="singer_designation">{ fetched_singer_details.role }</div>
                 </div>
                 <div className="singer_card_right df-ai">
                     <button className="btn_singer_card_follow" onClick={changeFollow}>
