@@ -172,8 +172,8 @@
     border-radius: 50%;
     cursor: pointer;
     color: rgb(202, 202, 202);
-    font-size: 1.3rem;
-    font-weight: 900;
+    font-size: 1rem;
+    /* font-weight: 900; */
     margin-left: 12px;
     /* background-color: black; */
 }

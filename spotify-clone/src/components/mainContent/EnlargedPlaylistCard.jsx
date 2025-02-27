@@ -355,7 +355,7 @@ export default function EnlargedPlaylistCard(props) {
             <i class="fa fa-play" aria-hidden="true"></i>
           </div>
           <div className="middle_navbar_expand_btn_container dff">
-            . . .
+            • • •
           </div>
         </div>
         <div className="middle_navbar_child middle_navbar_right_container dff">

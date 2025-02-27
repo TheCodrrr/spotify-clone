@@ -1,0 +1,35 @@
+.middle_navbar_expand_btn {
+    width: 2rem;
+}
+
+.middle_navbar_add_btn_container {
+    cursor: default;
+}
+
+.middle_navbar_add_btn_container:hover {
+    transform: none;
+}
+
+.middle_navbar_add_container {
+    border: 3px solid #b6b2af;
+    /* background-color: red; */
+    border-radius: 50%;
+    background-color: transparent;
+    height: 50%;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+}
+
+.middle_navbar_add_container i {
+    font-size: 0.95rem;
+    color: #b6b2af;
+}
+
+.middle_navbar_add_container:hover {
+    border-color: white;
+    transform: scale(1.05);
+}
+
+.middle_navbar_add_container:hover i {
+    color: white;
+}

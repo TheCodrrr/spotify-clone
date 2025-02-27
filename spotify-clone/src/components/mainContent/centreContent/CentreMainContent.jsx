@@ -1,13 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import './CentreMainContent.css';
 import CentreContentNavbar from "./CentreContentNavbar";
 import CentreContentItemsContainer from "./CentreContentItemsContainer";
 import { usePlaylistLoader } from "../../../customHooks/LoadPersonalPlaylist";
 import Footer from "./Footer";
+import { HoverContext } from "./HoverContext";
+
 
 export default function CentreMainContent(props) {
+
+    const { hoverImage } = useContext(HoverContext);
     const [isScrolled1, setScrolled1] = useState(false);
     const [isScrolled2, setScrolled2] = useState(false);
+    const [linear_styles, setLinearStyles] = useState({});
+    const [linear_styles2, setLinearStyles2] = useState({});
+
+    console.log("centre Main Content The hover image: " + hoverImage);
 
 
     // const { loading, userPlaylistDetails } = usePlaylistLoader();
@@ -30,155 +38,111 @@ export default function CentreMainContent(props) {
 
 
 
-    // const img_url = targetPlaylistImageURL;
-    //   const img = new Image();
-    //   img.crossOrigin = "Anonymous"; // Enable CORS for cross-origin images
-    //   img.src = img_url;
-    //   img.onload = () => {
-    //     // Create a canvas dynamically
-    //     const canvas = document.createElement("canvas");
-    //     const ctx = canvas.getContext("2d");
-
-    //     // Set canvas size to match the image
-    //     canvas.width = img.width;
-    //     canvas.height = img.height;
-
-    //     // Draw the image on the canvas
-    //     ctx.drawImage(img, 0, 0, img.width, img.height);
-
-    //     // Extract pixel data
-    //     const imageData = ctx.getImageData(0, 0, img.width, img.height);
-    //     const dominantColor = getDominantColor(imageData);
-
-    //     // Generate 10 shades of the dominant color
-    //     const shades = generateShades(dominantColor, 20);
-    //     console.log("These are the shades - \n\n" + shades);
-    //     setLinearStyles({
-    //       // background: `linear-gradient(${shades.join(', ')})`,
-    //       background: `linear-gradient(
-    //                     ${shades.map((shade, index) => {
-    //                       const percentage = (
-    //                         index *
-    //                         (30 / (shades.length - 1))
-    //                       ).toFixed(2); // Evenly distribute between 0% and 15%
-    //                       const darkerShade = darkenColor(shade, 0.4, 0.8); // Lighten by 40% and add transparency
-    //                       return `${darkerShade} ${percentage}%`;
-    //                     })})
-                    
-    //                 `,
-    //     });
-    //     function darkenColor(color, percentage, transparency) {
-    //       // Extract RGB components from the color
-    //       const [r, g, b] = color.match(/\d+/g).map(Number);
-
-    //       // Darken the color by adjusting towards 0, with a much higher percentage
-    //       const newR = Math.max(0, Math.round(r - r * percentage));
-    //       const newG = Math.max(0, Math.round(g - g * percentage));
-    //       const newB = Math.max(0, Math.round(b - b * percentage));
-
-    //       return `rgb(${newR}, ${newG}, ${newB}, ${transparency})`;
-    //     }
-
-    //     setLinearStyles2({
-    //       background: `linear-gradient(
-    //           ${shades
-    //             .map((shade, index) => {
-    //               const stepSize = 200 / (shades.length - 1); // Evenly distribute shades between 0px and 200px
-    //               const position = (index * stepSize).toFixed(2); // Calculate position for each shade
-    //               const darkerShade = darkenColor(shade, 0.8, 0.8); // Darken by 80% and add transparency
-    //               return `${darkerShade} ${position}px`;
-    //             })
-    //             .join(", ")}, 
-    //           #131313 280px
-    //         )`,
-    //       // backgroundSize: "100% 600px" /* Fix the gradient height to 300px */,
-    //       // backgroundRepeat: "no-repeat",
-    //     });
-    //   };
-
-    //   function getDominantColor(imageData) {
-    //     const pixels = imageData.data;
-    //     const colorCount = {};
-    //     let vibrantColor = "";
-    //     let maxCount = 0;
-
-    //     for (let i = 0; i < pixels.length; i += 4) {
-    //       const r = pixels[i];
-    //       const g = pixels[i + 1];
-    //       const b = pixels[i + 2];
-
-    //       // Skip dark colors (shades of black)
-    //       if (r < 50 && g < 50 && b < 50) continue;
-
-    //       // Skip shades of gray
-    //       if (Math.abs(r - g) < 10 && Math.abs(g - b) < 10) continue;
-
-    //       // Convert RGB to HSL for brightness and saturation filtering
-    //       const [h, s, l] = rgbToHsl(r, g, b);
-
-    //       // Skip desaturated (low saturation) or dark (low lightness) colors
-    //       if (s < 0.4 || l < 0.5) continue;
-
-    //       const rgb = `rgb(${r},${g},${b})`;
-    //       colorCount[rgb] = (colorCount[rgb] || 0) + 1;
-
-    //       if (colorCount[rgb] > maxCount) {
-    //         maxCount = colorCount[rgb];
-    //         vibrantColor = rgb;
-    //       }
-    //     }
-
-    //     // Fallback to a default color if no vibrant color is found
-    //     return vibrantColor || "rgb(200, 200, 200)";
-    //   }
-    //   function rgbToHsl(r, g, b) {
-    //     r /= 255;
-    //     g /= 255;
-    //     b /= 255;
-
-    //     const max = Math.max(r, g, b);
-    //     const min = Math.min(r, g, b);
-    //     let h,
-    //       s,
-    //       l = (max + min) / 2;
-
-    //     if (max === min) {
-    //       h = s = 0; // Achromatic
-    //     } else {
-    //       const d = max - min;
-    //       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    //       switch (max) {
-    //         case r:
-    //           h = (g - b) / d + (g < b ? 6 : 0);
-    //           break;
-    //         case g:
-    //           h = (b - r) / d + 2;
-    //           break;
-    //         case b:
-    //           h = (r - g) / d + 4;
-    //           break;
-    //       }
-    //       h /= 6;
-    //     }
-
-    //     return [h, s, l];
-    //   }
-    //   function generateShades(color, numShades) {
-    //     const [r, g, b] = color.match(/\d+/g).map(Number); // Extract RGB values
-    //     const shades = [];
-
-    //     for (let i = 0; i < numShades; i++) {
-    //       const factor = 0.9 + i * 0.01; // Slightly vary the factor for lighter shades
-    //       const newR = Math.min(255, Math.round(r * factor));
-    //       const newG = Math.min(255, Math.round(g * factor));
-    //       const newB = Math.min(255, Math.round(b * factor));
-
-    //       shades.push(`rgb(${newR}, ${newG}, ${newB})`);
-    //     }
-
-    //     console.log(shades);
-    //     return shades;
-    //   }
+    useEffect(() => {
+      if (!hoverImage) {
+          setLinearStyles({ background: "linear-gradient(#515860, #42494e, #121212)" });
+          return;
+      }
+  
+      const img = new Image();
+      img.crossOrigin = "Anonymous"; // CORS handling
+      img.src = hoverImage;
+  
+      img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+  
+          const imageData = ctx.getImageData(0, 0, img.width, img.height);
+          const dominantColor = getDominantColor(imageData);
+          const darkenedColor = darkenColor(dominantColor, 0.4, 1); // Darker shade
+          const shades = generateShades(darkenedColor, 15); // Generate shades
+  
+          setLinearStyles({
+              background: `linear-gradient(${shades.map((shade, i) => `${shade} ${(i * (70 / shades.length))}%`).join(", ")}, 
+              #42494e 70%, #121212 100%)`,
+          });
+      };
+  
+      console.log(`The linear styles are: ${JSON.stringify(linear_styles)}`);
+  }, [hoverImage]);
+  
+  function getDominantColor(imageData) {
+      const pixels = imageData.data;
+      const colorCount = {};
+      let dominantColor = "";
+      let maxCount = 0;
+  
+      for (let i = 0; i < pixels.length; i += 4) {
+          let r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
+  
+          if (r < 40 && g < 40 && b < 40) continue;
+          if (Math.abs(r - g) < 15 && Math.abs(g - b) < 15) continue;
+  
+          const [h, s, l] = rgbToHsl(r, g, b);
+          if (s < 0.3 || l < 0.4) continue;
+  
+          const roundedColor = `rgb(${Math.round(r / 10) * 10},${Math.round(g / 10) * 10},${Math.round(b / 10) * 10})`;
+  
+          colorCount[roundedColor] = (colorCount[roundedColor] || 0) + 1;
+          if (colorCount[roundedColor] > maxCount) {
+              maxCount = colorCount[roundedColor];
+              dominantColor = roundedColor;
+          }
+      }
+      return dominantColor || "rgb(100, 100, 100)";
+  }
+  
+  function darkenColor(color, percentage, transparency) {
+      const [r, g, b] = color.match(/\d+/g).map(Number);
+  
+      const newR = Math.max(0, Math.round(r * (1 - percentage)));
+      const newG = Math.max(0, Math.round(g * (1 - percentage)));
+      const newB = Math.max(0, Math.round(b * (1 - percentage)));
+  
+      return `rgb(${newR}, ${newG}, ${newB}, ${transparency})`;
+  }
+  
+  function generateShades(color, numShades) {
+      const [r, g, b] = color.match(/\d+/g).map(Number);
+      const shades = [];
+  
+      for (let i = 0; i < numShades; i++) {
+          const blendFactor = i / (numShades - 1);
+          const newR = Math.round(r * (1 - blendFactor) + 66 * blendFactor);
+          const newG = Math.round(g * (1 - blendFactor) + 73 * blendFactor);
+          const newB = Math.round(b * (1 - blendFactor) + 78 * blendFactor);
+          shades.push(`rgb(${newR}, ${newG}, ${newB})`);
+      }
+  
+      console.log("Generated Shades:", shades);
+      return shades;
+  }
+  
+  function rgbToHsl(r, g, b) {
+      r /= 255;
+      g /= 255;
+      b /= 255;
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+      if (max === min) {
+          h = s = 0;
+      } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+              case g: h = (b - r) / d + 2; break;
+              case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+      }
+      return [h, s, l];
+  }
+  
 
     useEffect(() => {
         const mainContent = contentRef.current;
@@ -211,7 +175,7 @@ export default function CentreMainContent(props) {
                 <div 
                     className="centre_main_content_container" 
                     // style={{ ...props.common_styles, ...props.specific_style, background: 'red' }} 
-                    style={{ ...props.common_styles, ...props.specific_style}} 
+                    style={{ ...props.common_styles, ...props.specific_style, ...linear_styles }} 
                     id="centre_main_content_container" 
                     ref={contentRef} // Attach the ref to the div
                 >
