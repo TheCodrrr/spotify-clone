@@ -129,6 +129,16 @@
     /* background-color: red; */
 }
 
+.music_player_song_time {
+    margin: 0 10px;
+    /* background-color: red; */
+}
+
+.music_player_song_time > * {
+    font-size: 0.75rem;
+    color: #888f95;
+}
+
 .music_progress_bar {
     height: 4px;
     width: 80%;

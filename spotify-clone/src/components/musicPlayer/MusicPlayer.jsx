@@ -7,6 +7,21 @@ export default function MusicPlayer() {
     const [loading, setLoading] = useState(true);
     const [randomSongDetails, setRandomSongDetails] = useState({})
     const [artists, setArtists] = useState([])
+    const [DynamicTimeComponent, setDynamicTimeComponent] = useState(
+        (
+            <>
+                <span className="song_time_component">
+                    0
+                </span>
+                <span className="song_time_separation">
+                    :
+                </span>
+                <span className="song_time_component">
+                    00
+                </span>
+            </>
+        )
+    )
     
     const [progress, setProgress] = useState(0);
     const progressBarRef = useRef(null);
@@ -59,6 +74,41 @@ export default function MusicPlayer() {
 
         console.log("The random song details from MUSIC PLAYER is are : " + JSON.stringify(randomSongDetails));
     }, [])
+
+    function formatTime(ms) {
+        const minutes = Math.floor(ms / 60000);
+        const seconds = Math.floor((ms % 60000) / 1000);
+        return [minutes, seconds];
+    }
+
+    let [total_min, total_sec] = formatTime(randomSongDetails.song_duration);
+
+    // console.log(`the time is : ${total_min} : ${total_sec}`)
+    // console.log("The progress is: " + progress);
+
+    let played_millisec, played_min = 0, played_sec = 0;
+
+    useEffect(() => {
+        played_millisec = Math.floor((progress * randomSongDetails.song_duration) / 100);
+        [played_min, played_sec] = formatTime(played_millisec);
+
+        // console.log("Here is the played time: " + played_millisec);
+        setDynamicTimeComponent(
+            (
+            <>
+                <span className="song_time_component">
+                    { played_min.toString() }
+                </span>
+                <span className="song_time_separation">
+                    :
+                </span>
+                <span className="song_time_component">
+                    { played_sec.toString().padStart(2, '0') }
+                </span>
+            </>
+            )
+        )
+    }, [progress])
 
     // let song_used_name
 
@@ -128,21 +178,29 @@ export default function MusicPlayer() {
                     </div>
                 </div>
                 <div className="music_player_centre_child music_player_centre_lower_container dff">
-                <div
-                    className="music_progress_bar df-ai"
-                    ref={progressBarRef}
-                    onClick={updateProgress}
-                    onMouseDown={handleMouseDown}
-                >
-                    <span
-                        className="music_progress"
-                        style={{ width: `${progress}%` }}
-                    ></span>
-                    <span
-                        className="music_progress_point"
-                        // style={{ display: progress > 0 ? "block" : "none" }}
-                    ></span>
-                </div>
+                    <div className="music_player_left_song_time music_player_song_time dff">
+                        { DynamicTimeComponent }
+                    </div>
+                    <div
+                        className="music_progress_bar df-ai"
+                        ref={progressBarRef}
+                        onClick={updateProgress}
+                        onMouseDown={handleMouseDown}
+                    >
+                        <span
+                            className="music_progress"
+                            style={{ width: `${progress}%` }}
+                        ></span>
+                        <span
+                            className="music_progress_point"
+                            // style={{ display: progress > 0 ? "block" : "none" }}
+                        ></span>
+                    </div>
+                    <div className="music_player_right_song_time music_player_song_time dff">
+                        <span className="song_time_component">{ total_min.toString() }</span>
+                        <span className="song_time_separation">:</span>
+                        <span className="song_time_component">{ total_sec.toString().padStart(2, '0') }</span>
+                    </div>
                 </div>
             </div>
             <div className="music_player_child_container music_player_right_container dff">

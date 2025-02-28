@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import './LeftContentItemsContainer.css';
 import LeftContentPlaylistCard from "./LeftContentPlaylistCard";
 import leftContentCardData from "./leftContentCardData";
@@ -6,6 +6,12 @@ import { usePlaylistLoader } from "../../../customHooks/LoadPersonalPlaylist";
 import LeftPlaylistLoadingCard from "./LeftPlaylistLoadingCard";
 
 export default function LeftContentItemsContainer() {
+    const [searchActive, setSearchActive] = useState(false);
+
+    const toggleSearchActivation = () => {
+        setSearchActive(!searchActive);
+    }
+
     console.log(leftContentCardData[0]);
 
     const { loading, userPlaylistDetails } = usePlaylistLoader();
@@ -24,7 +30,7 @@ export default function LeftContentItemsContainer() {
             // </div>
             <div className="left_content_items_container">
                 <div className="left_content_heading_container df-ai">
-                    <div className="btn_left_content_search_container dff">
+                    <div className="btn_left_content_search_container dff" onClick={toggleSearchActivation}>
                         <svg data-encore-id="icon" role="img" aria-hidden="true" className="Svg-sc-ytk21e-0 dYnaPI CIVozJ8XNPJ60uMN23Yg btn_left_content_search_svg" viewBox="0 0 16 16">
                             <path d="M7 1.75a5.25 5.25 0 1 0 0 10.5 5.25 5.25 0 0 0 0-10.5zM.25 7a6.75 6.75 0 1 1 12.096 4.12l3.184 3.185a.75.75 0 1 1-1.06 1.06L11.304 12.2A6.75 6.75 0 0 1 .25 7z" className="btn_left_content_search_path"></path>
                         </svg>

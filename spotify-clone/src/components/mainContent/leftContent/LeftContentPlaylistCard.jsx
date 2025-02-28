@@ -59,7 +59,7 @@ export default function LeftContentPlaylistCard({ data }) {
 
     return (
         <>
-            <Link className="left_card dff" to={`/playlist/${data['user_playlist_name']}`} >
+            <Link className="left_card dff" to={`/playlist/${data['user_playlist_name']}`}>
                 <div className="left_card_img_outer_container dff">
                     <div className="left_card_img_inner_container dff" style={BackgroundStyle}>
                         <div className="play_pause_button_container dff">

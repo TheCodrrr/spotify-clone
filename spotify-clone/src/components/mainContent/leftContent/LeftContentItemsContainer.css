@@ -33,6 +33,12 @@
     justify-content: space-between;
 }
 
+.left_search_bar_container {
+    background-color: yellow;
+    height: 75%;
+    aspect-ratio: 1/1;
+}
+
 .btn_left_content_search_container {
     height: 75%;
     aspect-ratio: 1/1;
