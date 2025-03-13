@@ -97,13 +97,13 @@ export default function MusicPlayer() {
             (
             <>
                 <span className="song_time_component">
-                    { played_min.toString() }
+                    { Number.isNaN(played_min) ? '0' : played_min.toString() }
                 </span>
                 <span className="song_time_separation">
                     :
                 </span>
                 <span className="song_time_component">
-                    { played_sec.toString().padStart(2, '0') }
+                    { Number.isNaN(played_sec) ? '00' : played_sec.toString().padStart(2, '0') }
                 </span>
             </>
             )
@@ -197,9 +197,9 @@ export default function MusicPlayer() {
                         ></span>
                     </div>
                     <div className="music_player_right_song_time music_player_song_time dff">
-                        <span className="song_time_component">{ total_min.toString() }</span>
+                        <span className="song_time_component">{ Number.isNaN(total_min) ? '0' : total_min.toString() }</span>
                         <span className="song_time_separation">:</span>
-                        <span className="song_time_component">{ total_sec.toString().padStart(2, '0') }</span>
+                        <span className="song_time_component">{ Number.isNaN(total_sec) ? '00' : total_sec.toString().padStart(2, '0') }</span>
                     </div>
                 </div>
             </div>
