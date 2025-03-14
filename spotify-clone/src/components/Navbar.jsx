@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './Navbar.css'
+import { useNavigate, useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
+    const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const handleChange = (event) => {
+        setSearchTerm(event.target.value);
+    }
+
+    useEffect(() => {
+        if (location.pathname === "/search") {
+            if (searchTerm == "") navigate('/search');
+            else navigate(`/find/${searchTerm}`);
+            console.log(searchTerm);
+        }
+    }, [searchTerm, location.pathname])
+
     return (
         <div className="navbar_container dff">
             <h1 className="navbar_logo_container dff">
@@ -22,7 +40,7 @@ export default function Navbar() {
                         <svg data-encore-id="icon" role="img" aria-hidden="true" data-testid="search-icon" className="Svg-sc-ytk21e-0 bHdpig M9l40ptEBXPm03dU3X1k" viewBox="0 0 24 24"><path d="M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.42768 3.27893 10.533 3.27893C14.6383 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6383 17.8369 10.533 17.8369C6.42768 17.8369 3.12598 14.5636 3.12598 10.5579Z" className="search_path"></path></svg>
                     </div>
                     <div className="btn_search_input_container dff">
-                        <input type="text" name="search" id="search" className="btn_search_input dff" placeholder="What do you want to play?" />
+                        <input type="text" name="search" id="search" className="btn_search_input dff" placeholder="What do you want to play?" value={searchTerm} onChange={handleChange} />
                     </div>
                     <div className="btn_browse_search_container dff">
                         {/* <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 24 24" className="btn_browse_search">

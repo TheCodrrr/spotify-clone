@@ -10,6 +10,7 @@ import EnlargedMediumPlaylistCard from "./centreContent/EnlargedMediumPlaylistCa
 import PublicPlaylist from "./PlaylistPublic";
 import EnlargedSong from "./EnlargedSong";
 import { HoverProvider } from "./centreContent/HoverContext";
+import EnlargedSearchResult from "./EnlargedSearchResult.jsx";
 
 let leftContentWidth = 20.9;
 let centreContentWidth = 56.3;
@@ -35,6 +36,7 @@ export default function MainContent() {
                 <LeftMainContent common_styles={commonStyles} specific_style={leftMainContentStyle} />
                 <Routes>
                     <Route path="/" element={<CentreMainContent common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                    <Route path="/find/:id" element={<EnlargedSearchResult common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/song/:id" element={<EnlargedSong common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/item/:id" element={<PublicPlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/playlist/:name" element={<EnlargedPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />

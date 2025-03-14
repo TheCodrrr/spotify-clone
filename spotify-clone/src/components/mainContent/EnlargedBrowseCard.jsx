@@ -9,118 +9,6 @@ export default function EnlargedBrowseCard(props) {
     const [fetchedCategory, setFetchedCategory] = useState([]);
     const [displayingCategory, setDisplayingCategory] = useState([]);
     const location = useLocation();
-
-    function getDominantBrightColor(imageUrl) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.crossOrigin = "Anonymous"; // Avoid CORS issues
-            img.src = imageUrl;
-    
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
-    
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0, img.width, img.height);
-    
-                const imageData = ctx.getImageData(0, 0, img.width, img.height).data;
-                let colorCounts = {};
-    
-                for (let i = 0; i < imageData.length; i += 4) {
-                    let r = imageData[i];
-                    let g = imageData[i + 1];
-                    let b = imageData[i + 2];
-    
-                    let hex = rgbToHex(r, g, b);
-    
-                    // Exclude black, white, and dull colors
-                    if (!isDullOrDark(r, g, b) && hex !== "#000000" && hex !== "#FFFFFF") {
-                        colorCounts[hex] = (colorCounts[hex] || 0) + 1;
-                    }
-                }
-    
-                let dominantColor = findMostVibrantColor(colorCounts);
-                let boostedColor = boostBrightnessAndSaturation(dominantColor); // Make it brighter
-    
-                resolve(boostedColor);
-            };
-    
-            img.onerror = () => reject("#FFFFFF"); // Default to white if error occurs
-        });
-    }
-    
-    // Convert RGB to HEX
-    function rgbToHex(r, g, b) {
-        return (
-            "#" +
-            [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("").toUpperCase()
-        );
-    }
-    
-    // Convert HEX to RGB
-    function hexToRgb(hex) {
-        let bigint = parseInt(hex.slice(1), 16);
-        return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
-    }
-    
-    // Find the most vibrant color
-    function findMostVibrantColor(colorCounts) {
-        let maxCount = 0;
-        let vibrantColor = "#FFFFFF"; // Default to white if no bright color found
-    
-        Object.keys(colorCounts).forEach((hex) => {
-            let [r, g, b] = hexToRgb(hex);
-            let brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255; // Perceived brightness
-            let saturation = Math.max(r, g, b) - Math.min(r, g, b); // Saturation calculation
-    
-            // Prioritize highly saturated and bright colors
-            if (saturation > 80 && brightness > 0.4 && brightness < 0.95 && hex !== "#000000" && hex !== "#FFFFFF") {
-                if (colorCounts[hex] > maxCount) {
-                    maxCount = colorCounts[hex];
-                    vibrantColor = hex;
-                }
-            }
-        });
-    
-        return vibrantColor;
-    }
-    
-    // Check if the color is dull or dark
-    function isDullOrDark(r, g, b) {
-        let brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
-        let saturation = Math.max(r, g, b) - Math.min(r, g, b);
-    
-        return brightness < 0.3 || saturation < 50 || (r === g && g === b); // Ignore dull, dark, or gray colors
-    }
-    
-    // Boost brightness and saturation
-    function boostBrightnessAndSaturation(hex) {
-        let [r, g, b] = hexToRgb(hex);
-    
-        // Boost brightness by 20%
-        r = Math.min(255, r * 1.2);
-        g = Math.min(255, g * 1.2);
-        b = Math.min(255, b * 1.2);
-    
-        // Boost saturation manually (pull colors away from grayscale)
-        let max = Math.max(r, g, b);
-        if (max > 0) {
-            let factor = 255 / max;
-            r = Math.min(255, r * factor);
-            g = Math.min(255, g * factor);
-            b = Math.min(255, b * factor);
-        }
-    
-        let boostedHex = rgbToHex(Math.round(r), Math.round(g), Math.round(b));
-    
-        // Ensure the boosted color is not white or black
-        if (boostedHex === "#000000" || boostedHex === "#FFFFFF") {
-            return "#FFD700"; // Return gold if the boosted color is invalid
-        }
-    
-        return boostedHex;
-    }
     
     // Example Usage:
     // getDominantBrightColor("https://t.scdn.co/images/8a0fabf4d537486e9b5a4623c921f77e.jpeg")
@@ -223,29 +111,23 @@ export default function EnlargedBrowseCard(props) {
         <div className="enlarged_browser_card_container" style={{ ...props.common_styles, ...props.specific_style }}>
             <h1 className="browse_head">Start browsing</h1>
             <div className="browse_elms_container dff">
-                <Link to="/" className="browse_elm"
-                style={{backgroundColor: `${
-                    getRandomBrightColor(brightColors)
-                }`}}
+                <Link to="/category/music" className="browse_elm"
+                style={{backgroundColor: `${ brightColors[9] }`}}
                 >
                     <div className="browse_elm_head">Music</div>
-                    <div className="browse_elm_img_container dff">hello</div>
+                    <div className="browse_elm_img_container browse_elm_img_container1 dff"></div>
                 </Link>
-                <Link to="/" className="browse_elm"
-                style={{backgroundColor: `${
-                    getRandomBrightColor(brightColors)
-                }`}}
+                <Link to="/category/podcast" className="browse_elm"
+                style={{backgroundColor: `${ brightColors[11] }`}}
                 >
                     <div className="browse_elm_head">Podcasts</div>
-                    <div className="browse_elm_img_container dff">hello</div>
+                    <div className="browse_elm_img_container browse_elm_img_container2 dff"></div>
                 </Link>
-                <Link to="/" className="browse_elm"
-                style={{backgroundColor: `${
-                    getRandomBrightColor(brightColors)
-                }`}}
+                <Link to="/category/live_event" className="browse_elm"
+                style={{backgroundColor: `${ brightColors[14] }`}}
                 >
                     <div className="browse_elm_head">Live Events</div>
-                    <div className="browse_elm_img_container dff">hello</div>
+                    <div className="browse_elm_img_container browse_elm_img_container3 dff"></div>
                 </Link>
             </div>
             <h1 className="browse_head">Browse all</h1>

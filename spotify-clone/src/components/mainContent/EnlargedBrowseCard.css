@@ -56,6 +56,19 @@
     border-radius: 5px;
 }
 
+.browse_elm_img_container1 {
+    background: url('/music.webp');
+    background-size: 100%;
+}
+.browse_elm_img_container2 {
+    background: url('/podcast.webp');
+    background-size: 100%;
+}
+.browse_elm_img_container3 {
+    background: url('/live_event.webp');
+    background-size: 100%;
+}
+
 .browse_elm_img {
     height: 100%;
     width: 100%;

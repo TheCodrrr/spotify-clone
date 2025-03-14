@@ -179,7 +179,7 @@ export default function CentreMainContent(props) {
                     id="centre_main_content_container" 
                     ref={contentRef} // Attach the ref to the div
                 >
-                    <CentreContentNavbar scrollValue={isScrolled1} />
+                    <CentreContentNavbar scrollValue={isScrolled1} navElms={["All", "Music", "Podcasts"]} isHome = {true} />
                     <CentreContentItemsContainer />
                     <Footer/>
                 </div>
