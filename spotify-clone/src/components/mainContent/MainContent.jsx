@@ -36,7 +36,7 @@ export default function MainContent() {
                 <LeftMainContent common_styles={commonStyles} specific_style={leftMainContentStyle} />
                 <Routes>
                     <Route path="/" element={<CentreMainContent common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/find/:id" element={<EnlargedSearchResult common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                    <Route path="/find/:searchType?/:id" element={<EnlargedSearchResult common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/song/:id" element={<EnlargedSong common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/item/:id" element={<PublicPlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/playlist/:name" element={<EnlargedPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />

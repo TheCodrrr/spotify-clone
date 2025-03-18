@@ -24,10 +24,11 @@ const getAccessToken = async () => {
 };
 
 // Extract Songs
-function extractSongs(tracks = []) {
-    return tracks.slice(0, 4).map(track => ({
+function extractSongs(tracks = [], listLength) {
+    return tracks.slice(0, listLength).map(track => ({
         id: track.id,
         name: track.name,
+        album: track.album?.name || "Unknown Album", // Added album name
         image: track.album?.images[0]?.url || "",
         artists: track.artists.map(artist => artist.name),
         duration: track.duration_ms
@@ -35,8 +36,8 @@ function extractSongs(tracks = []) {
 }
 
 // Extract Artists
-function extractArtists(artists = []) {
-    return artists.slice(0, 4).map(artist => ({
+function extractArtists(artists = [], listLength) {
+    return artists.slice(0, listLength).map(artist => ({
         id: artist.id,
         name: artist.name,
         image: artist.images?.[0]?.url || "",
@@ -45,8 +46,8 @@ function extractArtists(artists = []) {
 }
 
 // Extract Albums
-function extractAlbums(albums = []) {
-    return albums.slice(0, 4).map(album => ({
+function extractAlbums(albums = [], listLength) {
+    return albums.slice(0, listLength).map(album => ({
         id: album.id,
         name: album.name,
         image: album.images?.[0]?.url || "",
@@ -56,10 +57,10 @@ function extractAlbums(albums = []) {
 }
 
 // Extract Playlists
-function extractPlaylists(playlists = []) {
+function extractPlaylists(playlists = [], listLength) {
     return playlists
         .filter(playlist => playlist !== null) // Remove null values
-        .slice(0, 4)
+        .slice(0, listLength)
         .map(playlist => ({
             id: playlist.id,
             name: playlist.name,
@@ -69,8 +70,8 @@ function extractPlaylists(playlists = []) {
 }
 
 // Extract Podcasts (Shows)
-function extractPodcasts(podcasts = []) {
-    return podcasts.slice(0, 4).map(podcast => ({
+function extractPodcasts(podcasts = [], listLength) {
+    return podcasts.slice(0, listLength).map(podcast => ({
         id: podcast.id,
         name: podcast.name,
         image: podcast.images?.[0]?.url || "",
@@ -79,8 +80,8 @@ function extractPodcasts(podcasts = []) {
 }
 
 // Extract Episodes
-function extractEpisodes(episodes = []) {
-    return episodes.slice(0, 4).map(episode => ({
+function extractEpisodes(episodes = [], listLength) {
+    return episodes.slice(0, listLength).map(episode => ({
         id: episode.id,
         name: episode.name,
         image: episode.images?.[0]?.url || "",
@@ -89,7 +90,7 @@ function extractEpisodes(episodes = []) {
     }));
 }
 
-async function searchSpotify(query) {
+async function searchSpotify(query, searchType) {
     const accessToken = await getAccessToken();
     
     if (!accessToken) {
@@ -99,7 +100,9 @@ async function searchSpotify(query) {
 
     console.log("Access Token:", accessToken);
 
-    const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track,artist,album,playlist,show,episode&limit=50`;
+    let url = "";
+    if (!searchType) url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track,artist,album,playlist,show,episode&limit=50`;
+    else url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=${searchType}&limit=50`
 
     try {
         const response = await fetch(url, {
@@ -110,22 +113,32 @@ async function searchSpotify(query) {
 
         if (!data) return null;
 
-        const categories = {
-            songs: extractSongs(data.tracks?.items || []),
-            artists: extractArtists(data.artists?.items || []),
-            albums: extractAlbums(data.albums?.items || []),
-            playlists: extractPlaylists(data.playlists?.items || []),
-            podcasts: extractPodcasts(data.shows?.items || []),
-            episodes: extractEpisodes(data.episodes?.items || []),
-        };
+        let fetchedData;
+        if (!searchType) {
+            fetchedData = {
+                songs: extractSongs(data.tracks?.items || [], 4),
+                artists: extractArtists(data.artists?.items || [], 4),
+                albums: extractAlbums(data.albums?.items || [], 4),
+                playlists: extractPlaylists(data.playlists?.items || [], 4),
+                podcasts: extractPodcasts(data.shows?.items || [], 4),
+                episodes: extractEpisodes(data.episodes?.items || [], 4),
+            };
+        }
+        else {
+            fetchedData = searchType === "track" ? extractSongs(data.tracks?.items || [], 50) : searchType === "playlist" ? extractPlaylists(data.playlists?.items || [], 50) : searchType === "album" ? extractAlbums(data.albums?.items || [], 50) : searchType === "artist" ? extractArtists(data.artists?.items || [], 50) : extractPodcasts(data.shows?.items || [], 50).concat(extractEpisodes(data.episodes?.items || [], 50))
+        }
 
-        console.log("Formatted Categories:", categories);  // 🔍 Debugging the extracted results
 
-        return categories;
+        console.log("Formatted Categories:", fetchedData);  // 🔍 Debugging the extracted results
+        console.log("Formatted Categories Length:", fetchedData.length);  // 🔍 Debugging the extracted results
+
+        return fetchedData;
     } catch (error) {
         console.error("Error searching Spotify:", error);
         return null;
     }
 }
+
+searchSpotify('tune', "show,episode")
 
 export { searchSpotify }

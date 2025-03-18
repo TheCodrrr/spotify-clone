@@ -22,8 +22,8 @@ export default function CreditsCard({ fetched_song_card_details }) {
     
 
 
-    const singerCards = shortContributors.map((item) => (
-        <SingerCard singer_details={item} fetched_singer_details = { item } />
+    const singerCards = shortContributors.map((item, index) => (
+        <SingerCard singer_details={item} key = {index} fetched_singer_details = { item } />
     ));
     return (
         <>

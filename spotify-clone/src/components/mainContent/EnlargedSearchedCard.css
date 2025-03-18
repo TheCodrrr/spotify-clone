@@ -1,0 +1,85 @@
+.songs_table {
+    width: 95%;
+    min-height: 60px;
+    /* background-color: red; */
+    margin: auto;
+    flex-direction: column;
+}
+
+.songs_table_row_container {
+    width: 100%;
+}
+
+th, th i {
+    color: #adadad;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.song_col1 {
+    width: 5%;
+    /* background-color: blue; */
+}
+
+.song_col2 {
+    width: 55%;
+}
+
+.song_col3 {
+    width: 35%;
+}
+
+.song_col4 {
+    width: 5%;
+}
+
+.songs_table_head_divider {
+    height: 0.5px;
+    width: 100%;
+    margin: 10px 0;
+    background-color: rgb(43, 43, 43);
+}
+
+.songs_table_row {
+    border-radius: 5px;
+}
+
+.songs_table_row:hover {
+    background-color: rgb(38, 38, 38);
+}
+
+.song_col_value2 {
+    padding: 8px 0;
+}
+
+.song_img {
+    height: 40px;
+    aspect-ratio: 1/1;
+}
+
+.song_details_container {
+    flex-direction: column;
+}
+
+.song_title {
+    font-weight: 500;
+    font-size: 0.9rem;
+    width: fit-content;
+}
+
+.song_title:hover {
+    text-decoration: underline;
+}
+
+.song_artist {
+    color: #959595;
+    font-size: 0.85rem;
+}
+
+.songs_table_row:hover .song_artist {
+    color: white;
+}
+
+.songs_table_row:hover .song_col_value3 {
+    color: white;
+}
