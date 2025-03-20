@@ -139,6 +139,6 @@ async function searchSpotify(query, searchType) {
     }
 }
 
-searchSpotify('tune', "show,episode")
+searchSpotify('tune', "album")
 
 export { searchSpotify }

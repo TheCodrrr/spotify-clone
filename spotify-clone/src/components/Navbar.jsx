@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useParams } from "react-router-dom";
 import './Navbar.css'
 import { useNavigate, useLocation } from "react-router-dom";
 // import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
+    // const { searchType, setSearchType } = useContext(SearchContext);
+    const { searchType } = useParams();
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
@@ -20,15 +22,26 @@ export default function Navbar() {
     }
 
     useEffect(() => {
-        setTimeout(() => {
-            if (location.pathname === "/search" || location.pathname.startsWith("/find/")) {
-                if (searchTerm === "") navigate('/search');
-                else navigate(`/find/${searchTerm}`);
-                console.log(searchTerm);
+        const timeout = setTimeout(() => {
+            console.log("33333333333333333333333333333333333333 " + searchType)
+            if (location.pathname.startsWith("/find/track") || location.pathname.startsWith("/find/playlist") || location.pathname.startsWith("/find/album") || location.pathname.startsWith("/find/artist") || location.pathname.startsWith("/find/show,episode"));
+            else if (location.pathname === "/search" || location.pathname.startsWith("/find/")) {
+                if (searchTerm === "") {
+                    navigate('/search');
+                } else if (searchType === undefined) {
+                    navigate(`/find/${searchTerm}`);
+                } else {
+                    const expectedPath = `/find/${searchType}/${searchTerm}`;
+                    if (location.pathname !== expectedPath) {
+                        navigate(expectedPath);
+                    }
+                }
             }
-            
-        }, 1000);
-    }, [searchTerm, location.pathname])
+        }, 0);
+    
+        return () => clearTimeout(timeout);  // Cleanup on unmount
+    }, [searchTerm, searchType, location.pathname, navigate]);  
+    
 
     return (
         <div className="navbar_container dff">
