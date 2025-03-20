@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function EnlargedSearchedCard(props) {
     const [loading, setLoading] = useState(true);
+    const [hoveredIndex, setHoveredIndex] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
@@ -31,6 +32,47 @@ export default function EnlargedSearchedCard(props) {
         return <div className="loading-container">Loading...</div>;
     }
 
+    function formatEpisodeDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    }
+    
+    // Example usage:
+    // console.log(formatDate("2022-11-17")); // Output: Nov 17, 2022
+    
+    function formatTime2(ms) {
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+    
+        const remainingMinutes = minutes % 60;
+        const remainingSeconds = seconds % 60;
+    
+        let formattedTime = "";
+    
+        if (hours > 0) {
+            formattedTime += `${hours} hr `;
+        }
+        
+        // Show "X min Y sec" only if there are both minutes and seconds but no hours
+        if (hours === 0 && remainingMinutes > 0 && remainingSeconds > 0) {
+            formattedTime += `${remainingMinutes} min ${remainingSeconds} sec`;
+        } else {
+            if (remainingMinutes > 0) {
+                formattedTime += `${remainingMinutes} min `;
+            }
+            if (hours === 0 && remainingMinutes === 0) { 
+                formattedTime += `${remainingSeconds} sec`;
+            }
+        }
+    
+        return formattedTime.trim();
+    }
+    
+    // Example usage:
+    // console.log(formatDuration(263523)); // Output: 4 min 23 sec
+    
+
     return props.searchedType === "track" ? (
         <table className="songs_table dff">
             <tr className="songs_table_row_container songs_table_head_row_container df-ai">
@@ -45,8 +87,13 @@ export default function EnlargedSearchedCard(props) {
             </tr>
             <span className="songs_table_head_divider"></span>
             {searchedCardDetails.map((songs, index) => (
-                <tr key={songs?.id || index} className="songs_table_row_container songs_table_row df-ai">
-                    <td className="song_col1 song_col_value1 dff">{index + 1}</td>
+                <tr key={songs?.id || index} className="songs_table_row_container songs_table_row df-ai"
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                >
+                    <td className="song_col1 song_col_value1 dff">
+                        {hoveredIndex === index ? (<i className="fa fa-play track_play_song"></i>) : index + 1}
+                    </td>
                     <td className="song_col2 song_col_value2 df-ai">
                         <img src={songs?.image || ""} alt="" className="song_img" />
                         <div className="song_details_container df-jc">
@@ -99,7 +146,90 @@ export default function EnlargedSearchedCard(props) {
                 </div>
             ))}
         </div>
+    ) : props.searchedType === "artist" ? (
+        <div className="searched_details_container dff">
+            {searchedCardDetails.map((searchedContent, index) => (
+                <div key={searchedContent?.id || index} className="searched_element_container df-jc">
+                    <div
+                        className="searched_artist_img df"
+                        style={{
+                            backgroundImage: `url(${searchedContent?.image || ""})`,
+                            backgroundSize: "cover",
+                        }}
+                    >
+                        <div className="play_action_logo_container dff">
+                            <i className="fa fa-play play_logo"></i>
+                        </div>
+                    </div>
+                    <Link to={`/`} className="searched_element_name">
+                        {formatString(searchedContent?.name || "Unknown", 20)}
+                    </Link>
+                    <div className="searched_element_creator searched_artist_creator">
+                        Artist
+                    </div>
+                </div>
+            ))}
+        </div>
     ) : (
-        <>{props.searchedType}</>
+        <>
+            {/* {id: '6LLKlSqJGHNopRUIRimAfk', name: 'Taqdeer', image: 'https://i.scdn.co/image/ab6765630000ba8ac455906176cc38130445c52a', creator: 'Riya'} */}
+            <div className="searched_podcast_container dff">
+                <div className="podcast_head_container df-ai">
+                    <Link to={`/`} className="podcast_head">
+                        Podcasts & Shows
+                    </Link>
+                    <Link to={`/`} className="podcast_show_more_link">Show all</Link>
+                </div>
+                <div className="podcast_content_cards_container dff">
+                    {searchedCardDetails.slice(0, 4).map((searchedContent) => (
+                        <div className="podcast_content_card df">
+                            <img src={searchedContent?.image || "unknown"} alt="Podcast" className="podcast_content_img" />
+                            <Link to={`/`} className="podcast_name_container">
+                                {formatString(searchedContent?.name || "Podcast Name", 19)}
+                            </Link>
+                            <h5 className="podcast_creator_name">
+                                {formatString(searchedContent?.creator || "Podcast Creator", 20)}
+                            </h5>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className="searched_episode_container searched_podcast_container dff">
+                <div className="podcast_head_container df-ai">
+                    <Link to={`/`} className="podcast_head">
+                        Episodes
+                    </Link>
+                    <Link to={`/`} className="podcast_show_more_link">Show all</Link>
+                </div>
+                <div className="episode_content_cards_container df-jc">
+                    {searchedCardDetails.slice(50, 100).map((searchedContent) => (
+                        <>
+                            <div className="podcast_content_card episode_particular_content_card dff">
+                                <div className="episode_content_img_container">
+                                    <img src={searchedContent?.image || "unknown"} alt="Episode" className="episode_content_img" />
+                                </div>
+                                <div className="episode_content_container df">
+                                    <h2 className="episode_name_container">
+                                        {searchedContent?.name || "Episode Name"}
+                                    </h2>
+                                    <p className="episode_description_container">
+                                        {formatString(searchedContent?.description || "Description", 120)}
+                                    </p>
+                                    <p className="episode_other_details_container">
+                                        {formatEpisodeDate(searchedContent?.releaseDate || "2001-01-01")} • {formatTime2(searchedContent?.duration || 0)}
+                                    </p>
+                                </div>
+                                <h5 className="episode_play_btn df">
+                                    <div className="episode_play_container dff">
+                                        <i className="fa fa-play episode_play_btn_icon"></i>
+                                    </div>
+                                </h5>
+                            </div>
+                            <span className="episode_divider"></span>
+                        </>
+                    ))}
+                </div>
+            </div>
+        </>
     );
 }

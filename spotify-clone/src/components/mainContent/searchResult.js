@@ -81,13 +81,22 @@ function extractPodcasts(podcasts = [], listLength) {
 
 // Extract Episodes
 function extractEpisodes(episodes = [], listLength) {
-    return episodes.slice(0, listLength).map(episode => ({
-        id: episode.id,
-        name: episode.name,
-        image: episode.images?.[0]?.url || "",
-        releaseDate: episode.release_date,
-        duration: episode.duration_ms
-    }));
+    return episodes.slice(0, listLength).map(episode => {
+        let episodeData = {
+            id: episode.id,
+            name: episode.name,
+            image: episode.images?.[0]?.url || "",
+            releaseDate: episode.release_date,
+            duration: episode.duration_ms,
+        };
+
+        // Add description only if listLength is 50
+        if (listLength > 4) {
+            episodeData.description = episode.description || "";
+        }
+
+        return episodeData;
+    });
 }
 
 async function searchSpotify(query, searchType) {
@@ -139,6 +148,6 @@ async function searchSpotify(query, searchType) {
     }
 }
 
-searchSpotify('tune', "album")
+searchSpotify('tune', "show,episode")
 
 export { searchSpotify }
