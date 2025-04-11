@@ -31,7 +31,8 @@ function extractSongs(tracks = [], listLength) {
         album: track.album?.name || "Unknown Album", // Added album name
         image: track.album?.images[0]?.url || "",
         artists: track.artists.map(artist => artist.name),
-        duration: track.duration_ms
+        duration: track.duration_ms,
+        extractType: 'track'
     }));
 }
 
@@ -41,7 +42,8 @@ function extractArtists(artists = [], listLength) {
         id: artist.id,
         name: artist.name,
         image: artist.images?.[0]?.url || "",
-        type: artist.type
+        type: artist.type,
+        extractType: 'artist'  
     }));
 }
 
@@ -52,7 +54,8 @@ function extractAlbums(albums = [], listLength) {
         name: album.name,
         image: album.images?.[0]?.url || "",
         releaseYear: album.release_date.split("-")[0],
-        artists: album.artists.map(artist => artist.name)
+        artists: album.artists.map(artist => artist.name),
+        extractType: 'album'  
     }));
 }
 
@@ -134,7 +137,8 @@ async function searchSpotify(query, searchType) {
             };
         }
         else {
-            fetchedData = searchType === "track" ? extractSongs(data.tracks?.items || [], 50) : searchType === "playlist" ? extractPlaylists(data.playlists?.items || [], 50) : searchType === "album" ? extractAlbums(data.albums?.items || [], 50) : searchType === "artist" ? extractArtists(data.artists?.items || [], 50) : extractPodcasts(data.shows?.items || [], 50).concat(extractEpisodes(data.episodes?.items || [], 50))
+            let fetchNumber = [6, 7, 8][Math.floor(Math.random() * 3)];
+            fetchedData = searchType === "track" ? extractSongs(data.tracks?.items || [], 50) : searchType === "playlist" ? extractPlaylists(data.playlists?.items || [], 50) : searchType === "album" ? extractAlbums(data.albums?.items || [], 50) : searchType === "artist" ? extractArtists(data.artists?.items || [], 50) : searchType === "show,episode" ? extractPodcasts(data.shows?.items || [], 50).concat(extractEpisodes(data.episodes?.items || [], 50)) : searchType === "track,album" ? extractSongs(data.tracks?.items || [], fetchNumber).concat(extractAlbums(data.albums?.items || [], 10 - fetchNumber)) : null;
         }
 
 
