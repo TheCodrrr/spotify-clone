@@ -56,12 +56,12 @@ export default function LeftContentItemsContainer() {
 
     console.log("userPlaylistDetails\n\n\n\n\n\n\n");
 
-    userPlaylistDetails.map((item) => {
+    userPlaylistDetails?.map((item) => {
         console.log(item);
     })
 
     // Use map() to dynamically create LeftContentCard components
-    const leftContentCards = userPlaylistDetails.map((item, index) => (
+    const leftContentCards = userPlaylistDetails?.map((item, index) => (
         <LeftContentPlaylistCard key={index} data={item} />
     ));
 

@@ -9,21 +9,21 @@ export default function CreditsCard({ fetched_song_card_details }) {
 
     // console.log("This is from CreditsCard.jsx: " + JSON.stringify(fetched_song_card_details));
     useEffect(() => {
-        setContributors(fetched_song_card_details.contributors);
+        setContributors(fetched_song_card_details?.contributors);
     
-        if (fetched_song_card_details.contributors.length > 3) {
+        if (fetched_song_card_details?.contributors?.length > 3) {
             setShortContributors(fetched_song_card_details.contributors.slice(0, 3));
             setIsMore(true);
         } else {
-            setShortContributors(fetched_song_card_details.contributors);
+            setShortContributors(fetched_song_card_details?.contributors);
             setIsMore(false);
         }
     }, [fetched_song_card_details]); // Dependency added
     
 
 
-    const singerCards = shortContributors.map((item, index) => (
-        <SingerCard singer_details={item} key = {index} fetched_singer_details = { item } />
+    const singerCards = shortContributors?.map((item, index) => (
+        <SingerCard singer_details={item} key={index} fetched_singer_details={item} />
     ));
     return (
         <>

@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -7,35 +6,33 @@ import passport from "passport";
 import session from "express-session";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import axios from "axios";
+import ytdl from "ytdl-core";
 
-// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
 
-// Middleware to parse JSON requests and handle CORS
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173", // Frontend URL
+    origin: "http://localhost:5173",
     credentials: true
 }));
 
-// Session setup
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+
 app.use(session({
     secret: process.env.SESSION_SECRET || "spotify-clone-secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === "production",
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
-// Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// User model schema
 const userSchema = new mongoose.Schema({
     googleId: String,
     email: String,
@@ -50,7 +47,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-// Passport serialization
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -64,16 +60,14 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-// Configure Google OAuth Strategy
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/api/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        // Find or create user
         let user = await User.findOne({ googleId: profile.id });
-        
+
         if (!user) {
             user = new User({
                 googleId: profile.id,
@@ -83,14 +77,13 @@ passport.use(new GoogleStrategy({
             });
             await user.save();
         }
-        
+
         return done(null, user);
     } catch (error) {
         return done(error, null);
     }
 }));
 
-// Authentication routes
 app.get("/api/auth/google", passport.authenticate("google", {
     scope: ["profile", "email"]
 }));
@@ -98,32 +91,29 @@ app.get("/api/auth/google", passport.authenticate("google", {
 app.get("/api/auth/google/callback", 
     passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
-        // Redirect to Spotify auth
         res.redirect("/api/auth/spotify");
     }
 );
 
-// Spotify authorization routes
 app.get("/api/auth/spotify", (req, res) => {
     if (!req.user) {
         return res.redirect("/login");
     }
-    
+
     const scope = "user-read-private user-read-email user-read-playback-state user-modify-playback-state user-read-currently-playing user-library-read user-library-modify playlist-read-private playlist-modify-private";
     const redirectUri = encodeURIComponent(`${process.env.SERVER_URL}/api/auth/spotify/callback`);
-    
+
     res.redirect(`https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}`);
 });
 
 app.get("/api/auth/spotify/callback", async (req, res) => {
     const code = req.query.code;
-    
+
     if (!req.user) {
         return res.redirect("/login");
     }
-    
+
     try {
-        // Exchange code for tokens
         const tokenResponse = await axios({
             method: "post",
             url: "https://accounts.spotify.com/api/token",
@@ -136,23 +126,20 @@ app.get("/api/auth/spotify/callback", async (req, res) => {
                 "Authorization": `Basic ${Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString("base64")}`
             }
         });
-        
+
         const { access_token, refresh_token, expires_in } = tokenResponse.data;
-        
-        // Calculate expiration time
+
         const expiresAt = new Date();
         expiresAt.setSeconds(expiresAt.getSeconds() + expires_in);
-        
-        // Store tokens in user document
+
         req.user.spotifyTokens = {
             accessToken: access_token,
             refreshToken: refresh_token,
             expiresAt
         };
-        
+
         await req.user.save();
-        
-        // Redirect to frontend
+
         res.redirect(`${process.env.CLIENT_URL}`);
     } catch (error) {
         console.error("Error exchanging Spotify code for tokens:", error);
@@ -160,7 +147,46 @@ app.get("/api/auth/spotify/callback", async (req, res) => {
     }
 });
 
-// Check if user is authenticated
+// Improved YouTube search with multiple details
+app.get("/api/youtube/search", async (req, res) => {
+    const { songName, artist, album, releaseYear } = req.query;
+
+    if (!songName) {
+        return res.status(400).json({ error: "Song name is required" });
+    }
+
+    // Build search query with available details
+    let searchQuery = `${songName}`;
+    if (artist) searchQuery += ` by ${artist}`;
+    if (album) searchQuery += ` from album ${album}`;
+    if (releaseYear) searchQuery += ` ${releaseYear}`;
+    searchQuery += " official music video";
+
+    try {
+        const response = await axios.get(`https://www.googleapis.com/youtube/v3/search`, {
+            params: {
+                q: searchQuery,
+                part: "snippet",
+                maxResults: 5,
+                key: YOUTUBE_API_KEY,
+                type: "video",
+                videoCategoryId: 10, // Category 10 is for music videos
+                videoDuration: "short" // Avoid lengthy podcasts or unrelated content
+            }
+        });
+
+        if (response.data.items.length > 0) {
+            const videoId = response.data.items[0].id.videoId;
+            res.json({ videoId, url: `https://www.youtube.com/watch?v=${videoId}` });
+        } else {
+            res.status(404).json({ error: "No matching videos found" });
+        }
+    } catch (error) {
+        console.error("Error fetching YouTube video:", error);
+        res.status(500).json({ error: "Failed to fetch video" });
+    }
+});
+
 app.get("/api/auth/status", (req, res) => {
     if (req.user) {
         res.json({
@@ -176,83 +202,6 @@ app.get("/api/auth/status", (req, res) => {
     }
 });
 
-// Endpoint to get Spotify credentials
-app.get("/api/spotify/credentials", async (req, res) => {
-    if (!req.user || !req.user.spotifyTokens) {
-        return res.status(401).json({ error: "User not authenticated with Spotify" });
-    }
-    
-    // Check if token is expired and refresh if needed
-    const now = new Date();
-    if (now >= req.user.spotifyTokens.expiresAt) {
-        try {
-            const refreshResponse = await axios({
-                method: "post",
-                url: "https://accounts.spotify.com/api/token",
-                params: {
-                    grant_type: "refresh_token",
-                    refresh_token: req.user.spotifyTokens.refreshToken
-                },
-                headers: {
-                    "Authorization": `Basic ${Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString("base64")}`
-                }
-            });
-            
-            const { access_token, expires_in } = refreshResponse.data;
-            
-            // Update token in database
-            const expiresAt = new Date();
-            expiresAt.setSeconds(expiresAt.getSeconds() + expires_in);
-            
-            req.user.spotifyTokens.accessToken = access_token;
-            req.user.spotifyTokens.expiresAt = expiresAt;
-            
-            await req.user.save();
-        } catch (error) {
-            console.error("Error refreshing token:", error);
-            return res.status(500).json({ error: "Failed to refresh token" });
-        }
-    }
-    
-    // Return the credentials
-    res.json({
-        clientId: process.env.SPOTIFY_CLIENT_ID,
-        accessToken: req.user.spotifyTokens.accessToken
-    });
-});
-
-// Proxy for Spotify API requests
-app.get("/api/spotify/proxy/*", async (req, res) => {
-    if (!req.user || !req.user.spotifyTokens) {
-        return res.status(401).json({ error: "User not authenticated with Spotify" });
-    }
-    
-    const endpoint = req.params[0];
-    
-    try {
-        const response = await axios({
-            method: "get",
-            url: `https://api.spotify.com/v1/${endpoint}`,
-            headers: {
-                "Authorization": `Bearer ${req.user.spotifyTokens.accessToken}`
-            }
-        });
-        
-        res.json(response.data);
-    } catch (error) {
-        console.error("Error proxying Spotify API request:", error.response?.data || error.message);
-        res.status(error.response?.status || 500).json(error.response?.data || { error: "API request failed" });
-    }
-});
-
-// Logout route
-app.get("/api/auth/logout", (req, res) => {
-    req.logout(() => {
-        res.redirect(`${process.env.CLIENT_URL}`);
-    });
-});
-
-// Async function to connect to MongoDB
 async function connectDB() {
     try {
         const conn = await mongoose.connect(process.env.MONGO_URI, {
@@ -270,15 +219,12 @@ async function connectDB() {
     }
 }
 
-// Connect to the database
 connectDB();
 
-// A simple route to test the API
 app.get("/", (req, res) => {
     res.send("Spotify Management API is running!");
 });
 
-// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

@@ -1,0 +1,64 @@
+/* Add keyframe animation for shimmer effect */
+@keyframes shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+/* Common shimmer properties for all skeleton loaders */
+.medium_category_card_head_load,
+.medium_card_item_load {
+    background: linear-gradient(90deg, 
+        #363636 0%, 
+        #505050 50%, 
+        #363636 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+    position: relative;
+}
+
+.medium_category_card_container_load {
+    flex-direction: column;
+    /* height: 17.8rem; */
+    height: fit-content;
+    min-width: 97%;
+    margin: 0 auto;
+    /* margin: 0 20px; */
+    margin-top: 1rem;
+    padding: 10px 0;
+    /* padding-bottom: 10px; */
+    /* background-color: red; */
+}
+
+.medium_category_card_head_container_load {
+    width: 100%;
+    /* background-color: red; */
+    padding: 0 0.8rem;
+    height: fit-content;
+    /* background-color: green; */
+    justify-content: space-between;
+    /* align-items: flex-end; */
+    padding-bottom: 0.3rem;
+    padding-left: 20px;
+}
+
+.medium_category_card_head_load {
+    background-color: #363636;
+    height: 30px;
+    width: 200px;
+    left: -10px;
+    position: relative;
+    border-radius: 5px;
+}
+
+.medium_card_item_load {
+    height: 150px;
+    width: 150px;
+    background-color: #363636;
+    border-radius: 5px;
+    margin: 20px 7px;
+    margin-top: 5px;
+}

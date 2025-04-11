@@ -33,3 +33,53 @@
 .active_search_page:hover {
     background-color: #ececec;
 }
+
+.enlarged_playlist_container {
+    width: 100%;
+    height: calc(100% - 6.7rem);
+    overflow-y: scroll;
+    border-radius: 10px;
+    /* transition: 0.5s; */
+    /* scrollbar-width: none; */
+    flex-direction: column;
+    background-color: #131313;
+}
+
+.enlarged_playlist_loading_container {
+    background-color: #121212;
+    flex-direction: row;
+}
+
+.load_btn_circle {
+    height: 7px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: grey;
+    /* transition: 0.2s; */
+}
+
+.load_btn_circle1 {
+    animation: load_animate 1.2s ease-in-out infinite;
+}
+.load_btn_circle2 {
+    animation: load_animate 1.2s 0.2s ease-in-out infinite;
+}
+.load_btn_circle3 {
+    animation: load_animate 1.2s 0.4s ease-in-out infinite;
+}
+
+@keyframes load_animate {
+    0% {
+        height: 7px;
+        background-color: grey;
+    }
+    25% {
+        height: 10px;
+        background-color: white;
+    }
+    50% {
+        height: 7px;
+        background-color: grey;
+    }
+}

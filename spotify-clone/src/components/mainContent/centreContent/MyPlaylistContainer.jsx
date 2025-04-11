@@ -17,10 +17,10 @@ export default function MyPlaylistContainer() {
     }
 
     // Slice the first 8 playlists for the home page display
-    const homePagePlaylist = userPlaylistDetails.slice(0, 8);
+    const homePagePlaylist = userPlaylistDetails?.slice(0, 8);
 
     // Render the playlist cards once the data is available
-    const MyPlaylistCards = homePagePlaylist.map((item) => (
+    const MyPlaylistCards = homePagePlaylist?.map((item) => (
         <MyPlaylistCard key={item.id} details={item} />
     ));
 

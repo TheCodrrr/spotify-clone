@@ -68,7 +68,7 @@
 }
 
 .medium_category_card_head_container {
-    width: 100%;
+    width: 840px;
     /* background-color: red; */
     padding: 0 0.8rem;
     height: 3.3rem;
@@ -99,8 +99,8 @@
     /* background-color: red; */
 
 
-    position: relative;
-    right: 740px;
+    /* position: relative;
+    right: 740px; */
 }
 
 .show_more_btn:hover {

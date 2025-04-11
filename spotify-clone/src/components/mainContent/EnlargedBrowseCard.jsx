@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import './EnlargedBrowseCard.css'
 import fetchCategoriesWithImages from "./EnlargedBrowseDetails";
+import EnlargedBrowseCardLoader from "./EnlargedBrowseCardLoader";
 
 export default function EnlargedBrowseCard(props) {
     const [loading, setLoading] = useState(true);
@@ -108,32 +109,37 @@ export default function EnlargedBrowseCard(props) {
     }, [fetchedCategory]); // ✅ Dependency on fetchedCategory
 
     return (
-        <div className="enlarged_browser_card_container" style={{ ...props.common_styles, ...props.specific_style }}>
-            <h1 className="browse_head">Start browsing</h1>
-            <div className="browse_elms_container dff">
-                <Link to="/category/music" className="browse_elm"
-                style={{backgroundColor: `${ brightColors[9] }`}}
-                >
-                    <div className="browse_elm_head">Music</div>
-                    <div className="browse_elm_img_container browse_elm_img_container1 dff"></div>
-                </Link>
-                <Link to="/category/podcast" className="browse_elm"
-                style={{backgroundColor: `${ brightColors[11] }`}}
-                >
-                    <div className="browse_elm_head">Podcasts</div>
-                    <div className="browse_elm_img_container browse_elm_img_container2 dff"></div>
-                </Link>
-                <Link to="/category/live_event" className="browse_elm"
-                style={{backgroundColor: `${ brightColors[14] }`}}
-                >
-                    <div className="browse_elm_head">Live Events</div>
-                    <div className="browse_elm_img_container browse_elm_img_container3 dff"></div>
-                </Link>
-            </div>
-            <h1 className="browse_head">Browse all</h1>
-            <div className="browse_elms_container dff">
-                {loading ? <p>Loading...</p> : displayingCategory}
-            </div>
-        </div>
+        <>
+            {/* {loading ? <EnlargedBrowseCardLoader common_styles = {props.common_styles} specific_style = {props.specific_style} /> : ( */}
+            {loading ? <EnlargedBrowseCardLoader common_styles = {props.common_styles} specific_style = {props.specific_style} /> : (
+                <div className="enlarged_browser_card_container" style={{ ...props.common_styles, ...props.specific_style  }}>
+                    <h1 className="browse_head">Start browsing</h1>
+                    <div className="browse_elms_container dff">
+                        <Link to="/category/music" className="browse_elm"
+                        style={{backgroundColor: `${ brightColors[9] }`}}
+                        >
+                            <div className="browse_elm_head">Music</div>
+                            <div className="browse_elm_img_container browse_elm_img_container1 dff"></div>
+                        </Link>
+                        <Link to="/category/podcast" className="browse_elm"
+                        style={{backgroundColor: `${ brightColors[11] }`}}
+                        >
+                            <div className="browse_elm_head">Podcasts</div>
+                            <div className="browse_elm_img_container browse_elm_img_container2 dff"></div>
+                        </Link>
+                        <Link to="/category/live_event" className="browse_elm"
+                        style={{backgroundColor: `${ brightColors[14] }`}}
+                        >
+                            <div className="browse_elm_head">Live Events</div>
+                            <div className="browse_elm_img_container browse_elm_img_container3 dff"></div>
+                        </Link>
+                    </div>
+                    <h1 className="browse_head">Browse all</h1>
+                    <div className="browse_elms_container dff">
+                        {displayingCategory}
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

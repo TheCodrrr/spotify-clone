@@ -3,8 +3,10 @@ import './RightMainContent.css';
 import SongCardNavbar from "./SongCardNavbar";
 import SongCardDetails from "./SongCardDetails";
 import { fetchRandomSong } from "./fetchUserPlayedSong";
+import RightMainContentLoader from "./RightMainContentLoader";
 
 export default function RightMainContent(props) {
+    const [display, setDisplay] = useState(true);
     const [loading, setLoading] = useState(true);
     const [randomSongDetails, setRandomSongDetails] = useState({})
 
@@ -27,7 +29,7 @@ export default function RightMainContent(props) {
             <>
             <div className="right_main_content_container df-ai" style = {{ ...props.common_styles, ...props.specific_style }}>
                 <div className="right_main_content_song_container dff">
-                    The page is loading...
+                    <RightMainContentLoader />
                 </div>
             </div>
         </>
@@ -36,12 +38,14 @@ export default function RightMainContent(props) {
 
     return (
         <>
+        {display ? (
             <div className="right_main_content_container df-ai" style = {{ ...props.common_styles, ...props.specific_style }}>
                 <div className="right_main_content_song_container dff">
-                    <SongCardNavbar fetched_song_card_details = { randomSongDetails }/>
+                    <SongCardNavbar fetched_song_card_details = { randomSongDetails } handleCancel = {setDisplay}/>
                     <SongCardDetails fetched_song_card_details = { randomSongDetails }/>
                 </div>
             </div>
+        ) : ""}
         </>
     )
 }

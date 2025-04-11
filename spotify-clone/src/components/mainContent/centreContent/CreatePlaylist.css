@@ -1,0 +1,365 @@
+input, textarea {
+    border: none;
+    outline: none;
+}
+
+.playlist_name_input {
+    font-size: 3rem;
+    height: 70px;
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    outline: none;
+    font-weight: bold;
+}
+
+.playlist_name_input:focus {
+    border-bottom: 1px solid white;
+}
+
+.playlist_description_input {
+    background: transparent;
+    border: none;
+    color: #bac0c4;
+    resize: none;
+    height: 20px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    width: 300px;
+    outline: none;
+}
+
+.playlist_description_input:focus {
+    border-bottom: 1px solid #bac0c4;
+}
+
+.create_playlist_button {
+    height: 3.5rem;
+    padding: 0 2rem;
+    border-radius: 50px;
+    background-color: #1ed760;
+    border: none;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.create_playlist_button:hover {
+    background-color: #25fa70;
+    transform: scale(1.02);
+}
+
+.search_songs_container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.search_header {
+    margin-bottom: 20px;
+    /* background-color: red; */
+    width:100%;
+}
+
+.search_header h2 {
+    color: white;
+    font-size: 1.2rem;
+}
+
+.search_bar_parent_container {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.search_bar_left {
+    flex-direction: column;
+    width: 50%;
+}
+
+.search_bar_container {
+    display: flex;
+    align-items: center;
+    background-color: #242424;
+    border-radius: 4px;
+    padding: 0 15px;
+    height: 50px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.search_icon {
+    color: #bac0c4;
+    margin-right: 10px;
+}
+
+.search_input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    width: 100%;
+    outline: none;
+}
+
+.search_input_cancel i {
+    font-size: 2rem;
+    color: #b1b1b1;
+}
+
+.search_results_container {
+    min-height: 300px;
+    background-color: rgba(18, 18, 18, 0.3);
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search_placeholder, 
+.empty_search_message p {
+    color: #bac0c4;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.empty_search_message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.enlarged_content_type {
+    font-weight: 500;
+    color: #fafafa;
+}
+
+.enlarged_content_name {
+    font-size: 6rem;
+    height: 110px;
+    cursor: pointer;
+    text-transform: capitalize;
+}
+
+.enlarged_playlist_img_container {
+    cursor: pointer;
+    background-color: transparent;
+    box-shadow: 0 0 30px rgb(32, 32, 32);
+}
+
+.enlarged_content_name:hover, .enlarged_playlist_img_container:hover {
+    opacity: 0.8;
+}
+
+.enlarged_content_other_details {
+    margin-top: 10px;
+}
+
+.enlarged_content_other_details img {
+    border-radius: 50%;
+    height: 23px;
+    aspect-ratio: 1/1;
+    background-color: #fafafa;
+}
+
+.enlarged_content_other_details div {
+    color: white;
+    cursor: pointer;
+}
+
+.enlarged_content_other_details div:hover {
+    text-decoration: underline;
+}
+
+.invite_collaborators_button {
+    height: 3.5rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #adb2b6;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.invite_collaborators_button:hover {
+    color: white;
+    transform: scale(1.05);
+}
+
+.middle_navbar_expand_btn_container {
+    /* background-color: red; */
+    width: fit-content;
+}
+
+/* Edit Modal Styles */
+.edit_modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.edit_modal_container {
+    background-color: #282828;
+    width: 520px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.edit_modal_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #333;
+}
+
+.edit_modal_header h2 {
+    color: white;
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.cancel_button {
+    /* background: transparent; */
+    height: 30px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: none;
+    color: #1b1b1b;
+    /* cursor: pointer; */
+    font-size: 0.9rem;
+    /* background-color: red; */
+    background-color: transparent;
+}
+
+.cancel_button:hover {
+    background-color: #3E3E3E;
+}
+
+.edit_modal_content {
+    display: flex;
+    padding: 24px;
+    gap: 16px;
+}
+
+.edit_modal_image_container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgb(29, 29, 29);
+    background-color: black;
+}
+
+.edit_modal_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    cursor: pointer;
+}
+
+.image_overlay:hover {
+    opacity: 1;
+}
+
+.image_overlay i {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.image_overlay span {
+    color: white;
+    font-size: 0.9rem;
+}
+
+.edit_modal_inputs {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal_playlist_name_input {
+    width: 100%;
+    background: #3E3E3E;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 1rem;
+    height: 40px;
+}
+
+.modal_playlist_description_input {
+    width: 100%;
+    flex-grow: 1;
+    background: #3E3E3E;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 1rem;
+    resize: none;
+    min-height: 120px;
+}
+
+.edit_modal_footer {
+    padding: 16px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.save_button {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 500px;
+    padding: 8px 32px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 16px;
+}
+
+.save_button:hover {
+    transform: scale(1.04);
+}
+
+.disclaimer_text {
+    color: #b3b3b3;
+    font-size: 0.75rem;
+    max-width: 400px;
+    text-align: right;
+    margin: 0;
+}

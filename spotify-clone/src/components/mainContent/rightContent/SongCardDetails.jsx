@@ -7,18 +7,15 @@ import QueueCard from "./QueueCard";
 export default function SongCardDetails({ fetched_song_card_details }) {
     console.log("This is from songCardDetails.jsx: " + JSON.stringify(fetched_song_card_details));
 
-    let artistNames = fetched_song_card_details.artists.map(arts => arts.name).join(', ');
+    let artistNames = fetched_song_card_details?.artists?.map(arts => arts.name).join(', ');
     
-    if (artistNames.length > 25) {
+    if (artistNames?.length > 25) {
         artistNames = artistNames.slice(0, 25) + '...'
     }
 
-    if (fetched_song_card_details.song_name.length > 23) {
-        fetched_song_card_details.song_used_name = fetched_song_card_details.song_name.slice(0, 23);
-    }
-    else {
-        fetched_song_card_details.song_used_name = fetched_song_card_details.song_name;
-    }
+    const songName = fetched_song_card_details?.song_name || '';
+    const songUsedName = songName.length > 23 ? songName.slice(0, 23) : songName;
+
     return (
         <>
             <div className="song_card_details_container">
@@ -28,7 +25,7 @@ export default function SongCardDetails({ fetched_song_card_details }) {
                 <div className="song_first_detail_container dff">
                     <div className="song_first_detail_container_left df-jc">
                         <h2 className="song_detail_name">
-                            { fetched_song_card_details.song_used_name }
+                            { songUsedName }
                         </h2>
                         <div className="song_detail_singer">
                             { artistNames }

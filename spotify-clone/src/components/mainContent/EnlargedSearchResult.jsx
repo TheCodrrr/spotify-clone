@@ -51,6 +51,16 @@ export default function EnlargedSearchResult(props) {
 
     return (
         <>
+        {loading ? (
+            <div
+            className="enlarged_playlist_container enlarged_playlist_loading_container dff"
+            style={{ ...props.common_styles, ...props.specific_style }}
+            >
+                <div className="load_btn_circle load_btn_circle1"></div>
+                <div className="load_btn_circle load_btn_circle2"></div>
+                <div className="load_btn_circle load_btn_circle3"></div>
+            </div>
+        ) : (
             <div
                 className="enlarged_playlist_container"
                 style={{ ...props.common_styles, ...props.specific_style }}
@@ -64,14 +74,11 @@ export default function EnlargedSearchResult(props) {
                     <Link to={`/find/show,episode/${id}`} className={`search_page_navlinks ${searchType === "show,episode" ? "active_search_page" : ""}`}>Podcasts & Shows</Link>
                 </div>
                 <div className="search_song_container">
-                    {loading 
-                        ? "Loading..." 
-                        : !searchType 
-                            ? <SearchAllContainer searchedDetails={fetchedSearchDetails} /> 
-                            : <EnlargedSearchedCard searchedCardDetails={fetchedParticularDetails} searchedType={searchType} />}
-                </div>
+                    {!searchType ? <SearchAllContainer searchedDetails={fetchedSearchDetails} /> : <EnlargedSearchedCard searchedCardDetails={fetchedParticularDetails} searchedType={searchType} />}
+                    </div>
                 <Footer/>
             </div>
+            )}
         </>
     );
 }

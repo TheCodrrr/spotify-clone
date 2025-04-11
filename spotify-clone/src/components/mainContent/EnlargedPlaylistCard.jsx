@@ -13,6 +13,38 @@ export default function EnlargedPlaylistCard(props) {
   const [linear_styles, setLinearStyles] = useState({});
   const [linear_styles2, setLinearStyles2] = useState({});
   const [individualSongDetail, setIndividualSongDetail] = useState({});
+  const [audioURL, setAudioURL] = useState("");
+  const [audioLoading, setAudioLoading] = useState(true);
+  const [audioError, setAudioError] = useState("");
+
+  useEffect(() => {
+    async function fetchSongFromYoutube(songName, artist, album, releaseYear) {
+      setAudioLoading(true);
+      setAudioError("");
+      setAudioURL("");
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/youtube/search?songName=${encodeURIComponent(songName)}&artist=${encodeURIComponent(artist || "")}&album=${encodeURIComponent(album || "")}&releaseYear=${encodeURIComponent(releaseYear || "")}`
+        );
+  
+        const data = await response.json();
+  
+        if (response.ok && data.audioUrl) {
+          setAudioURL(data.audioUrl);
+        } else {
+          setAudioError(data.error || "No audio found.");
+        }
+      } catch (err) {
+        setAudioError("Failed to fetch audio. Please try again.");
+      }
+  
+      setAudioLoading(false);
+      console.log("Audio URL:", audioURL);
+    }
+  
+    fetchSongFromYoutube("Shape of You", "Ed Sheeran", "Divide", "2017");
+  }, []);
+
 
   async function getSongDetailsObject(songFullName) {
     try {
@@ -308,7 +340,7 @@ export default function EnlargedPlaylistCard(props) {
     <>
     <div
       className="enlarged_playlist_container"
-      style={{ ...props.common_styles, ...props.specific_style }}
+      style={{ ...props.common_styles, ...props.specific_style, backgroundColor: 'red' }}
     >
       <div
         className="enlarged_playlist_upper_container dff"

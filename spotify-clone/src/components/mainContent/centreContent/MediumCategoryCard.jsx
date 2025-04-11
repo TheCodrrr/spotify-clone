@@ -84,7 +84,7 @@ export default function MediumCategoryCard(props) {
     console.log("This is section length: " + section_details.section_playlists.length);
     return (
         <>
-            <div className="medium_category_card_container dff">
+            <div className="medium_category_card_container df-jc">
                 <div className="medium_category_card_head_container df">
                     <Link to="/section" state={section_details} className="medium_category_card_head">
                         {/* { section_names[props.category_number] } */}

@@ -5,6 +5,7 @@ import category_details from "./category_details";
 import MediumCategoryCard from "./MediumCategoryCard";
 import LargeCardContainer from "./LargeCardContainer";
 import { fetchRandomPlaylistsOrPodcasts } from "./medium_category_card_details";
+import MediumCategoryLoadCard from "./MediumCategoryLoadCard";
 
 export default function CentreContentItemsContainer() {
     const [loading, setLoading] = useState(true);
@@ -86,7 +87,8 @@ export default function CentreContentItemsContainer() {
         return (
             <div className="centre_content_items_container dff">
                 <MyPlaylistContainer />
-                Loading...
+                <MediumCategoryLoadCard />
+                <MediumCategoryLoadCard />
                 <div className="space_between_cards"></div>
                 <LargeCardContainer />
                 <LargeCardContainer />
