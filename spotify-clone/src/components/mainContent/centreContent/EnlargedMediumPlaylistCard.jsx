@@ -9,7 +9,7 @@ export default function EnlargedMediumPlaylistCard(props) {
     const sectionData = location.state;
 
     let SectionPlaylists = sectionData['section_playlists'].map((item) => (
-        <EnlargedMediumPlaylist section_playlist_data={item} />
+        <EnlargedMediumPlaylist section_playlist_data={item} custom_playlist = {sectionData.custom_playlist} />
     ))
 
     return (

@@ -38,6 +38,8 @@ export default function MediumCategoryCard(props) {
         <MediumCardItem MediumCardDetails={item} custom_playlist = {props?.custom_playlist} />
     ));
 
+    section_details.custom_playlist = props?.custom_playlist;
+
     return (
         <>
             <div className="medium_category_card_container df-jc">

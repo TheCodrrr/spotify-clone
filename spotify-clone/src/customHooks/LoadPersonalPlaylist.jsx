@@ -9,7 +9,6 @@ export function usePlaylistLoader() {
       async function loadPlaylists() {
         setLoading(true);
         const playlists = await loadUserDetails();
-        console.log("These are the playlists playlists" + playlists);
         // playlists.forEach((element) => {
         //   if (element.user_playlist_name.length > 15) {
         //     element.user_playlist_name = element.user_playlist_name.slice(0, 15) + "...";
@@ -21,7 +20,5 @@ export function usePlaylistLoader() {
   
       loadPlaylists();
     }, []);
-    console.log("From the custom hook\n" + userPlaylistDetails);
-    console.log("End.");
     return { loading, userPlaylistDetails };
 }

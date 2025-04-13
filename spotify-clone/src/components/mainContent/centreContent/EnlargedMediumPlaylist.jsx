@@ -46,7 +46,7 @@ export default function EnlargedMediumPlaylist(props) {
     };
 
     return (
-        <Link to={`/item/${playlist_data.id}`} className="enlarged_section_playlist">
+        <Link to={props.custom_playlist ? `/playlist/create/${playlist_data.id}` : `/item/${playlist_data.id}`} className="enlarged_section_playlist">
             <div className="enlarged_section_playlist_img_container dff">
                 <div style={backgroundPlaylists} className="enlarged_section_playlist_img df">
                     <div className="enlarged_playlist_play_pause_btn dff">
