@@ -140,6 +140,28 @@ input, textarea {
     border-radius: 3px;
 }
 
+.play_icon_container {
+    height: 100%;
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.play_icon_container i {
+    font-size: 1.3rem;
+    color: white;
+}
+
+.fetched_details_container:hover .play_icon_container {
+    display: flex;
+}
+
+.fetched_details_container:hover .play_icon_container_others {
+    display: none;
+}
+
 .fetched_item_details_content {
     flex-direction: column;
     padding-left: 10px;
@@ -153,6 +175,10 @@ input, textarea {
     color: #a1a1a1;
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+.fetched_details_container:hover .fetched_item_artist_type_track {
+    color: white;
 }
 
 .fetched_other_details_container {
@@ -246,6 +272,25 @@ input, textarea {
     text-decoration: underline;
 }
 
+.playlist_play_btn {
+    height: 50px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: #25fa70;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.playlist_play_btn:hover {
+    background-color: #1ed760;
+    transform: scale(1.05);
+}
+
+.playlist_play_btn i {
+    font-size: 1.3rem;
+    color: black;
+}
+
 .invite_collaborators_button {
     height: 3.5rem;
     aspect-ratio: 1/1;
@@ -266,6 +311,163 @@ input, textarea {
 .middle_navbar_expand_btn_container {
     /* background-color: red; */
     width: fit-content;
+}
+
+.playlist_songs_container_table {
+    /* width: 100%; */
+    /* height: 40px; */
+    /* background-color: blue; */
+    flex-direction: column;
+    width: 93%;
+    margin: auto;
+}
+
+.playlist_songs_table_header_row {
+    width: 100%;
+    /* height: 40px; */
+    /* background-color: green; */
+    height: 40px;
+}
+
+.playlist_songs_table_header {
+    text-align: start;
+    /* background-color: red; */
+    /* background-color: blue; */
+    height: 100%;
+}
+
+.r1 {
+    width: 5%;
+}
+
+.r2 {
+    width: 35%;
+}
+
+.r3 {
+    width: 25%;
+}
+
+.r4 {
+    width: 20%;
+}
+
+.r5 {
+    width: 5%;
+}
+.r6 {
+    width: 5%;
+}
+.r7 {
+    width: 5%;
+}
+
+.playlist_table_divider {
+    width: 100%;
+    height: 0.5px;
+    background-color: #535353;
+    margin: auto;
+    margin-bottom: 10px;
+    margin-top: 7px;
+}
+
+.playlist_songs_table_row {
+    /* background-color: red; */
+    height: 60px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.playlist_songs_table_row:hover {
+    background-color: #272727;
+}
+
+.playlist_songs_table_row_child_img_overlay {
+    height: 45px;
+    width: 45px;
+    aspect-ratio: 1/1;
+}
+
+.playlist_songs_icon_container {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    width: 100%;
+}
+
+.playlist_songs_table_row:hover .playlist_songs_icon_container {
+    display: flex;
+}
+
+.playlist_songs_table_row_child_content {
+    flex-direction: column;
+    padding-left: 10px;
+}
+
+.playlist_songs_table_row_child_content h4 {
+    font-weight: 500;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.playlist_songs_table_row_child_content h4:hover {
+    text-decoration: 1.5px underline;
+}
+
+.playlist_songs_table_row_child_content p {
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #a1a1a1;
+}
+
+.playlist_album_container {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #a1a1a1;
+    cursor: pointer;
+}
+
+.playlist_songs_table_row:hover .playlist_album_container {
+    color: white;
+}
+
+.playlist_album_container:hover {
+    text-decoration: underline;
+    width: fit-content;
+}
+
+.check_container {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: #1ed760;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.playlist_songs_table_row:hover .check_container {
+    display: flex;
+}
+
+.check_container i {
+    font-size: 0.7rem;
+    color: black;
+}
+
+.expand_btn_container {
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.playlist_songs_table_row:hover .expand_btn_container {
+    display: flex;
 }
 
 /* Edit Modal Styles */

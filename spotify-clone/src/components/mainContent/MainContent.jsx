@@ -40,7 +40,7 @@ export default function MainContent() {
                     <Route path="/find/:searchType?/:id" element={<EnlargedSearchResult common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/song/:id" element={<EnlargedSong common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/item/:id" element={<PublicPlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/playlist/create" element={<CreatePlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                    <Route path="/playlist/create/:id" element={<CreatePlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/playlist/:name" element={<EnlargedPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/search" element={<EnlargedBrowseCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
                     <Route path="/section" element={<EnlargedMediumPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />

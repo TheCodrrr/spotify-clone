@@ -51,6 +51,7 @@
 
 .artist_brief_detail_left {
     width: 50%;
+    font-size: 0.9rem;
     /* background-color: yellow; */
     color: #acaca5;
 }

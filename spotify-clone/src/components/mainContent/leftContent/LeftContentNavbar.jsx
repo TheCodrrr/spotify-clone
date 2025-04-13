@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import './LeftContentNavbar.css';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const API_URL = "http://localhost:5000/api/playlists";
 
 export default function LeftContentNavbar() {
     const [playlistCreateOpen, setPlaylistCreateOpen] = useState(false);
     const navigate = useNavigate();
 
-    const navigatePlaylistCreate = () => {
-        navigate('/playlist/create');
+    const navigatePlaylistCreate = async () => {
+        const newPlaylist = { name: "My Playlist", description: "My Playlist Description", photo: "https://cdn.pixabay.com/photo/2021/01/29/08/10/musician-5960112_1280.jpg" };
+        const res = await axios.post(API_URL, newPlaylist);
+        const playlistId = res.data._id;
+        console.log("New Playlist Created: ", JSON.stringify(res.data._id));
+        navigate(`/playlist/create/${playlistId}`);
     }
     return (
         <>
