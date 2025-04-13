@@ -71,8 +71,6 @@ export default function MusicPlayer() {
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => setLoading(false))
-
-        console.log("The random song details from MUSIC PLAYER is are : " + JSON.stringify(randomSongDetails));
     }, [])
 
     function formatTime(ms) {
@@ -83,16 +81,12 @@ export default function MusicPlayer() {
 
     let [total_min, total_sec] = formatTime(randomSongDetails.song_duration);
 
-    // console.log(`the time is : ${total_min} : ${total_sec}`)
-    // console.log("The progress is: " + progress);
-
     let played_millisec, played_min = 0, played_sec = 0;
 
     useEffect(() => {
         played_millisec = Math.floor((progress * randomSongDetails.song_duration) / 100);
         [played_min, played_sec] = formatTime(played_millisec);
 
-        // console.log("Here is the played time: " + played_millisec);
         setDynamicTimeComponent(
             (
             <>

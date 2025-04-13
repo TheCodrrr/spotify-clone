@@ -15,27 +15,11 @@ export default function CentreMainContent(props) {
     const [linear_styles, setLinearStyles] = useState({});
     const [linear_styles2, setLinearStyles2] = useState({});
 
-    console.log("centre Main Content The hover image: " + hoverImage);
-
 
     // const { loading, userPlaylistDetails } = usePlaylistLoader();
 
 
     const contentRef = useRef(null);  // Create a ref to reference the div element
-
-    // if (loading) {
-    //     console.log("The user playlists are loading.");
-    // }
-
-    // console.log(userPlaylistDetails);
-    // const homePagePlaylist = userPlaylistDetails.slice(0, 8);
-    
-    // console.log(homePagePlaylist);
-    // const targetPlaylist = homePagePlaylist[Math.floor(Math.random() * homePagePlaylist.length)];
-    // console.log(targetPlaylist);
-    // const targetPlaylistImageURL = targetPlaylist.user_playlist_image;
-    // console.log(targetPlaylistImageURL);
-
 
 
     useEffect(() => {
@@ -65,8 +49,6 @@ export default function CentreMainContent(props) {
               #42494e 70%, #121212 100%)`,
           });
       };
-  
-      console.log(`The linear styles are: ${JSON.stringify(linear_styles)}`);
   }, [hoverImage]);
   
   function getDominantColor(imageData) {
@@ -117,7 +99,6 @@ export default function CentreMainContent(props) {
           shades.push(`rgb(${newR}, ${newG}, ${newB})`);
       }
   
-      console.log("Generated Shades:", shades);
       return shades;
   }
   

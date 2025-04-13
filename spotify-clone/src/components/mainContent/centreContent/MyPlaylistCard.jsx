@@ -6,7 +6,6 @@ import { HoverContext } from "./HoverContext";
 export default function MyPlaylistCard(props) {
     const { setHoverImage } = useContext(HoverContext);
 
-    console.log("From MyPlaylistCard: " + JSON.stringify(props))
     if (props.details.user_playlist_name.length > 15) {
         props.details.user_playlist_name = props.details.user_playlist_name.slice(0, 15) + '...';
     }
@@ -25,7 +24,6 @@ export default function MyPlaylistCard(props) {
                 const computedStyle = window.getComputedStyle(parentElement);
                 const currentBgColor = computedStyle.backgroundColor;
             
-                console.log("Mouse Enter - Background color:", currentBgColor);
             }}
             
             onMouseLeave={(event) => {
@@ -35,8 +33,6 @@ export default function MyPlaylistCard(props) {
                 const parentElement = event.target.closest(".my_playlist_card") || event.target;
                 const computedStyle = window.getComputedStyle(parentElement);
                 const currentBgColor = computedStyle.backgroundColor;
-            
-                console.log("Mouse Leave - Background color:", currentBgColor);
             }}
             >
                 {/* { props.details.user_playlist_name } */}

@@ -32,7 +32,6 @@ export default function Navbar() {
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            console.log("33333333333333333333333333333333333333 " + searchType)
             if (location.pathname.startsWith("/find/track") || location.pathname.startsWith("/find/playlist") || location.pathname.startsWith("/find/album") || location.pathname.startsWith("/find/artist") || location.pathname.startsWith("/find/show,episode"));
             else if (location.pathname === "/search" || location.pathname.startsWith("/find/")) {
                 if (searchTerm === "") {

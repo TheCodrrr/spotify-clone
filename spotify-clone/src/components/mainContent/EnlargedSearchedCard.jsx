@@ -10,7 +10,6 @@ export default function EnlargedSearchedCard(props) {
     useEffect(() => {
         if (!props.searchedCardDetails || props.searchedCardDetails.length === 0) return;
         setLoading(true);
-        console.log(`From EnlargedSearchedCard.jsx: ${props.searchedType} `, props.searchedCardDetails);
         setLoading(false);
     }, [props.searchedCardDetails, props.searchedType, location.pathname]);
 
@@ -36,9 +35,6 @@ export default function EnlargedSearchedCard(props) {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
     }
-    
-    // Example usage:
-    // console.log(formatDate("2022-11-17")); // Output: Nov 17, 2022
     
     function formatTime2(ms) {
         const seconds = Math.floor(ms / 1000);
@@ -68,9 +64,6 @@ export default function EnlargedSearchedCard(props) {
     
         return formattedTime.trim();
     }
-    
-    // Example usage:
-    // console.log(formatDuration(263523)); // Output: 4 min 23 sec
     
 
     return props.searchedType === "track" ? (

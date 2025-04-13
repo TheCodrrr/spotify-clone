@@ -7,14 +7,31 @@ import LargeCardContainer from "./LargeCardContainer";
 import { fetchRandomPlaylistsOrPodcasts } from "./medium_category_card_details";
 import MediumCategoryLoadCard from "./MediumCategoryLoadCard";
 
+const API_URL = "http://localhost:5000/api/playlists";
+
 export default function CentreContentItemsContainer() {
     const [loading, setLoading] = useState(true);
+    const [loadingCustom, setLoadingCustom] = useState(true);
     const [mediumCategoryDetails, setMediumCategoryDetails] = useState([]);
     const [Playlist, setPlaylist] = useState([]);
     const [Podcast, setPodcast] = useState([]);
+    const [customPlaylist, setCustomPlaylist] = useState([]);
 
     const [partitionPlaylist, setPartitionPlaylist] = useState([]);
     const [partitionPodcast, setPartitionPodcast] = useState([]);
+
+    const convertCustomPlaylists = (customPlaylist) => {
+        return customPlaylist.map(playlist => ({
+          id: playlist._id,
+          name: playlist.name,
+          description: playlist.description || "No description available",
+          image: playlist.photo,
+          total_songs: playlist.songs.length,
+          spotifyUrl: `https://open.spotify.com/playlist/${playlist._id}`, // fake URL
+          genre: "mixed",
+          type: "playlist"
+        }));
+      };
 
     // Fetching Data on Mount
     useEffect(() => {
@@ -30,6 +47,21 @@ export default function CentreContentItemsContainer() {
             }
         };
         fetchData();
+
+        const fetchCustomPlaylist = async () => {
+            setLoadingCustom(true);
+            try {
+                const response = await fetch(`${API_URL}/`);
+                const data = await response.json();
+                const converted = convertCustomPlaylists(data);
+                setCustomPlaylist(converted);
+            } catch (error) {
+                console.error(`Error fetching customPlaylist:`, error);
+            } finally {
+                setLoadingCustom(false);
+            }
+        }
+        fetchCustomPlaylist()
     }, []);
 
     // Categorize Playlists & Podcasts when mediumCategoryDetails updates
@@ -77,13 +109,10 @@ export default function CentreContentItemsContainer() {
         }
         setPartitionPlaylist(tempPartitionPlay);
         setPartitionPodcast(tempPartitionPod);
-        // console.log("Temporary Playlists:", tempPartitionPlay);
-        // console.log("Temporary Podcasts:", tempPartitionPod);
     }, [Playlist, Podcast]);
 
     // Show loading UI while data is being fetched
-    if (loading) {
-        console.log("Loading state active. Category details:", category_details);
+    if (loading && loadingCustom) {
         return (
             <div className="centre_content_items_container dff">
                 <MyPlaylistContainer />
@@ -98,16 +127,20 @@ export default function CentreContentItemsContainer() {
     }
 
     let MediumCategoryPlaylistCards = partitionPlaylist.map((element, index) => (
-        <MediumCategoryCard section_details = {element} category_number = {index}/>
+        <MediumCategoryCard section_details = {element} category_number = {index} custom_playlist = {false} />
     ))
     let MediumCategoryPodcastCards = partitionPodcast.map((element, index) => (
-        <MediumCategoryCard section_details = {element} category_number = {index + 5}/>
+        <MediumCategoryCard section_details = {element} category_number = {index + 5} custom_playlist = {false}/>
     ))
 
     return (
         <div className="centre_content_items_container dff">
             <MyPlaylistContainer />
             
+            { customPlaylist.length > 0 ? (
+                <MediumCategoryCard section_details = {customPlaylist} category_number = {0} custom_playlist = {true} />
+            ) : null}
+
             { MediumCategoryPlaylistCards }
             { MediumCategoryPodcastCards }
 

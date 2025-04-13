@@ -121,7 +121,7 @@
     height: 100%;
     width: calc(100% - 100px);
     /* overflow-x: scroll; */
-    left: -200px;
+    /* left: -200px; */
     /* background-color: blue; */
     transition: 0.3s;
     padding: 0 20px;

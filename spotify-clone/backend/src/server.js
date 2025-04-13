@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import playlistRoutes from "./routes/playlistRoutes.js";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(bodyParser.json()); // For parsing application/x-www-form-urlencoded
 app.use(cors({
   origin: "http://localhost:5173", // frontend origin
   credentials: true

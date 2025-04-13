@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import './ArtistCard.css';
 
 export default function ArtistCard({ fetched_song_card_details }) {
-    console.log("This is from ArtistCard.jsx: " + JSON.stringify(fetched_song_card_details));
     let artist_detail_info = fetched_song_card_details.main_artist?.bio || '';
     if (artist_detail_info.length > 111) {
         artist_detail_info = artist_detail_info.slice(0, 111) + '...';

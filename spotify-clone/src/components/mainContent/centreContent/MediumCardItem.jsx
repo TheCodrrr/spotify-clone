@@ -3,12 +3,7 @@ import { Link } from "react-router-dom";
 import './MediumCardItem.css'
 
 export default function MediumCardItem(props) {
-    // console.log("From MediumCardItem: " + JSON.stringify(props));
     let MediumCardData = props['MediumCardDetails'];
-    console.log("From MediumCardItem: " + JSON.stringify(MediumCardData));
-    // if (MediumCardData['caption'].length > 25) {
-    //     MediumCardData['caption'] = MediumCardData['caption'].slice(0, 25) + '...';
-    // }
 
     let bgImage = '';
 
@@ -48,7 +43,7 @@ export default function MediumCardItem(props) {
 
     return (
         <>
-            <Link to={`/item/${MediumCardData.id}`} className="medium_card_item dff">
+            <Link to={props.custom_playlist ? `/playlist/create/${MediumCardData.id}` : `/item/${MediumCardData.id}`} className="medium_card_item dff">
                 <div className="medium_card_img_container df" style={backgroundImageStyle}>
                     <div className="medium_card_name_container">
                         

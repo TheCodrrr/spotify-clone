@@ -11,18 +11,6 @@ export default function EnlargedBrowseCard(props) {
     const [displayingCategory, setDisplayingCategory] = useState([]);
     const location = useLocation();
     
-    // Example Usage:
-    // getDominantBrightColor("https://t.scdn.co/images/8a0fabf4d537486e9b5a4623c921f77e.jpeg")
-    //     .then((color) => console.log("Brighter Color:", color))
-    //     .catch((err) => console.error(err));
-    
-    
-      
-    // Example Usage:
-    // getDominantBrightColor("https://t.scdn.co/images/8a0fabf4d537486e9b5a4623c921f77e.jpeg")
-    // .then((color) => color)
-    // .catch(() => '#fff');
-    
     const brightColors = [
         "#FF4C4C", // Neon Red  
         "#FF6A00", // Bright Orange  

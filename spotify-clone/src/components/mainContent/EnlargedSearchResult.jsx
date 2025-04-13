@@ -9,7 +9,6 @@ import EnlargedSearchedCard from "./EnlargedSearchedCard";
 export default function EnlargedSearchResult(props) {
     const { searchType, id } = useParams();
     const location = useLocation();
-    console.log("hello world the id is " + id);
 
     const [loading, setLoading] = useState(true);
     const [fetchedSearchDetails, setFetchedSearchDetails] = useState({});
@@ -19,11 +18,9 @@ export default function EnlargedSearchResult(props) {
         setLoading(true);
 
         if (!searchType) {
-            console.log("Fetching all results for:", id);
             searchSpotify(id)
                 .then((fetchedDetails) => {
                     if (fetchedDetails) {
-                        console.log("Fetched details:", fetchedDetails);
                         setFetchedSearchDetails(fetchedDetails);
                     }
                 })
@@ -32,12 +29,9 @@ export default function EnlargedSearchResult(props) {
         } else {
             // Reset the state before fetching new data
             setFetchedParticularDetails([]);  
-            
-            console.log("Fetching specific type:", searchType, "for:", id);
             searchSpotify(id, searchType)
                 .then((fetchedDetails) => {
                     if (fetchedDetails) {
-                        console.log("Fetched details:", fetchedDetails);
                         setFetchedParticularDetails(fetchedDetails);
                     }
                 })
@@ -45,9 +39,6 @@ export default function EnlargedSearchResult(props) {
                 .finally(() => setLoading(false));
         }
     }, [searchType, id, location.pathname]);
-
-    console.log("Current searchedType:", searchType);
-    console.log("Current fetchedParticularDetails:", fetchedParticularDetails);
 
     return (
         <>

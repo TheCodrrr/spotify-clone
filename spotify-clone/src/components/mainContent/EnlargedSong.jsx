@@ -27,7 +27,6 @@ export default function EnlargedSong(props) {
                 if (fetchedSongDetails) {
                     setSongDetails(fetchedSongDetails);
                     setSongArtist(fetchedSongDetails.artists);
-                    console.log(`The song details are: ${JSON.stringify(songArtist)}.`);
                 }
             })
             .catch((error) => console.error("Error:", error))
@@ -177,8 +176,6 @@ export default function EnlargedSong(props) {
 
                 shades.push(`rgb(${newR}, ${newG}, ${newB})`);
                 }
-
-                console.log(shades);
                 return shades;
             }
 

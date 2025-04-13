@@ -13,7 +13,7 @@ export default function LeftContentNavbar() {
         const newPlaylist = { name: "My Playlist", description: "My Playlist Description", photo: "https://cdn.pixabay.com/photo/2021/01/29/08/10/musician-5960112_1280.jpg" };
         const res = await axios.post(API_URL, newPlaylist);
         const playlistId = res.data._id;
-        console.log("New Playlist Created: ", JSON.stringify(res.data._id));
+        setPlaylistCreateOpen(false);
         navigate(`/playlist/create/${playlistId}`);
     }
     return (

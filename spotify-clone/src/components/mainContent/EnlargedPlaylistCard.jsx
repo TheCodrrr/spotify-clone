@@ -39,7 +39,6 @@ export default function EnlargedPlaylistCard(props) {
       }
   
       setAudioLoading(false);
-      console.log("Audio URL:", audioURL);
     }
   
     fetchSongFromYoutube("Shape of You", "Ed Sheeran", "Divide", "2017");
@@ -73,28 +72,14 @@ export default function EnlargedPlaylistCard(props) {
       return null;
     }
   }
-  
-
-  // function FetchSongInfo(song_full_name) {
-  //   console.log(song_full_name);
-  //   let current_song_detail = getSongDetailsObject(song_full_name);
-  //   setIndividualSongDetail(current_song_detail);
-  //   console.log(individualSongDetail);
-  // }
 
   async function FetchSongInfo(song_full_name) {
-    console.log("Song name:", song_full_name);
   
     // Get song details by awaiting the promise
     const current_song_detail = await getSongDetailsObject(song_full_name);
   
     // Set the fetched song details to the state
     setIndividualSongDetail(current_song_detail);
-  
-    // Log the current song details after state update
-    // Note: Logging the state immediately after calling setState might not give you the updated value,
-    // because state updates in React are asynchronous.
-    console.log("Updated individualSongDetail:", current_song_detail);
   }
 
   useEffect(() => {
@@ -250,7 +235,6 @@ export default function EnlargedPlaylistCard(props) {
           shades.push(`rgb(${newR}, ${newG}, ${newB})`);
         }
 
-        console.log(shades);
         return shades;
       }
 
@@ -269,7 +253,6 @@ export default function EnlargedPlaylistCard(props) {
         if (secLength == 1) {
           element.song_length_sec = "0" + element.song_length_sec.toString();
         }
-        console.log(element.song_length_sec);
       });
 
       if (selectedPlaylist) {

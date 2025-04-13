@@ -8,7 +8,6 @@ import { fetchPublicPlaylist } from "./fetchPublicPlaylist";
 
 export default function PublicPlaylist(props) {
     const { id } = useParams();
-    console.log(`Here is your id: ${id} and its type: ${typeof(id)}`);
 
     const [loading, setLoading] = useState(true);
     const [fetchedPlaylist, setFetchedPlaylist] = useState({});
@@ -16,8 +15,6 @@ export default function PublicPlaylist(props) {
     const [linear_styles, setLinearStyles] = useState({});
     const [linear_styles2, setLinearStyles2] = useState({});
     const [playlistSongs, setPlaylistSongs] = useState([]);
-
-    console.log(`PublicPlaylist.jsx: ${id}`);
 
     function formatTime(ms) {
         if (ms < 0) return "Invalid input"; // Handle negative input
@@ -251,18 +248,11 @@ export default function PublicPlaylist(props) {
 
                 shades.push(`rgb(${newR}, ${newG}, ${newB})`);
                 }
-
-                console.log(shades);
                 return shades;
             }
 
     }, [id]); // ✅ Use only id as a dependency
     
-
-    console.log("getting song list: " + JSON.stringify(songList));
-
-    console.log(`type of songlist is ${typeof(songList)}`);
-
     let total_ms = 0;
 
     
@@ -271,16 +261,9 @@ export default function PublicPlaylist(props) {
     }
 
     let total_time = formatTime(total_ms);
-
-    console.log(JSON.stringify(linear_styles));
-
-    // console.log(`The time: ${total_time}`);
-
-    // console.log(`fetchedPlaylist = ${JSON.stringify(fetchedPlaylist)}`);
     
 
     if (loading) {
-        console.log("Loading is true.")
         return (
             <div
             className="enlarged_playlist_container enlarged_playlist_loading_container dff"

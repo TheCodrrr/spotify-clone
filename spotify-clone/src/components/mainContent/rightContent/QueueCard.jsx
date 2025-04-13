@@ -2,7 +2,6 @@ import React from 'react'
 import './QueueCard.css'
 
 export default function QueueCard({ fetched_song_card_details }) {
-    console.log("This is from the queue card: " + JSON.stringify(fetched_song_card_details));
     let queue_song_details = {
         song_image: '',
         song_name: 'Bekhayali (From "Kabir Singh")',

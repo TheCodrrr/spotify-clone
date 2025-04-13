@@ -1,4 +1,5 @@
 import Playlist from '../models/Playlist.js';
+import cloudinary from '../cloudinaryConfig.js'; // Ensure this is the correct path to your cloudinary config
 
 // Create a new playlist
 export const createPlaylist = async (req, res) => {
@@ -65,22 +66,56 @@ export const addSongToPlaylist = async (req, res) => {
   }
 };
 
-// PUT: Option 1 – Update name, photo, and description
-export const updatePlaylistInfo = async (req, res) => {
-  const { id } = req.params;
-  const { name, photo, description } = req.body;
+export const deleteSongFromPlaylist = async (req, res) => {
+    try {
+      const { playlistId, songId } = req.body;
+      if (!playlistId || !songId) {
+        console.log("Missing data:", { playlistId, songId });
+        return res.status(400).json({ message: "Missing playlistId or songId" });
+      }
+  
+      const playlist = await Playlist.findById(playlistId);
+      if (!playlist) {
+        return res.status(404).json({ message: "Playlist not found" });
+      }
+  
+      const beforeCount = playlist.songs.length;
+      playlist.songs = playlist.songs.filter(song => song.songId !== songId);
+      const afterCount = playlist.songs.length;
+      console.log(`Deleted ${beforeCount - afterCount} song(s)`);
+  
+      await playlist.save();
+      res.status(200).json({ message: "Song removed successfully", playlist });
+    } catch (error) {
+      console.error("Delete error:", error.message);
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
+  
 
-  try {
-    const updatedPlaylist = await Playlist.findByIdAndUpdate(
-      id,
-      { name, photo, description },
-      { new: true }
-    );
-    res.status(200).json({ message: "Playlist info updated", updatedPlaylist });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+  export const updatePlaylistInfo = async (req, res) => {
+    const { id } = req.params;
+    const { name, description } = req.body;
+    let photo = null;
+  
+    try {
+      // If multer uploaded a file, get its Cloudinary URL
+      if (req.file && req.file.path) {
+        photo = req.file.path; // Multer + Cloudinary automatically gives you the URL
+      }
+  
+      const updatedPlaylist = await Playlist.findByIdAndUpdate(
+        id,
+        { name, description, ...(photo && { photo }) }, // update photo only if it exists
+        { new: true }
+      );
+  
+      res.status(200).json({ message: "Playlist info updated", updatedPlaylist });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 // PUT: Option 2 – Add or remove a song from playlist
 export const modifySongs = async (req, res) => {

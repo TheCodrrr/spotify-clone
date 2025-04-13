@@ -6,8 +6,7 @@ export default function CreditsCard({ fetched_song_card_details }) {
     const [contributors, setContributors] = useState([]);
     const [shortContributors, setShortContributors] = useState([]);
     const [isMore, setIsMore] = useState(false);
-
-    // console.log("This is from CreditsCard.jsx: " + JSON.stringify(fetched_song_card_details));
+    
     useEffect(() => {
         setContributors(fetched_song_card_details?.contributors);
     

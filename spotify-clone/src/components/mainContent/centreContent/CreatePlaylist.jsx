@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./CreatePlaylist.css";
 import Footer from "./Footer";
 import { searchSpotify } from "../searchResult";
 import axios from "axios"
-import { useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 const API_URL = "http://localhost:5000/api/playlists";
 // const API_URL_SONG_ADD = "http://localhost:5000/api/playlists/"; // Updated API URL for adding songs
 
 export default function CreatePlaylist(props) {
+    const nameRef = useRef(null);
+    const descRef = useRef(null);
+    const imageInputRef = useRef(null); // Add this at the top of your component
+    const selectedImageRef = useRef(null);
+    const Navigate = useNavigate();
   const { id } = useParams();
   console.log("hello world the id is " + id);
   const [playlistImage, setPlaylistImage] = useState('')
@@ -40,7 +45,7 @@ export default function CreatePlaylist(props) {
         setPlaylistImage(res.data.photo);
         setPlaylistName(res.data.name);
         setPlaylistDescription(res.data.description);
-        setPlaylist(res.data);
+        // setPlaylist(res.data);
       } catch (error) {
         console.error("Error fetching playlist:", error);
       } finally {
@@ -48,19 +53,41 @@ export default function CreatePlaylist(props) {
       }
   }
 
-  const fetchCurrentPlaylistSongs = async () => {
+  const deleteSongFromPlaylist = async (songId) => {
+    console.log("Deleting song with ID:", songId);
     try {
-        const response = await axios.get(`${API_URL}/${id}`);
-        console.log("Fetched songs 1:", JSON.stringify(response));
-        setPlaylistSongs(response.data.songs);
+        // const API_URL = "http://localhost:5000/api/playlists";
+        const response = await axios.delete(`${API_URL}/song`, {
+          data: { playlistId: id, songId },
+        });
 
-    } catch (err) {
-        setError('Error fetching songs');
-        console.error(err);
-    } finally {
-        setLoading(false);
+        if (response.status === 200) {
+        //   alert("Song deleted successfully!");
+          return response.data.playlist;
+        }
+      } catch (error) {
+        console.error("Error deleting song:", error);
+        // alert("Failed to delete song.");
+      } finally {
+          fetchCurrentPlaylistSongs()
+      }
+
+  }
+
+
+  const fetchCurrentPlaylistSongs = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/${id}`);
+            console.log("Fetched songs 1:", JSON.stringify(response));
+            setPlaylistSongs(response.data.songs);
+
+        } catch (err) {
+            // setError('Error fetching songs');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     }
-}
 
     // useEffect(() => {
     //     if (!loading && playlistSongs.length > 0) {
@@ -71,7 +98,7 @@ export default function CreatePlaylist(props) {
   useEffect(() => {
     frontendDetails()
     fetchCurrentPlaylistSongs()
-  }, [])
+  }, [id])  
 
   const cutString = (str, maxLength) => {
     return str.length > maxLength
@@ -140,6 +167,8 @@ export default function CreatePlaylist(props) {
     setShowEditModal(false);
   };
 
+  
+
   const AddSongToDatabase = async (item) => {
     // setSongAdded(false);
     const song = {
@@ -179,30 +208,48 @@ export default function CreatePlaylist(props) {
     console.log("what are you doing: " + JSON.stringify(item));
   }
 
-  const handleSaveDetails = async () => {
-    // Save playlist details (in a real app, this would call an API)
-    
+  const deleteEntirePlaylist = async (playlistId) => {
     try {
-        const newSetData = {
-            photo: 'https://cdn.pixabay.com/photo/2021/01/29/08/10/musician-5960112_1280.jpg',
-            name: playlistName,
-            description: playlistDescription,
+        const response = await axios.delete(`${API_URL}/playlist/${playlistId}`);
+        if (response.status === 200) {
+        //   alert("Playlist deleted successfully!");
+          // Optionally refresh your playlists or redirect
+          // fetchAllPlaylists(); 
         }
-        const res = await axios.put(`${API_URL}/info/${id}`, newSetData);
-        console.log("Playlist details saved:", JSON.stringify(res));
-    } catch (error) {
-        console.error("Error saving playlist details:", error);
-        
-    }
+      } catch (error) {
+        console.error("Error deleting playlist:", error);
+        // alert("Failed to delete playlist.");
+      } finally {
+        Navigate('/');
+      }
+  }
 
+  const handleSaveDetails = async () => {
+    let imageUrl = 'https://cdn.pixabay.com/photo/2021/01/29/08/10/musician-5960112_1280.jpg';
+  
+    console.log("Selected image ref:", selectedImageRef.current);
+    const formData = new FormData();
+    formData.append("photo", selectedImageRef.current);
+    formData.append("name", nameRef.current.value);
+    formData.append("description", descRef.current.value);
+    console.log("Form data:", formData.get("photo"));
+    try {
+      const res = await axios.put(`${API_URL}/info/${id}`, formData);
+      console.log("Playlist details saved:", JSON.stringify(res));
+    } catch (error) {
+      console.error("Error saving playlist details:", error);
+    }
+  
     console.log("Saving playlist details:", {
-        photo: 'https://cdn.pixabay.com/photo/2021/01/29/08/10/musician-5960112_1280.jpg',
-        name: playlistName,
-        description: playlistDescription,
+      photo: imageUrl,
+      name: playlistName,
+      description: playlistDescription,
     });
+  
     frontendDetails();
     setShowEditModal(false);
   };
+  
 
   const formatDuration = ms => ms >= 3600000 ? `${Math.floor(ms/3600000)}:${String(Math.floor((ms%3600000)/60000)).padStart(2,'0')}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}` : ms >= 60000 ? `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}` : `${Math.floor(ms/1000)} sec`;
 
@@ -228,34 +275,57 @@ export default function CreatePlaylist(props) {
             </div>
       
             <div className="edit_modal_content">
-              <div className="edit_modal_image_container">
+            <div className="edit_modal_image_container">
                 <img
-                  src={playlistImage || placeholderImage}
-                  alt="Playlist"
-                  className="edit_modal_image"
+                    src={playlistImage || placeholderImage}
+                    alt="Playlist"
+                    className="edit_modal_image"
                 />
+
                 <div
-                  className="image_overlay"
-                  onMouseDown={(e) => e.preventDefault()} // Prevent focus stealing
+                    className="image_overlay"
+                    onClick={() => imageInputRef.current.click()} // 👈 Triggers file input
+                    onMouseDown={(e) => e.preventDefault()}
                 >
-                  <i className="fa fa-camera" aria-hidden="true"></i>
-                  <span>Choose photo</span>
+                    <i className="fa fa-camera" aria-hidden="true"></i>
+                    <span>Choose photo</span>
                 </div>
-              </div>
+
+                {/* Hidden file input triggered by click on .image_overlay */}
+                <input
+                    type="file"
+                    accept="image/*"
+                    ref={imageInputRef}
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const tempUrl = URL.createObjectURL(file);
+                        setPlaylistImage(tempUrl); // Optional: preview image
+                        selectedImageRef.current = file; // Store for uploading later
+                    }
+                    }}
+                />
+            </div>
+
+
       
               <div className="edit_modal_inputs">
                 <input
                   type="text"
                   className="modal_playlist_name_input"
-                  value={playlistName}
-                  onChange={handleNameChange}
+                //   value="My Playlist"
+                //   onChange={handleNameChange}
+                defaultValue={playlistName}
+                ref={nameRef}
                   placeholder="Add a name"
                   onClick={(e) => e.stopPropagation()} // prevent blur
                 />
                 <textarea
                   className="modal_playlist_description_input"
-                  value={playlistDescription}
-                  onChange={handleDescriptionChange}
+                  defaultValue={playlistDescription}
+                //   onChange={handleDescriptionChange}
+                ref={descRef}
                   placeholder="Add an optional description"
                   onClick={(e) => e.stopPropagation()} // prevent blur
                 />
@@ -332,7 +402,9 @@ export default function CreatePlaylist(props) {
             <button className="invite_collaborators_button">
               <i className="fa fa-user-plus" aria-hidden="true"></i>
             </button>
-            <div className="middle_navbar_expand_btn_container dff">• • •</div>
+            <div className="middle_navbar_expand_btn_container dff" onClick={() => deleteEntirePlaylist(id)}>
+                <i class="fa-solid fa-trash"></i>
+            </div>
           </div>
           <div className="middle_navbar_child middle_navbar_right_container dff">
             <div className="middle_navbar_content_list_btn dff">
@@ -352,7 +424,8 @@ export default function CreatePlaylist(props) {
             </div>
           </div>
         </div>
-        <table className="playlist_songs_container_table dff">
+        {playlistSongs.length > 0 ? (
+            <table className="playlist_songs_container_table dff">
             <tr className="playlist_songs_table_header_row dff">
                 <th className="playlist_songs_table_header r1 dff">#</th>
                 <th className="playlist_songs_table_header r2 df-ai">Title</th>
@@ -398,8 +471,8 @@ export default function CreatePlaylist(props) {
                                 {formatDuration(song.duration)}
                             </td>
                             <td className="playlist_songs_table_row_child r7 dff">
-                                <div className="expand_btn_container">
-                                    •••
+                                <div className="expand_btn_container" onClick={() => deleteSongFromPlaylist(song.songId)}>
+                                    <i class="fa-solid fa-trash"></i>
                                 </div>
                             </td>
                         </tr>
@@ -407,6 +480,7 @@ export default function CreatePlaylist(props) {
                 ))}
                 <span className="playlist_table_divider dff"></span>
         </table>
+        ) : null}
         <div className="search_songs_container">
           <div className="search_bar_parent_container df-ai">
             <div className="search_bar_left dff">

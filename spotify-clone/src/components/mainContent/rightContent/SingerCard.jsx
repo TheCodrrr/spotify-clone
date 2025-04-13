@@ -4,8 +4,6 @@ import './SingerCard.css';
 export default function SingerCard({ fetched_singer_details }) {
     const [isFollow, setFollow] = useState('Follow');
 
-    // console.log("These are the SingerCard.jsx: " + JSON.stringify(fetched_singer_details));
-
     const changeFollow = () => {
         if (isFollow == 'Follow') setFollow('Unfollow');
         else setFollow('Follow');
@@ -21,7 +19,6 @@ export default function SingerCard({ fetched_singer_details }) {
                 <div className="singer_card_right df-ai">
                     <button className="btn_singer_card_follow" onClick={changeFollow}>
                         { isFollow }
-                        { console.log("Hello") }
                     </button>     
                 </div>
             </div>

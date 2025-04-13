@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 export default function LeftContentPlaylistCard({ data }) {
     let left_card_description_head, left_card_lower_description;
-    console.log("This is " + data);
 
     if (data['is_last_active']) {
         left_card_description_head = (

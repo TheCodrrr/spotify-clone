@@ -20,8 +20,6 @@ export default function RightMainContent(props) {
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => setLoading(false))
-
-        console.log("The random song details are : " + JSON.stringify(randomSongDetails));
     }, [])
 
     if (loading) {

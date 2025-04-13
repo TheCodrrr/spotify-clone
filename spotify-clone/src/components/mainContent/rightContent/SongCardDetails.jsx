@@ -5,7 +5,6 @@ import CreditsCard from "./CreditsCard";
 import QueueCard from "./QueueCard";
 
 export default function SongCardDetails({ fetched_song_card_details }) {
-    console.log("This is from songCardDetails.jsx: " + JSON.stringify(fetched_song_card_details));
 
     let artistNames = fetched_song_card_details?.artists?.map(arts => arts.name).join(', ');
     

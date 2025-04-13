@@ -12,7 +12,6 @@ export default function LeftContentItemsContainer() {
         setSearchActive(!searchActive);
     }
 
-    console.log(leftContentCardData[0]);
 
     const { loading, userPlaylistDetails } = usePlaylistLoader();
     
@@ -52,13 +51,6 @@ export default function LeftContentItemsContainer() {
             </div>
         );
     }
-
-
-    console.log("userPlaylistDetails\n\n\n\n\n\n\n");
-
-    userPlaylistDetails?.map((item) => {
-        console.log(item);
-    })
 
     // Use map() to dynamically create LeftContentCard components
     const leftContentCards = userPlaylistDetails?.map((item, index) => (

@@ -12,8 +12,6 @@ export default function SearchAllContainer({ searchedDetails }) {
     
     const top_result = details.songs?.[0] || {}; // Default empty object to prevent crashes
     top_result.artistsString = top_result?.artists?.join(", ") || "Unknown Artist"; 
-    
-    console.log("Episodes: ", JSON.stringify(details.episodes || []));
 
     const formatString = (strs, cutVal) => (strs?.length > cutVal ? strs.slice(0, cutVal) + '...' : strs || '');
 
