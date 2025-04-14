@@ -21,6 +21,7 @@ export default function Navbar() {
     useEffect(() => {
         if (location.pathname === "/") {
             setCurrRoute("");
+            setSearchTerm("");
         } else {
             setCurrRoute(location.pathname);
         }

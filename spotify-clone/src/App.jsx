@@ -6,9 +6,11 @@ import MusicPlayer from './components/musicPlayer/MusicPlayer';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // import Expr from './components/Expr';
 import EnlargedPlaylistCard from './components/mainContent/EnlargedPlaylistCard';
-
+import { MusicPlayerProvider } from './components/musicPlayer/MusicPlayerContext';
 function App() {
   return (
+
+    <MusicPlayerProvider>
     <Router>
       <Routes>
         
@@ -22,6 +24,7 @@ function App() {
         <MusicPlayer />
       </div>
     </Router>
+    </MusicPlayerProvider>
   );
 }
 

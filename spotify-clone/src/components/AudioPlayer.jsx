@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player/youtube';
 
-const AudioPlayer = ({ videoId, play, pause, restart }) => {
+const AudioPlayer = ({ videoId, play, pause, restart, onProgress }) => {
   const playerRef = useRef(null);
   const [playing, setPlaying] = useState(false);
 
@@ -22,6 +22,13 @@ const AudioPlayer = ({ videoId, play, pause, restart }) => {
     }
   }, [restart]);
 
+  // Handle progress updates from ReactPlayer
+  const handleProgress = (state) => {
+    if (onProgress && typeof onProgress === 'function') {
+      onProgress(state);
+    }
+  };
+
   return (
     <ReactPlayer
       ref={playerRef}
@@ -30,6 +37,8 @@ const AudioPlayer = ({ videoId, play, pause, restart }) => {
       controls={false}
       width="0"
       height="0"
+      onProgress={handleProgress}
+      progressInterval={1000} // Update progress every second
     />
   );
 };

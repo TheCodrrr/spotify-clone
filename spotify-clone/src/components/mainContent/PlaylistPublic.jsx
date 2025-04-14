@@ -5,8 +5,10 @@ import './EnlargedPlaylistCard.css';
 import './PlaylistPublic.css'
 import Footer from "./centreContent/Footer";
 import { fetchPublicPlaylist } from "./fetchPublicPlaylist";
+import { useMusicPlayer } from "../musicPlayer/MusicPlayerContext";
 
 export default function PublicPlaylist(props) {
+  const { playSong } = useMusicPlayer();
     const { id } = useParams();
 
     const [loading, setLoading] = useState(true);
@@ -72,7 +74,7 @@ export default function PublicPlaylist(props) {
                     // ✅ Use playlistDetails.songs instead of songList
                     setPlaylistSongs(
                         playlistDetails.songs.map((element, index) => (
-                            <tr key={index} className="table_row table_row_item df-ai">
+                            <tr key={index} className="table_row table_row_item df-ai" onClick={() => playSong({ song_name: element?.name, artists: element.artists, image: element.image, duration: element.duration_ms })}>
                                 <td className="enlarged_card_col enlarged_card_col1 dff">{index + 1}</td>
                                 <td className="enlarged_card_col enlarged_card_col2 df-ai">
                                     <div className="enlarged_card_col_img_container dff">

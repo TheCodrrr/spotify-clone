@@ -4,8 +4,10 @@ import "./EnlargedPlaylistCard.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { getAllPlaylistsWithSongs, getSongDetails } from "./EnlargedPlaylistDetails";
 import Footer from "./centreContent/Footer";
+import { useMusicPlayer } from "../musicPlayer/MusicPlayerContext";
 
 export default function EnlargedPlaylistCard(props) {
+  const { playSong } = useMusicPlayer();
   const { name } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [playListSongs, setPlayListSongs] = useState([]);
@@ -266,7 +268,7 @@ export default function EnlargedPlaylistCard(props) {
 
         setPlayListSongs(
           selectedPlaylist.songs.map((element, index) => (
-            <tr key={index} className="table_row table_row_item df-ai" onDoubleClick={() => FetchSongInfo(element.song_full_name)}>
+            <tr key={index} className="table_row table_row_item df-ai" onDoubleClick={() => FetchSongInfo(element.song_full_name)} onClick={() => playSong({ song_name: element.song_full_name, artists: element.song_singers, image: element.song_image, duration: element.song_length_ms })}>
               <td className="enlarged_card_col enlarged_card_col1 dff">
                 {index + 1}
               </td>
@@ -301,10 +303,21 @@ export default function EnlargedPlaylistCard(props) {
         );
       }
       setLoading(false);
+      console.log("Playlist data fetched successfully:", playlist.songs);
     }
 
     fetchData();
   }, [name]);
+
+  const formattedSongs = playlist?.songs?.map((song) => ({
+    song_name: song.song_name,
+    artists: song.song_singers,
+    image: song.song_image,
+    album: song.song_album,
+    // optionally add more fields like `date_added` or `id` if needed
+  }));
+
+  console.log("This is the formatted songs: "+JSON.stringify(formattedSongs))
 
   if (loading) {
     return (
@@ -323,7 +336,7 @@ export default function EnlargedPlaylistCard(props) {
     <>
     <div
       className="enlarged_playlist_container"
-      style={{ ...props.common_styles, ...props.specific_style, backgroundColor: 'red' }}
+      style={{ ...props.common_styles, ...props.specific_style }}
     >
       <div
         className="enlarged_playlist_upper_container dff"

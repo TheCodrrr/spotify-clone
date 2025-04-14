@@ -177,4 +177,50 @@
 .music_player_right_container {
     width: 29%;
     /* background-color: green; */
+    justify-content: flex-end;
+    margin-right: 20px;
+}
+
+.endsvg {
+    margin: 0 8px;
+    cursor: pointer;
+    height: 15px;
+}
+
+.music_player_right_container .firstPath {
+    fill: #24d265;
+}
+
+.music_player_right_container path {
+    fill: #a8a8a8;
+}
+
+.endsvg:hover path {
+    fill: white;
+    transform: scale(1.04);
+}
+
+.endsvg:hover .firstPath {
+    fill: #18ff6d;
+    transform: scale(1.04);
+}
+
+.end_volume_bar_container {
+    width: 80px;
+    height: 4px;
+    margin: 0 7px;
+    background-color: #4d4d4d;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.end_volume_bar_filled_container {
+    height: 100%;
+    width: 40%;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.end_volume_bar_container:hover .end_volume_bar_filled_container {
+    background-color: #24d265;
 }

@@ -4,11 +4,13 @@ import Footer from "./Footer";
 import { searchSpotify } from "../searchResult";
 import axios from "axios"
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useMusicPlayer } from "../../musicPlayer/MusicPlayerContext";
 
 const API_URL = "http://localhost:5000/api/playlists";
 // const API_URL_SONG_ADD = "http://localhost:5000/api/playlists/"; // Updated API URL for adding songs
 
 export default function CreatePlaylist(props) {
+    const { playSong } = useMusicPlayer();
     const nameRef = useRef(null);
     const descRef = useRef(null);
     const imageInputRef = useRef(null); // Add this at the top of your component
@@ -440,7 +442,7 @@ export default function CreatePlaylist(props) {
             <span className="playlist_table_divider dff"></span>
                 {playlistSongs.map((song, index) => (
                     <>
-                        <tr className="playlist_songs_table_row dff">
+                        <tr className="playlist_songs_table_row dff" onClick={() => playSong({ song_name: song?.name, artists: song.artists })}>
                             <td className="playlist_songs_table_row_child r1 dff">{index + 1}</td>
                             <td className="playlist_songs_table_row_child r2 df-ai">
                                 <div className="playlist_songs_table_row_child_img_container dff">
@@ -511,6 +513,7 @@ export default function CreatePlaylist(props) {
                 <div
                   key={item.id || index}
                   className="fetched_details_container df-ai"
+                  onClick={() => playSong({ song_name: item?.name, artists: item?.artists, image: item?.image, duration: item?.duration })}
                 >
                   <div className="fetched_item_details_container df-ai">
                     <div

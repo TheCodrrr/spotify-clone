@@ -1,8 +1,10 @@
 import React from "react";
 import './SearchAllContainer.css';
 import { Link, useParams } from "react-router-dom";
+import { useMusicPlayer } from "../musicPlayer/MusicPlayerContext";
 
 export default function SearchAllContainer({ searchedDetails }) {
+    const { playSong } = useMusicPlayer();
     const { id } = useParams();
     
     // Ensure searchedDetails is an object to avoid runtime errors
@@ -44,7 +46,7 @@ export default function SearchAllContainer({ searchedDetails }) {
                             <p className="top_result_details df-ai">
                                 <span className="top_result_details_span">Song •&nbsp;</span> {formatString(top_result?.artistsString, 35)}
                             </p>
-                            <div className="play_logo_container dff">
+                            <div className="play_logo_container dff" onClick={() => playSong({ song_name: top_result?.name, artists: top_result.artists, image: top_result.image, duration: top_result.duration })}>
                                 <i className="fa fa-play play_logo"></i>
                             </div>
                         </button>
@@ -53,7 +55,7 @@ export default function SearchAllContainer({ searchedDetails }) {
                         <Link to={`/find/songs/${id}`} className="category_songs_head">Songs</Link>
                         <div className="category_songs_container dff">
                             {details.songs.map((song, index) => (
-                                <button key={index} className="category_song df-ai">
+                                <button key={index} className="category_song df-ai" onClick={() => playSong({ song_name: song.name, artists: song.artists, image: song.image, duration: song.duration })}>
                                     <div className="category_song_child_left dff">
                                         <div className="song_img" style={{ 
                                             backgroundImage: `url(${song?.image || "default_image.jpg"})`, 

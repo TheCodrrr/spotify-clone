@@ -4,8 +4,10 @@ import { fetchRandomSong } from "../mainContent/rightContent/fetchUserPlayedSong
 import AudioPlayer from "../AudioPlayer";
 // import YouTubePlayer from "react-player/youtube";
 import YouTubePlayer from "../youtubeSearch.js";
+import { useMusicPlayer } from "./MusicPlayerContext.jsx";
 
 export default function MusicPlayer() {
+    const { songInfo } = useMusicPlayer();
     const [valuePlayPause, setPlayPause] = useState(false);
     const [restart, setRestart] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -29,6 +31,7 @@ export default function MusicPlayer() {
     )
     
     const [progress, setProgress] = useState(0);
+    const [currentPlayedSeconds, setCurrentPlayedSeconds] = useState(0);
     const progressBarRef = useRef(null);
     const isDragging = useRef(false);
 
@@ -38,6 +41,12 @@ export default function MusicPlayer() {
         let newProgress = ((e.clientX - rect.left) / rect.width) * 100;
         newProgress = Math.max(0, Math.min(100, newProgress));
         setProgress(newProgress);
+        
+        // Update current played time based on the new progress percentage
+        if (randomSongDetails.song_duration) {
+            const newPlayedSeconds = (newProgress / 100) * (randomSongDetails.song_duration / 1000);
+            setCurrentPlayedSeconds(newPlayedSeconds);
+        }
     };
 
     const handleMouseDown = (e) => {
@@ -48,7 +57,6 @@ export default function MusicPlayer() {
     const handleMouseMove = (e) => {
         if (isDragging.current) {
             updateProgress(e);
-            // document.getElementsByClassName('music_progress').style.backgroundColor = "#24d265";
         }
     };
 
@@ -83,6 +91,12 @@ export default function MusicPlayer() {
         const seconds = Math.floor((ms % 60000) / 1000);
         return [minutes, seconds];
     }
+    
+    function formatTimeFromSeconds(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return [minutes, remainingSeconds];
+    }
 
     const cutString = (str, maxLength) => {
         if (str.length > maxLength) {
@@ -93,11 +107,9 @@ export default function MusicPlayer() {
 
     let [total_min, total_sec] = formatTime(randomSongDetails.song_duration);
 
-    let played_millisec, played_min = 0, played_sec = 0;
-
+    // Update time display based on currentPlayedSeconds
     useEffect(() => {
-        played_millisec = Math.floor((progress * randomSongDetails.song_duration) / 100);
-        [played_min, played_sec] = formatTime(played_millisec);
+        const [played_min, played_sec] = formatTimeFromSeconds(currentPlayedSeconds);
 
         setDynamicTimeComponent(
             (
@@ -114,19 +126,17 @@ export default function MusicPlayer() {
             </>
             )
         )
-    }, [progress])
-
-    // let song_used_name
+    }, [currentPlayedSeconds])
 
     let artistNames = artists.map(arts => arts.name).join(', ');
     
-
     if (artistNames.length > 25) {
         artistNames = artistNames.slice(0, 25) + '...'
     }
 
     const togglePlayPause = async () => {
-        const id = await YouTubePlayer("wanna be yours arctic monkeys");
+        const searchQuery = `${songInfo?.song_name} ${songInfo?.artists[0]}`;
+        const id = await YouTubePlayer(searchQuery);
         if (id) {
             console.log("Video Id is: " + id)
             setVideoId(id);
@@ -135,11 +145,57 @@ export default function MusicPlayer() {
         }
 
         setPlayPause(!valuePlayPause);
-
     }
+
+    // Handle progress updates from AudioPlayer
+    const handleAudioProgress = (state) => {
+        if (!isDragging.current && state.playedSeconds > 0) {
+            setCurrentPlayedSeconds(state.playedSeconds);
+            
+            // Calculate progress percentage based on duration
+            const durationInSeconds = randomSongDetails.song_duration / 1000;
+            const newProgress = (state.playedSeconds / durationInSeconds) * 100;
+            setProgress(Math.min(newProgress, 100));
+        }
+    };
+
+    useEffect(() => {
+        const searchSongAtYoutube = async () => {
+          if (!songInfo || !songInfo.song_name || !songInfo.artists?.length) return;
+      
+            setRandomSongDetails({... songInfo, song_image: songInfo.image, song_duration: songInfo.duration})
+            // Reset progress and played time when new song is loaded
+            setProgress(0);
+            setCurrentPlayedSeconds(0);
+
+          const searchQuery = `${songInfo.song_name} ${songInfo.artists[0]}`;
+          try {
+            const id = await YouTubePlayer(searchQuery);
+            if (id) {
+              console.log("Video Id is:", id);
+              setVideoId(id);
+              setPlayPause(true); // start playback
+            } else {
+              alert("No video found for this song.");
+              setVideoId(null);
+              setPlayPause(false);
+            }
+          } catch (error) {
+            console.error("Error searching YouTube:", error);
+          } finally {
+        }
+    };
+    [total_min, total_sec] = formatTime(randomSongDetails.song_duration);
+      
+        searchSongAtYoutube();
+      }, [songInfo]);
+    
 
     const handleRestart = () => {
         setRestart(true);
+        setPlayPause(true);
+        setProgress(0);
+        setCurrentPlayedSeconds(0);
         setTimeout(() => setRestart(false), 200);
     }
 
@@ -194,7 +250,7 @@ export default function MusicPlayer() {
                             ></span>
                             <span
                                 className="music_progress_point"
-                                // style={{ display: progress > 0 ? "block" : "none" }}
+                                // style={{ left: `${progress}%` }}
                             ></span>
                         </div>
                         <div className="music_player_right_song_time music_player_song_time dff">
@@ -204,18 +260,133 @@ export default function MusicPlayer() {
                         </div>
                     </div>
                 </div>
-                <div className="music_player_child_container music_player_right_container dff">
+                <div className="music_player_child_container music_player_right_container df-ai">
+                    <svg
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        className="e-9800-icon e-9800-baseline endsvg"
+                        viewBox="0 0 16 16"
+                        style={{
+                        '--encore-icon-height': 'var(--encore-graphic-size-decorative-smaller)',
+                        '--encore-icon-width': 'var(--encore-graphic-size-decorative-smaller)',
+                        }}
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M11.196 8 6 5v6l5.196-3z" className="firstPath"></path>
+                        <path d="M15.002 1.75A1.75 1.75 0 0 0 13.252 0h-10.5a1.75 1.75 0 0 0-1.75 1.75v12.5c0 .966.783 1.75 1.75 1.75h10.5a1.75 1.75 0 0 0 1.75-1.75V1.75zm-1.75-.25a.25.25 0 0 1 .25.25v12.5a.25.25 0 0 1-.25.25h-10.5a.25.25 0 0 1-.25-.25V1.75a.25.25 0 0 1 .25-.25h10.5z" className="firstPath"></path>
+                    </svg>
 
+                    <svg
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        className="e-9800-icon e-9800-baseline endsvg"
+                        viewBox="0 0 16 16"
+                        style={{
+                        '--encore-icon-height': 'var(--encore-graphic-size-decorative-smaller)',
+                        '--encore-icon-width': 'var(--encore-graphic-size-decorative-smaller)',
+                        }}
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M13.426 2.574a2.831 2.831 0 0 0-4.797 1.55l3.247 3.247a2.831 2.831 0 0 0 1.55-4.797zM10.5 8.118l-2.619-2.62A63303.13 63303.13 0 0 0 4.74 9.075L2.065 12.12a1.287 1.287 0 0 0 1.816 1.816l3.06-2.688 3.56-3.129zM7.12 4.094a4.331 4.331 0 1 1 4.786 4.786l-3.974 3.493-3.06 2.689a2.787 2.787 0 0 1-3.933-3.933l2.676-3.045 3.505-3.99z"></path>
+                    </svg>
+
+                    <svg
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        className="e-9800-icon e-9800-baseline endsvg"
+                        viewBox="0 0 16 16"
+                        style={{
+                        '--encore-icon-height': 'var(--encore-graphic-size-decorative-smaller)',
+                        '--encore-icon-width': 'var(--encore-graphic-size-decorative-smaller)',
+                        }}
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M15 15H1v-1.5h14V15zm0-4.5H1V9h14v1.5zm-14-7A2.5 2.5 0 0 1 3.5 1h9a2.5 2.5 0 0 1 0 5h-9A2.5 2.5 0 0 1 1 3.5zm2.5-1a1 1 0 0 0 0 2h9a1 1 0 1 0 0-2h-9z"></path>
+                    </svg>
+
+                    <svg
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        className="e-9800-icon e-9800-baseline endsvg"
+                        viewBox="0 0 16 16"
+                        style={{
+                        '--encore-icon-height': 'var(--encore-graphic-size-decorative-smaller)',
+                        '--encore-icon-width': 'var(--encore-graphic-size-decorative-smaller)',
+                        }}
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M6 2.75C6 1.784 6.784 1 7.75 1h6.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15h-6.5A1.75 1.75 0 0 1 6 13.25V2.75zm1.75-.25a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h6.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25h-6.5zm-6 0a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25H4V11H1.75A1.75 1.75 0 0 1 0 9.25v-6.5C0 1.784.784 1 1.75 1H4v1.5H1.75zM4 15H2v-1.5h2V15z" />
+                        <path d="M13 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm-1-5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                    </svg>
+
+                    <svg
+                        data-encore-id="icon"
+                        role="presentation"
+                        aria-label="Volume high"
+                        aria-hidden="false"
+                        className="e-9800-icon e-9800-baseline endsvg"
+                        id="volume-icon"
+                        viewBox="0 0 16 16"
+                        style={{
+                        '--encore-icon-height': 'var(--encore-graphic-size-informative-smaller)',
+                        '--encore-icon-width': 'var(--encore-graphic-size-informative-smaller)',
+                        }}
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M9.741.85a.75.75 0 0 1 .375.65v13a.75.75 0 0 1-1.125.65l-6.925-4a3.642 3.642 0 0 1-1.33-4.967 3.639 3.639 0 0 1 1.33-1.332l6.925-4a.75.75 0 0 1 .75 0zm-6.924 5.3a2.139 2.139 0 0 0 0 3.7l5.8 3.35V2.8l-5.8 3.35zm8.683 4.29V5.56a2.75 2.75 0 0 1 0 4.88z" />
+                        <path d="M11.5 13.614a5.752 5.752 0 0 0 0-11.228v1.55a4.252 4.252 0 0 1 0 8.127v1.55z" />
+                    </svg>
+
+                        <span className="end_volume_bar_container df-ai">
+                            <span className="end_volume_bar_filled_container"></span>
+                        </span>
+
+                    <svg
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        className="e-9800-icon e-9800-baseline endsvg"
+                        viewBox="0 0 16 16"
+                        style={{
+                        '--encore-icon-height': 'var(--encore-graphic-size-decorative-smaller)',
+                        '--encore-icon-width': 'var(--encore-graphic-size-decorative-smaller)',
+                        }}
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M16 2.45c0-.8-.65-1.45-1.45-1.45H1.45C.65 1 0 1.65 0 2.45v11.1C0 14.35.65 15 1.45 15h5.557v-1.5H1.5v-11h13V7H16V2.45z" />
+                        <path d="M15.25 9.007a.75.75 0 0 1 .75.75v4.493a.75.75 0 0 1-.75.75H9.325a.75.75 0 0 1-.75-.75V9.757a.75.75 0 0 1 .75-.75h5.925z" />
+                    </svg>
+
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="endsvg"
+                    >
+                        <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M0.25 3C0.25 2.0335 1.0335 1.25 2 1.25H5.375V2.75H2C1.86193 2.75 1.75 2.86193 1.75 3V5.42857H0.25V3ZM14 2.75H10.625V1.25H14C14.9665 1.25 15.75 2.0335 15.75 3V5.42857H14.25V3C14.25 2.86193 14.1381 2.75 14 2.75ZM1.75 10.5714V13C1.75 13.1381 1.86193 13.25 2 13.25H5.375V14.75H2C1.0335 14.75 0.25 13.9665 0.25 13V10.5714H1.75ZM14.25 13V10.5714H15.75V13C15.75 13.9665 14.9665 14.75 14 14.75H10.625V13.25H14C14.1381 13.25 14.25 13.1381 14.25 13Z"
+                        fill="currentColor"
+                        />
+                    </svg>
                 </div>
             </div>
             {videoId && (
                 <>
-                <p>Now Playing: Shape of You</p>
+                <p>Now Playing: {randomSongDetails?.song_name || 'Loading...'}</p>
                 <AudioPlayer
                 videoId={videoId}
                 play={valuePlayPause}
                 pause={!valuePlayPause}
                 restart={restart}
+                onProgress={handleAudioProgress}
                 />
                 </>
             )}

@@ -1,27 +1,32 @@
 import axios from 'axios';
-const API_KEY = "AIzaSyB44E51uViyTx-qK5LNMH-lyKa-sZIn7TU";
+// working = AIzaSyBZhZksDi20sAQrp_W1XSeKJ0ujeSF_Klk
+const API_KEY = "";
+// AIzaSyAbxGH1SrNOmijcGCrQzbKIAyUv9AFhEHY
+// AIzaSyBZhZksDi20sAQrp_W1XSeKJ0ujeSF_Klk
+const searchCache = {};
 
 const YouTubePlayer = async (query) => {
-    try {
-        const response = await axios.get(
-            `https://www.googleapis.com/youtube/v3/search`,
-            {
-                params: {
-                    part: 'snippet',
-                    maxResults: 1,
-                    q: query,
-                    key: API_KEY,
-                    type: 'video',
-                    videoCategoryId: '10', // Music
-                },
-            }
-        );
-        const videoId = response.data.items[0]?.id?.videoId;
-        return videoId || null;
-    } catch (error) {
-        console.error('YouTube Search Error:', error);
-        return null;
-    }
+  if (searchCache[query]) return searchCache[query];
+
+  try {
+    const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
+      params: {
+        part: 'snippet',
+        maxResults: 1,
+        q: query,
+        key: API_KEY,
+        type: 'video',
+        videoCategoryId: '10',
+      },
+    });
+
+    const videoId = response.data.items[0]?.id?.videoId;
+    searchCache[query] = videoId;
+    return videoId || null;
+  } catch (error) {
+    console.error('YouTube Search Error:', error);
+    return null;
+  }
 };
 
 export default YouTubePlayer;
