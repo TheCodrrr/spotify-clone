@@ -296,7 +296,7 @@ export default function EnlargedPlaylistCard(props) {
                 {element.date_added}
               </td>
               <td className="enlarged_card_col enlarged_card_col5 dff">
-                {element.song_length_min} : {element.song_length_sec}
+                {element?.song_length_min} : {element?.song_length_sec}
               </td>
             </tr>
           ))
@@ -332,6 +332,15 @@ export default function EnlargedPlaylistCard(props) {
     );
   }
 
+  const cutString = (str, maxLength) => {
+    if (str.length > maxLength) {
+      return str.slice(0, maxLength) + "...";
+    }
+    return str;
+  };
+
+console.log("This is the playlist: "+JSON.stringify(playlist))
+
   return playlist ? (
     <>
     <div
@@ -351,7 +360,7 @@ export default function EnlargedPlaylistCard(props) {
         </div>
         <div className="enlarged_playlist_head_container df">
           <h1 className="enlarged_content_name df-ai">
-            {playlist.playlist_name}
+            {cutString(playlist?.playlist_name, 25)}
           </h1>
           <div className="enlarged_content_other_details df-ai">
             <img
@@ -368,7 +377,7 @@ export default function EnlargedPlaylistCard(props) {
             <span className="enlarged_content_other_details_child">•</span>
 
             <div className="enlarged_content_other_details_child">
-              {playlist.no_of_songs} songs, about {playlist.total_playtime_hr != 0 ? playlist.total_playtime_hr + " hr " + playlist.total_playtime_min + " min" : playlist.total_playtime_min + " min " + playlist.total_playtime_sec + " sec"}
+              {playlist.no_of_songs} songs{playlist.total_playtime_hr ? `, about ${playlist.total_playtime_hr != 0 ? playlist.total_playtime_hr + " hr " + playlist.total_playtime_min + " min" : playlist.total_playtime_min + " min " + playlist.total_playtime_sec + " sec"}` : ""}
             </div>
           </div>
         </div>

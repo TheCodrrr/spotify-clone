@@ -297,7 +297,7 @@ export default function PublicPlaylist(props) {
                 </div>
                 <div className="enlarged_playlist_head_container df">
                   <h1 className="enlarged_content_name enlarged_content_name2 df-ai">
-                  { fetchedPlaylist.name }
+                  { formatText1(fetchedPlaylist.name, 20) }
                   </h1>
                   <div className="enlarged_content_other_details df-ai">
                     <img
