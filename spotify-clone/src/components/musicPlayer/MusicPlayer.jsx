@@ -6,7 +6,8 @@ import AudioPlayer from "../AudioPlayer";
 import YouTubePlayer from "../youtubeSearch.js";
 
 export default function MusicPlayer() {
-    const [valuePlayPause, setPlayPause] = useState(true);
+    const [valuePlayPause, setPlayPause] = useState(false);
+    const [restart, setRestart] = useState(false);
     const [loading, setLoading] = useState(true);
     const [randomSongDetails, setRandomSongDetails] = useState({})
     const [artists, setArtists] = useState([])
@@ -125,7 +126,7 @@ export default function MusicPlayer() {
     }
 
     const togglePlayPause = async () => {
-        const id = await YouTubePlayer("die with a smile bruno mars");
+        const id = await YouTubePlayer("wanna be yours arctic monkeys");
         if (id) {
             console.log("Video Id is: " + id)
             setVideoId(id);
@@ -133,13 +134,13 @@ export default function MusicPlayer() {
             alert("No video found");
         }
 
+        setPlayPause(!valuePlayPause);
 
-        if (valuePlayPause) {
-            setPlayPause(false);
-        }
-        else {
-            setPlayPause(true);
-        }
+    }
+
+    const handleRestart = () => {
+        setRestart(true);
+        setTimeout(() => setRestart(false), 200);
     }
 
     return (
@@ -164,7 +165,7 @@ export default function MusicPlayer() {
                         <div className="btn_shuffle_container dff">
                             <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" className="Svg-sc-ytk21e-0 dYnaPI btn_shuffle_svg"><path d="M13.151.922a.75.75 0 1 0-1.06 1.06L13.109 3H11.16a3.75 3.75 0 0 0-2.873 1.34l-6.173 7.356A2.25 2.25 0 0 1 .39 12.5H0V14h.391a3.75 3.75 0 0 0 2.873-1.34l6.173-7.356a2.25 2.25 0 0 1 1.724-.804h1.947l-1.017 1.018a.75.75 0 0 0 1.06 1.06L15.98 3.75 13.15.922zM.391 3.5H0V2h.391c1.109 0 2.16.49 2.873 1.34L4.89 5.277l-.979 1.167-1.796-2.14A2.25 2.25 0 0 0 .39 3.5z"></path><path d="m7.5 10.723.98-1.167.957 1.14a2.25 2.25 0 0 0 1.724.804h1.947l-1.017-1.018a.75.75 0 1 1 1.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 1 1-1.06-1.06L13.109 13H11.16a3.75 3.75 0 0 1-2.873-1.34l-.787-.938z"></path></svg>
                         </div>
-                        <div className="btn_3_mains btn_backward_container dff">
+                        <div className="btn_3_mains btn_backward_container dff" onClick={handleRestart}>
                             <i className="fa-solid fa-backward-step"></i>
                         </div>
                         <div className="btn_3_mains btn_play_pause_music_player_container dff" onClick={togglePlayPause}>
@@ -210,7 +211,12 @@ export default function MusicPlayer() {
             {videoId && (
                 <>
                 <p>Now Playing: Shape of You</p>
-                <AudioPlayer videoId={videoId} />
+                <AudioPlayer
+                videoId={videoId}
+                play={valuePlayPause}
+                pause={!valuePlayPause}
+                restart={restart}
+                />
                 </>
             )}
         </>
