@@ -24,10 +24,25 @@
     /* transform: scale(0); */
 }
 
+.arrow-hidden {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.arrow-hidden .medium_card_arrow_insider {
+    cursor: default;
+    background-color: #2c2c2c;
+}
+
+.arrow-hidden .medium_card_arrow_insider i {
+    color: rgb(181, 181, 181);
+}
+
 .medium_category_card_arrow_btn_left {
     transform: translateX(-100px);
     background: linear-gradient(-90deg, rgba(0, 0, 0, 0), rgb(18, 18, 18));
-    
+    /* Ensure the z-index is high enough to be visible */
+    z-index: 20;
 }
 
 .medium_category_card_arrow_btn_right {
@@ -35,7 +50,6 @@
     padding-right: 25px;
     left: 755px;
     justify-content: flex-end;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(18, 18, 18));
 }
 
 .medium_card_arrow_insider {
