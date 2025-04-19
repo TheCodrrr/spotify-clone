@@ -19,9 +19,7 @@ A full-stack music streaming web application inspired by Spotify. Browse playlis
 
 ### 🖥️ Frontend
 - **React**
-- **Tailwind CSS**
 - **React Router DOM**
-- **Framer Motion**
 
 ### 🔗 Backend
 - **Node.js** + **Express.js**
