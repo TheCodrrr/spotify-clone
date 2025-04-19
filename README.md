@@ -33,8 +33,3 @@ A full-stack music streaming web application inspired by Spotify. Browse playlis
 
 ### 🗂️ Database
 - **MongoDB Atlas (Cloud)**
-
----
-
-## 📁 Folder Structure
-
