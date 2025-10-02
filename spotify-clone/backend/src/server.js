@@ -26,9 +26,9 @@ async function connectDB() {
     //   socketTimeoutMS: 45000,
     });
 
-    console.log("✅ MongoDB Connected Successfully!");
-    console.log(`📂 Database Name: ${conn.connection.name}`);
-    console.log(`🌍 MongoDB Host: ${conn.connection.host}`);
+    // console.log("✅ MongoDB Connected Successfully!");
+    // console.log(`📂 Database Name: ${conn.connection.name}`);
+    // console.log(`🌍 MongoDB Host: ${conn.connection.host}`);
   } catch (error) {
     console.error("❌ MongoDB Connection Failed:", error.message);
     process.exit(1);
@@ -48,5 +48,5 @@ app.use("/api/playlists", playlistRoutes);
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  // console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

@@ -17,7 +17,7 @@ export default function CreatePlaylist(props) {
     const selectedImageRef = useRef(null);
     const Navigate = useNavigate();
   const { id } = useParams();
-  console.log("hello world the id is " + id);
+  // console.log("hello world the id is " + id);
   const [playlistImage, setPlaylistImage] = useState('')
   const [songAdded, setSongAdded] = useState(false);
   const [playlistName, setPlaylistName] = useState("My Playlist");
@@ -43,7 +43,7 @@ export default function CreatePlaylist(props) {
   const frontendDetails = async () => {
     try {
         const res = await axios.get(`${API_URL}/${id}`);
-        console.log("Playlist details fetched:", JSON.stringify(res.data));
+        // console.log("Playlist details fetched:", JSON.stringify(res.data));
         setPlaylistImage(res.data.photo);
         setPlaylistName(res.data.name);
         setPlaylistDescription(res.data.description);
@@ -56,7 +56,7 @@ export default function CreatePlaylist(props) {
   }
 
   const deleteSongFromPlaylist = async (songId) => {
-    console.log("Deleting song with ID:", songId);
+    // console.log("Deleting song with ID:", songId);
     try {
         // const API_URL = "http://localhost:5000/api/playlists";
         const response = await axios.delete(`${API_URL}/song`, {
@@ -80,7 +80,7 @@ export default function CreatePlaylist(props) {
   const fetchCurrentPlaylistSongs = async () => {
         try {
             const response = await axios.get(`${API_URL}/${id}`);
-            console.log("Fetched songs 1:", JSON.stringify(response));
+            // console.log("Fetched songs 1:", JSON.stringify(response));
             setPlaylistSongs(response.data.songs);
 
         } catch (err) {
@@ -130,18 +130,18 @@ export default function CreatePlaylist(props) {
     searchSpotify(searchTerm, "track,album")
       .then((fetchedDetails) => {
         if (fetchedDetails) {
-          console.log("Fetched details:", fetchedDetails);
+          // console.log("Fetched details:", fetchedDetails);
           setFetchedParticularDetails(fetchedDetails);
-          console.log("FetchedParticularDetails:", fetchedParticularDetails);
+          // console.log("FetchedParticularDetails:", fetchedParticularDetails);
         }
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => setLoading(false));
 
-    console.log(
-      "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhheeeeeeeeeeellllllllllllooooooooo" +
-        JSON.stringify(fetchedParticularDetails)
-    );
+    // console.log(
+    //   "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhheeeeeeeeeeellllllllllllooooooooo" +
+    //     JSON.stringify(fetchedParticularDetails)
+    // );
   }, [searchTerm]);
 
   // Placeholder image for new playlist
@@ -183,7 +183,7 @@ export default function CreatePlaylist(props) {
         addedDate: new Date()
     }
 
-    console.log("THis is song: " + JSON.stringify(song));
+    // console.log("THis is song: " + JSON.stringify(song));
 
     try {
         const response = await axios.post(API_URL+'/song', {
@@ -191,7 +191,7 @@ export default function CreatePlaylist(props) {
           song,
         });
   
-        console.log("Response from server:", JSON.stringify(response));
+        // console.log("Response from server:", JSON.stringify(response));
 
         // if (response.status === 200) {
         //   setSongId("");
@@ -207,7 +207,7 @@ export default function CreatePlaylist(props) {
         fetchCurrentPlaylistSongs()
       }
     
-    console.log("what are you doing: " + JSON.stringify(item));
+    // console.log("what are you doing: " + JSON.stringify(item));
   }
 
   const deleteEntirePlaylist = async (playlistId) => {
@@ -229,24 +229,24 @@ export default function CreatePlaylist(props) {
   const handleSaveDetails = async () => {
     let imageUrl = 'https://cdn.pixabay.com/photo/2021/01/29/08/10/musician-5960112_1280.jpg';
   
-    console.log("Selected image ref:", selectedImageRef.current);
+    // console.log("Selected image ref:", selectedImageRef.current);
     const formData = new FormData();
     formData.append("photo", selectedImageRef.current);
     formData.append("name", nameRef.current.value);
     formData.append("description", descRef.current.value);
-    console.log("Form data:", formData.get("photo"));
+    // console.log("Form data:", formData.get("photo"));
     try {
       const res = await axios.put(`${API_URL}/info/${id}`, formData);
-      console.log("Playlist details saved:", JSON.stringify(res));
+      // console.log("Playlist details saved:", JSON.stringify(res));
     } catch (error) {
       console.error("Error saving playlist details:", error);
     }
   
-    console.log("Saving playlist details:", {
-      photo: imageUrl,
-      name: playlistName,
-      description: playlistDescription,
-    });
+    // console.log("Saving playlist details:", {
+    //   photo: imageUrl,
+    //   name: playlistName,
+    //   description: playlistDescription,
+    // });
   
     frontendDetails();
     setShowEditModal(false);
@@ -379,7 +379,7 @@ export default function CreatePlaylist(props) {
           </h1>
           <div className="enlarged_content_other_details df-ai">
             <img
-              src="#"
+              src="/profile.jpeg"
               alt="User Profile"
               className="enlarged_content_other_details_child enlarged_content_other_details_child_image"
             />

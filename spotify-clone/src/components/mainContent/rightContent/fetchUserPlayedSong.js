@@ -133,7 +133,7 @@ async function fetchRandomSong() {
                     contributors: contributors
                 };
 
-                console.log("Final Song Data:", detailedSong);
+                // console.log("Final Song Data:", detailedSong);
                 return detailedSong;
             } catch (error) {
                 console.error("Error fetching random song:", error);

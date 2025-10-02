@@ -94,7 +94,7 @@ async function fetchPublicPlaylist(playlist_id) {
             }).filter(song => song !== null) // Remove null values
         };
 
-        console.log(JSON.stringify(playlistDetails));
+        // console.log(JSON.stringify(playlistDetails));
         return playlistDetails;
     } catch (error) {
         console.error("Error fetching playlist details:", error);
@@ -104,7 +104,7 @@ async function fetchPublicPlaylist(playlist_id) {
 
 fetchPublicPlaylist('0N3GW3dwHypqcvfcPnYkUw').then(playlistDetails => {
     if (playlistDetails) {
-        console.log("Fetched Playlist Details:", playlistDetails);
+        // console.log("Fetched Playlist Details:", playlistDetails);
     }
 });
 

@@ -301,7 +301,7 @@ export default function PublicPlaylist(props) {
                   </h1>
                   <div className="enlarged_content_other_details df-ai">
                     <img
-                      src=''
+                      src="/profile.jpeg"
                       alt="Owner"
                       className="enlarged_content_owner_image_container enlarged_content_other_details_child"
                     />

@@ -18,7 +18,7 @@ export const createPlaylist = async (req, res) => {
         });
 
         const saved = await newPlaylist.save();
-        console.log("New Playlist Created:",JSON.stringify(saved));
+        // console.log("New Playlist Created:",JSON.stringify(saved));
         res.status(201).json(saved);
 
     } catch (error) {
@@ -70,7 +70,7 @@ export const deleteSongFromPlaylist = async (req, res) => {
     try {
       const { playlistId, songId } = req.body;
       if (!playlistId || !songId) {
-        console.log("Missing data:", { playlistId, songId });
+        // console.log("Missing data:", { playlistId, songId });
         return res.status(400).json({ message: "Missing playlistId or songId" });
       }
   
@@ -82,7 +82,7 @@ export const deleteSongFromPlaylist = async (req, res) => {
       const beforeCount = playlist.songs.length;
       playlist.songs = playlist.songs.filter(song => song.songId !== songId);
       const afterCount = playlist.songs.length;
-      console.log(`Deleted ${beforeCount - afterCount} song(s)`);
+      // console.log(`Deleted ${beforeCount - afterCount} song(s)`);
   
       await playlist.save();
       res.status(200).json({ message: "Song removed successfully", playlist });

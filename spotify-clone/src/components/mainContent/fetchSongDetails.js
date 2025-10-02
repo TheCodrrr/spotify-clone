@@ -84,7 +84,7 @@ async function fetchSongDetails(song_id) {
             artists: artists.filter(a => a !== null) // Remove null values
         };
 
-        console.log(songDetails);
+        // console.log(songDetails);
         return songDetails;
     } catch (error) {
         console.error("Error fetching song details:", error);

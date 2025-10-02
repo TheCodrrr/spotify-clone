@@ -33,7 +33,7 @@ async function getAccessToken() {
 const fetchCategoriesWithImages = async () => {
     // Check if cached data is available and still valid
     if (categoriesCache.data && (Date.now() - categoriesCache.timestamp) < categoriesCache.expiryTime) {
-        console.log("Returning cached categories...");
+        // console.log("Returning cached categories...");
         return categoriesCache.data;
     }
 
@@ -87,7 +87,7 @@ const fetchCategoriesWithImages = async () => {
             timestamp: Date.now()
         };
 
-        console.log("Fetched and cached categories.");
+        // console.log("Fetched and cached categories.");
         // console.log(categoriesWithImages)
         return categoriesWithImages;
     } catch (error) {

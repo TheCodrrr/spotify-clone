@@ -218,3 +218,9 @@
 .btn_web_elm4 {
     background-color: #1f1e1f;
 }
+
+.btn_web_elm_profile_img {
+    height: 70%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}

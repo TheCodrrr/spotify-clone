@@ -1,6 +1,6 @@
 import axios from 'axios';
 // working = AIzaSyBZhZksDi20sAQrp_W1XSeKJ0ujeSF_Klk
-const API_KEY = "";
+const API_KEY = "AIzaSyBZhZksDi20sAQrp_W1XSeKJ0ujeSF_Klk";
 // AIzaSyAbxGH1SrNOmijcGCrQzbKIAyUv9AFhEHY
 // AIzaSyBZhZksDi20sAQrp_W1XSeKJ0ujeSF_Klk
 const searchCache = {};
@@ -33,9 +33,9 @@ export default YouTubePlayer;
 
 YouTubePlayer("Imagine Dragons Believer").then(videoId => {
     if (videoId) {
-        console.log(`Video ID: ${videoId}`);
+        // console.log(`Video ID: ${videoId}`);
     } else {
-        console.log("No video found.");
+        // console.log("No video found.");
     }
 }).catch(error => {
     console.error("Error fetching video ID:", error);

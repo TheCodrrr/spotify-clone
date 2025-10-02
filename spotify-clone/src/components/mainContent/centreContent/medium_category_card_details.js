@@ -1,6 +1,6 @@
-const client_id = 'fa99f1012dea4fa292a3b9a593e5fd19';
-const client_secret = '909967f80ec44c33b1738a2e09edbe5d';
-const refresh_token = "AQDJClGX6vWk1SX2hRWG4zM9wzYu275O2v1QWZU8noz9ZdU6HaBjogRdbkrOXZjK09d1mj8bSzCy9MxSwRjsJB26sQpYLjyXmUonHXrcmj1RA9xmadMnN3zx2hido4qVUrA";
+const client_id = "fa99f1012dea4fa292a3b9a593e5fd19";
+const client_secret = "909967f80ec44c33b1738a2e09edbe5d";
+const refresh_token = "AQDJClGX6vWk1SX2hRWG4zM9wzYu275O2v1QWZU8noz9ZdU6HaBjogRdbkrOXZjK09d1mj8bSzCy9MxSwRjsJB26sQpYLjyXmUonHXrcmj1RA9xmadMnN3zx2hido4qVUrA"
 
 let cache = {
     accessToken: null,
@@ -17,7 +17,7 @@ async function getAccessToken() {
 
     // Return cached token if it's still valid
     if (cache.accessToken && cache.tokenExpiry > now) {
-        console.log("✅ Using cached access token");
+        // console.log("✅ Using cached access token");
         return cache.accessToken;
     }
 
@@ -35,7 +35,7 @@ async function getAccessToken() {
         });
 
         const data = await response.json();
-        console.log("🔑 New Token Response:", data);
+        // console.log("🔑 New Token Response:", data);
 
         if (!response.ok || !data.access_token) {
             throw new Error(`Error fetching token: ${data.error_description || 'Unknown error'}`);
@@ -59,7 +59,7 @@ async function fetchRandomPlaylistsOrPodcasts() {
     const now = Date.now();
 
     if (cache.playlistsCache && cache.cacheTimestamp && (now - cache.cacheTimestamp < 10 * 60 * 1000)) {
-        console.log("✅ Using cached playlists/podcasts data");
+        // console.log("✅ Using cached playlists/podcasts data");
         return cache.playlistsCache;
     }
 
@@ -150,6 +150,6 @@ async function fetchRandomPlaylistsOrPodcasts() {
 }
 
 // Execute function and log results
-fetchRandomPlaylistsOrPodcasts().then(data => console.log("✅ Random Playlists or Podcasts:", data));
+// fetchRandomPlaylistsOrPodcasts().then(data => console.log("✅ Random Playlists or Podcasts:", data));
 
 export { fetchRandomPlaylistsOrPodcasts };

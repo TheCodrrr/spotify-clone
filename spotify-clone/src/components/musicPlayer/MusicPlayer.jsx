@@ -138,7 +138,7 @@ export default function MusicPlayer() {
         const searchQuery = `${songInfo?.song_name} ${songInfo?.artists[0]}`;
         const id = await YouTubePlayer(searchQuery);
         if (id) {
-            console.log("Video Id is: " + id)
+            // console.log("Video Id is: " + id)
             setVideoId(id);
         } else {
             alert("No video found");
@@ -172,7 +172,7 @@ export default function MusicPlayer() {
           try {
             const id = await YouTubePlayer(searchQuery);
             if (id) {
-              console.log("Video Id is:", id);
+            //   console.log("Video Id is:", id);
               setVideoId(id);
               setPlayPause(true); // start playback
             } else {

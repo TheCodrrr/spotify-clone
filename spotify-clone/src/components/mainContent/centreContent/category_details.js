@@ -454,7 +454,7 @@ const getSectionsAndPlaylists = async () => {
 (async () => {
     try {
         const sections = await getSectionsAndPlaylists();
-        console.log(sections);
+        // console.log(sections);
 
         // You can now export this data to your app's state or a file
         // For example, save it as a global variable or send it to a file

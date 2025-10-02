@@ -110,7 +110,7 @@ async function searchSpotify(query, searchType) {
         return null;
     }
 
-    console.log("Access Token:", accessToken);
+    // console.log("Access Token:", accessToken);
 
     let url = "";
     if (!searchType) url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track,artist,album,playlist,show,episode&limit=50`;
@@ -142,8 +142,8 @@ async function searchSpotify(query, searchType) {
         }
 
 
-        console.log("Formatted Categories:", fetchedData);  // 🔍 Debugging the extracted results
-        console.log("Formatted Categories Length:", fetchedData.length);  // 🔍 Debugging the extracted results
+        // console.log("Formatted Categories:", fetchedData);  // 🔍 Debugging the extracted results
+        // console.log("Formatted Categories Length:", fetchedData.length);  // 🔍 Debugging the extracted results
 
         return fetchedData;
     } catch (error) {

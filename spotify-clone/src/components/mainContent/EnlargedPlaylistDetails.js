@@ -48,7 +48,7 @@ async function getSongDetails(songName) {
 
     const data = await response.json();
     if (!data.tracks || data.tracks.items.length === 0) {
-      console.log(`No song found for "${songName}"`);
+      // console.log(`No song found for "${songName}"`);
       return null;
     }
 
@@ -110,7 +110,7 @@ export async function getAllPlaylistsWithSongs() {
     const playlistDetails = [];
     for (const playlist of playlistsData.items) {
       try {
-        console.log(`Fetching songs for playlist: ${playlist.name} with ID ${playlist.id}`);
+        // console.log(`Fetching songs for playlist: ${playlist.name} with ID ${playlist.id}`);
         const songs = await fetchPlaylistSongs(accessToken, playlist.id);
 
         const totalPlaytimeSec = songs.reduce(

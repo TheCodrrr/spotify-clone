@@ -83,10 +83,9 @@ const leftCardData = [
 
 export default leftCardData;
 
-
-const CLIENT_ID = 'fa99f1012dea4fa292a3b9a593e5fd19';
-const CLIENT_SECRET = '909967f80ec44c33b1738a2e09edbe5d';
-const REFRESH_TOKEN = "AQDJClGX6vWk1SX2hRWG4zM9wzYu275O2v1QWZU8noz9ZdU6HaBjogRdbkrOXZjK09d1mj8bSzCy9MxSwRjsJB26sQpYLjyXmUonHXrcmj1RA9xmadMnN3zx2hido4qVUrA";
+const client_id = "fa99f1012dea4fa292a3b9a593e5fd19";
+const client_secret = "909967f80ec44c33b1738a2e09edbe5d";
+const refresh_token = "AQDJClGX6vWk1SX2hRWG4zM9wzYu275O2v1QWZU8noz9ZdU6HaBjogRdbkrOXZjK09d1mj8bSzCy9MxSwRjsJB26sQpYLjyXmUonHXrcmj1RA9xmadMnN3zx2hido4qVUrA";
 
 // Example of pinned playlists (this should be managed in your application)
 const pinnedPlaylists = ['playlist_id_1', 'playlist_id_2'];  // Example playlist IDs
@@ -101,10 +100,10 @@ const getAccessToken = async () => {
     const response = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: {
-            'Authorization': 'Basic ' + btoa(CLIENT_ID + ':' + CLIENT_SECRET),
+            'Authorization': 'Basic ' + btoa(client_id + ':' + client_secret),
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `grant_type=refresh_token&refresh_token=${REFRESH_TOKEN}`,
+        body: `grant_type=refresh_token&refresh_token=${refresh_token}`,
     });
     const data = await response.json();
     return data.access_token;
@@ -125,13 +124,13 @@ const getCurrentlyPlayingTrack = async (accessToken) => {
 // Function to fetch and cache playlists from Spotify
 const fetchPlaylists = async () => {
     if (cachedPlaylists) {
-        console.log('Returning cached playlists');
+        // console.log('Returning cached playlists');
         return cachedPlaylists;
     }
 
     const accessToken = await getAccessToken();
     if (!accessToken) {
-        console.log("Unable to fetch access token.");
+        // console.log("Unable to fetch access token.");
         return;
     }
 
@@ -166,7 +165,7 @@ const fetchPlaylists = async () => {
             const isLastActive = currentlyPlayingTrackId && playlistTracks.some(track => track.id === currentlyPlayingTrackId);
             const isPlaying = currentlyPlayingTrackId && playlistTracks.some(track => track.id === currentlyPlayingTrackId);
 
-            console.log(`Playlist: ${playlist.name}, isLastActive: ${isLastActive}, isPlaying: ${isPlaying}`);
+            // console.log(`Playlist: ${playlist.name}, isLastActive: ${isLastActive}, isPlaying: ${isPlaying}`);
 
             return {
                 card_image: playlist.images[0]?.url || 'No image available',
@@ -198,8 +197,8 @@ const loadUserDetails = async () => {
 };
 
 // Call the function to load the playlists
-loadUserDetails().then(playlists => {
-    console.log(playlists);
-});
+// loadUserDetails().then(playlists => {
+//     console.log(playlists);
+// });
 
 export { loadUserDetails };

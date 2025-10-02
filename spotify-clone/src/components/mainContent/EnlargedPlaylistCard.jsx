@@ -303,7 +303,7 @@ export default function EnlargedPlaylistCard(props) {
         );
       }
       setLoading(false);
-      console.log("Playlist data fetched successfully:", playlist.songs);
+      // console.log("Playlist data fetched successfully:", playlist.songs);
     }
 
     fetchData();
@@ -317,7 +317,7 @@ export default function EnlargedPlaylistCard(props) {
     // optionally add more fields like `date_added` or `id` if needed
   }));
 
-  console.log("This is the formatted songs: "+JSON.stringify(formattedSongs))
+  // console.log("This is the formatted songs: "+JSON.stringify(formattedSongs))
 
   if (loading) {
     return (
@@ -339,7 +339,7 @@ export default function EnlargedPlaylistCard(props) {
     return str;
   };
 
-console.log("This is the playlist: "+JSON.stringify(playlist))
+// console.log("This is the playlist: "+JSON.stringify(playlist))
 
   return playlist ? (
     <>
@@ -364,7 +364,7 @@ console.log("This is the playlist: "+JSON.stringify(playlist))
           </h1>
           <div className="enlarged_content_other_details df-ai">
             <img
-              src={playlist.playlist_owner_image}
+              src="/profile.jpeg"
               alt="Owner"
               className="enlarged_content_owner_image_container enlarged_content_other_details_child"
             />

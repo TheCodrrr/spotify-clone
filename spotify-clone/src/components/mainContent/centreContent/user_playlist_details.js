@@ -37,13 +37,13 @@ const getAccessToken = async () => {
 // Function to fetch user playlists
 async function fetchUserPlaylists() {
     if (cachedPlaylists) {
-        console.log("Using cached playlists.");
+        // console.log("Using cached playlists.");
         return cachedPlaylists;
     }
 
     const accessToken = await getAccessToken();
     if (!accessToken) {
-        console.log("Unable to fetch access token.");
+        // console.log("Unable to fetch access token.");
         return [];
     }
 
@@ -90,7 +90,7 @@ async function fetchUserPlaylists() {
             user_playlist_owner: playlist?.owner?.display_name || 'Unknown Owner',
         }));
 
-        console.log("Playlists fetched and cached:", cachedPlaylists);
+        // console.log("Playlists fetched and cached:", cachedPlaylists);
         return cachedPlaylists;
 
     } catch (error) {
