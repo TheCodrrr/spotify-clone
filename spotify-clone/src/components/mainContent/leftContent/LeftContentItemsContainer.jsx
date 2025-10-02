@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './LeftContentItemsContainer.css';
 import LeftContentPlaylistCard from "./LeftContentPlaylistCard";
-import leftContentCardData from "./leftContentCardData";
+// import leftContentCardData from "./leftContentCardData";
 import { usePlaylistLoader } from "../../../customHooks/LoadPersonalPlaylist";
 import LeftPlaylistLoadingCard from "./LeftPlaylistLoadingCard";
 

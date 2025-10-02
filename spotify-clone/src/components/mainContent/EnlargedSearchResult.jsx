@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Footer from "./centreContent/Footer";
-import { searchSpotify } from "./searchResult";
+// import { searchSpotify } from "./searchResult"; // Commented out - using backend API instead
 import { Link, useLocation, useParams } from "react-router-dom";
 import './EnlargedSearchResult.css';
 import SearchAllContainer from "./SearchAllContainer";
 import EnlargedSearchedCard from "./EnlargedSearchedCard";
+
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function EnlargedSearchResult(props) {
     const { searchType, id } = useParams();
@@ -17,27 +19,63 @@ export default function EnlargedSearchResult(props) {
     useEffect(() => {
         setLoading(true);
 
-        if (!searchType) {
-            searchSpotify(id)
-                .then((fetchedDetails) => {
-                    if (fetchedDetails) {
+        // Old method using direct import (commented out)
+        // if (!searchType) {
+        //     searchSpotify(id)
+        //         .then((fetchedDetails) => {
+        //             if (fetchedDetails) {
+        //                 setFetchedSearchDetails(fetchedDetails);
+        //             }
+        //         })
+        //         .catch((error) => console.error("Error:", error))
+        //         .finally(() => setLoading(false));
+        // } else {
+        //     // Reset the state before fetching new data
+        //     setFetchedParticularDetails([]);  
+        //     searchSpotify(id, searchType)
+        //         .then((fetchedDetails) => {
+        //             if (fetchedDetails) {
+        //                 setFetchedParticularDetails(fetchedDetails);
+        //             }
+        //         })
+        //         .catch((error) => console.error("Error:", error))
+        //         .finally(() => setLoading(false));
+        // }
+
+        // New method using backend API
+        const searchFromAPI = async () => {
+            try {
+                const queryParams = new URLSearchParams({ query: id });
+                if (searchType) {
+                    queryParams.append('type', searchType);
+                }
+                
+                const response = await fetch(`${SPOTIFY_API_URL}/search?${queryParams}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const fetchedDetails = await response.json();
+                
+                if (fetchedDetails) {
+                    // console.log("Hello hello: ", fetchedDetails);
+                    if (!searchType) {
                         setFetchedSearchDetails(fetchedDetails);
-                    }
-                })
-                .catch((error) => console.error("Error:", error))
-                .finally(() => setLoading(false));
-        } else {
-            // Reset the state before fetching new data
-            setFetchedParticularDetails([]);  
-            searchSpotify(id, searchType)
-                .then((fetchedDetails) => {
-                    if (fetchedDetails) {
+                    } else {
+                        // Reset the state before setting new data
+                        setFetchedParticularDetails([]);  
                         setFetchedParticularDetails(fetchedDetails);
                     }
-                })
-                .catch((error) => console.error("Error:", error))
-                .finally(() => setLoading(false));
-        }
+                }
+            } catch (error) {
+                console.error("Error searching Spotify:", error);
+                setFetchedSearchDetails({});
+                setFetchedParticularDetails([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        searchFromAPI();
     }, [searchType, id, location.pathname]);
 
     return (

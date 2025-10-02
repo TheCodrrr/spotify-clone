@@ -4,8 +4,10 @@ import { useParams } from "react-router-dom";
 import './EnlargedPlaylistCard.css';
 import './PlaylistPublic.css'
 import Footer from "./centreContent/Footer";
-import { fetchPublicPlaylist } from "./fetchPublicPlaylist";
+// import { fetchPublicPlaylist } from "./fetchPublicPlaylist"; // Commented out - using backend API instead
 import { useMusicPlayer } from "../musicPlayer/MusicPlayerContext";
+
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function PublicPlaylist(props) {
   const { playSong } = useMusicPlayer();
@@ -65,9 +67,29 @@ export default function PublicPlaylist(props) {
     useEffect(() => {
         setLoading(true); // ✅ Set loading before fetching
     
-        fetchPublicPlaylist(id)
-            .then((playlistDetails) => {
+        // Old method using direct import (commented out)
+        // fetchPublicPlaylist(id)
+        //     .then((playlistDetails) => {
+        //         if (playlistDetails) {
+        //             setFetchedPlaylist(playlistDetails);
+        //             setSongList(playlistDetails.songs);
+        //             // ... rest of the logic
+        //         }
+        //     })
+        //     .catch((error) => console.error("Error:", error))
+        //     .finally(() => setLoading(false));
+
+        // New method using backend API
+        const fetchPlaylistFromAPI = async () => {
+            try {
+                const response = await fetch(`${SPOTIFY_API_URL}/playlist/${id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const playlistDetails = await response.json();
+                
                 if (playlistDetails) {
+                  // console.log("Hello Hello: ", playlistDetails);
                     setFetchedPlaylist(playlistDetails);
                     setSongList(playlistDetails.songs);
     
@@ -102,96 +124,87 @@ export default function PublicPlaylist(props) {
                         ))
                     );
                 }
-            })
-            .catch((error) => console.error("Error:", error))
-            .finally(() => setLoading(false)); // ✅ Set loading to false after fetching completes
+            } catch (error) {
+                console.error("Error fetching playlist:", error);
+                setFetchedPlaylist({});
+                setSongList([]);
+                setPlaylistSongs([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPlaylistFromAPI();
+
+        // Image processing logic - this should also be moved inside the API call
+        // but for now keeping it separate to maintain the existing flow
+        const processImage = () => {
+            if (!fetchedPlaylist.image) return;
             
             const img_url = fetchedPlaylist.image;
             const img = new Image();
-            img.crossOrigin = "Anonymous"; // Enable CORS for cross-origin images
+            img.crossOrigin = "Anonymous";
             img.src = img_url;
             img.onload = () => {
-                // Create a canvas dynamically
                 const canvas = document.createElement("canvas");
                 const ctx = canvas.getContext("2d");
-
-                // Set canvas size to match the image
                 canvas.width = img.width;
                 canvas.height = img.height;
-
-                // Draw the image on the canvas
                 ctx.drawImage(img, 0, 0, img.width, img.height);
-
-                // Extract pixel data
                 const imageData = ctx.getImageData(0, 0, img.width, img.height);
                 const dominantColor = getDominantColor(imageData);
-
-                // Generate 10 shades of the dominant color
                 const shades = generateShades(dominantColor, 10);
+                
                 setLinearStyles({
-                // background: `linear-gradient(${shades.join(', ')})`,
-                background: `linear-gradient(
-                                ${shades.map((shade, index) => {
-                                const percentage = (
-                                    index *
-                                    (30 / (shades.length - 1))
-                                ).toFixed(2); // Evenly distribute between 0% and 15%
-                                const darkerShade = darkenColor(shade, 0.4, 0.8); // Lighten by 40% and add transparency
-                                return `${darkerShade} ${percentage}%`;
-                                })})
-                            
-                            `,
+                    background: `linear-gradient(
+                        ${shades.map((shade, index) => {
+                            const percentage = (index * (30 / (shades.length - 1))).toFixed(2);
+                            const darkerShade = darkenColor(shade, 0.4, 0.8);
+                            return `${darkerShade} ${percentage}%`;
+                        }).join(", ")})`,
                 });
-                function darkenColor(color, percentage, transparency) {
-                // Extract RGB components from the color
-                const [r, g, b] = color.match(/\d+/g).map(Number);
-
-                // Darken the color by adjusting towards 0, with a much higher percentage
-                const newR = Math.max(0, Math.round(r - r * percentage));
-                const newG = Math.max(0, Math.round(g - g * percentage));
-                const newB = Math.max(0, Math.round(b - b * percentage));
-
-                return `rgb(${newR}, ${newG}, ${newB}, ${transparency})`;
-                }
 
                 setLinearStyles2({
-                background: `linear-gradient(
-                    ${shades
-                        .map((shade, index) => {
-                        const stepSize = 200 / (shades.length - 1); // Evenly distribute shades between 0px and 200px
-                        const position = (index * stepSize).toFixed(2); // Calculate position for each shade
-                        const darkerShade = darkenColor(shade, 0.8, 0.8); // Darken by 80% and add transparency
-                        return `${darkerShade} ${position}px`;
-                        })
-                        .join(", ")}, 
-                    #131313 280px
-                    )`,
-                // backgroundSize: "100% 600px" /* Fix the gradient height to 300px */,
-                // backgroundRepeat: "no-repeat",
+                    background: `linear-gradient(
+                        ${shades.map((shade, index) => {
+                            const stepSize = 200 / (shades.length - 1);
+                            const position = (index * stepSize).toFixed(2);
+                            const darkerShade = darkenColor(shade, 0.8, 0.8);
+                            return `${darkerShade} ${position}px`;
+                        }).join(", ")}, 
+                        #131313 280px)`,
                 });
             };
+        };
 
-            function getDominantColor(imageData) {
-                const pixels = imageData.data;
-                const colorCount = {};
-                let vibrantColor = "";
-                let maxCount = 0;
+        // Process image after playlist is fetched
+        if (fetchedPlaylist.image) {
+            processImage();
+        }
 
-                for (let i = 0; i < pixels.length; i += 4) {
+        function darkenColor(color, percentage, transparency) {
+            const [r, g, b] = color.match(/\d+/g).map(Number);
+            const newR = Math.max(0, Math.round(r - r * percentage));
+            const newG = Math.max(0, Math.round(g - g * percentage));
+            const newB = Math.max(0, Math.round(b - b * percentage));
+            return `rgb(${newR}, ${newG}, ${newB}, ${transparency})`;
+        }
+
+        function getDominantColor(imageData) {
+            const pixels = imageData.data;
+            const colorCount = {};
+            let vibrantColor = "";
+            let maxCount = 0;
+
+            for (let i = 0; i < pixels.length; i += 4) {
                 const r = pixels[i];
                 const g = pixels[i + 1];
                 const b = pixels[i + 2];
 
-                // Skip dark colors (shades of black)
                 if (r < 50 && g < 50 && b < 50) continue;
-
-                // Skip shades of gray
                 if (Math.abs(r - g) < 10 && Math.abs(g - b) < 10) continue;
 
-                // Convert RGB to HSL for brightness and saturation filtering
                 const [h, s, l] = rgbToHsl(r, g, b);
-
-                // Skip desaturated (low saturation) or dark (low lightness) colors
                 if (s < 0.4 || l < 0.5) continue;
 
                 const rgb = `rgb(${r},${g},${b})`;
@@ -201,57 +214,45 @@ export default function PublicPlaylist(props) {
                     maxCount = colorCount[rgb];
                     vibrantColor = rgb;
                 }
-                }
-
-                // Fallback to a default color if no vibrant color is found
-                return vibrantColor || "rgb(200, 200, 200)";
             }
-            function rgbToHsl(r, g, b) {
-                r /= 255;
-                g /= 255;
-                b /= 255;
+            return vibrantColor || "rgb(200, 200, 200)";
+        }
 
-                const max = Math.max(r, g, b);
-                const min = Math.min(r, g, b);
-                let h,
-                s,
-                l = (max + min) / 2;
+        function rgbToHsl(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
 
-                if (max === min) {
-                h = s = 0; // Achromatic
-                } else {
+            if (max === min) {
+                h = s = 0;
+            } else {
                 const d = max - min;
                 s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
                 switch (max) {
-                    case r:
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                    break;
-                    case g:
-                    h = (b - r) / d + 2;
-                    break;
-                    case b:
-                    h = (r - g) / d + 4;
-                    break;
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
                 }
                 h /= 6;
-                }
-
-                return [h, s, l];
             }
-            function generateShades(color, numShades) {
-                const [r, g, b] = color.match(/\d+/g).map(Number); // Extract RGB values
-                const shades = [];
+            return [h, s, l];
+        }
 
-                for (let i = 0; i < numShades; i++) {
-                const factor = 0.9 + i * 0.01; // Slightly vary the factor for lighter shades
+        function generateShades(color, numShades) {
+            const [r, g, b] = color.match(/\d+/g).map(Number);
+            const shades = [];
+            for (let i = 0; i < numShades; i++) {
+                const factor = 0.9 + i * 0.01;
                 const newR = Math.min(255, Math.round(r * factor));
                 const newG = Math.min(255, Math.round(g * factor));
                 const newB = Math.min(255, Math.round(b * factor));
-
                 shades.push(`rgb(${newR}, ${newG}, ${newB})`);
-                }
-                return shades;
             }
+            return shades;
+        }
 
     }, [id]); // ✅ Use only id as a dependency
     

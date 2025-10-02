@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import './MusicPlayer.css'
-import { fetchRandomSong } from "../mainContent/rightContent/fetchUserPlayedSong";
+// import { fetchRandomSong } from "../mainContent/rightContent/fetchUserPlayedSong"; // Commented out - using backend API instead
 import AudioPlayer from "../AudioPlayer";
 // import YouTubePlayer from "react-player/youtube";
-import YouTubePlayer from "../youtubeSearch.js";
+// import YouTubePlayer from "../youtubeSearch.js"; // Commented out - using backend API instead
 import { useMusicPlayer } from "./MusicPlayerContext.jsx";
+
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
+const YOUTUBE_API_URL = "http://localhost:5000/api/youtube";
 
 export default function MusicPlayer() {
     const { songInfo } = useMusicPlayer();
@@ -74,16 +77,42 @@ export default function MusicPlayer() {
     }, []);
 
     useEffect(() => {
+        // Old method using direct import (commented out)
+        // setLoading(true);
+        // fetchRandomSong()
+        // .then((randomSongs) => {
+        //     if (randomSongs) {
+        //         setRandomSongDetails(randomSongs);
+        //         setArtists(randomSongs.artists)
+        //     }
+        // })
+        // .catch((error) => console.error("Error:", error))
+        // .finally(() => setLoading(false))
+
+        // New method using backend API
         setLoading(true);
-        fetchRandomSong()
-        .then((randomSongs) => {
-            if (randomSongs) {
-                setRandomSongDetails(randomSongs);
-                setArtists(randomSongs.artists)
+        const fetchSongFromAPI = async () => {
+            try {
+                const response = await fetch(`${SPOTIFY_API_URL}/song/random`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const randomSongs = await response.json();
+                if (randomSongs) {
+                    setRandomSongDetails(randomSongs);
+                    setArtists(randomSongs.artists)
+                    // console.log("Hello Hello: ", randomSongs);
+                }
+            } catch (error) {
+                console.error("Error fetching random song:", error);
+                setRandomSongDetails({});
+                setArtists([]);
+            } finally {
+                setLoading(false);
             }
-        })
-        .catch((error) => console.error("Error:", error))
-        .finally(() => setLoading(false))
+        };
+
+        fetchSongFromAPI();
     }, [])
 
     function formatTime(ms) {
@@ -97,6 +126,34 @@ export default function MusicPlayer() {
         const remainingSeconds = Math.floor(seconds % 60);
         return [minutes, remainingSeconds];
     }
+
+    // Helper function to search YouTube via backend API
+    const searchYouTube = async (query) => {
+        try {
+            // Old method using direct import (commented out)
+            // const id = await YouTubePlayer(query);
+            // return id;
+
+            // New method using backend API
+            const response = await fetch(`${YOUTUBE_API_URL}/search`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.videoId || null;
+        } catch (error) {
+            console.error("Error searching YouTube:", error);
+            return null;
+        }
+    };
 
     const cutString = (str, maxLength) => {
         if (str.length > maxLength) {
@@ -136,7 +193,13 @@ export default function MusicPlayer() {
 
     const togglePlayPause = async () => {
         const searchQuery = `${songInfo?.song_name} ${songInfo?.artists[0]}`;
-        const id = await YouTubePlayer(searchQuery);
+        
+        // Old method using direct import (commented out)
+        // const id = await YouTubePlayer(searchQuery);
+        
+        // New method using backend API
+        const id = await searchYouTube(searchQuery);
+        
         if (id) {
             // console.log("Video Id is: " + id)
             setVideoId(id);
@@ -170,7 +233,12 @@ export default function MusicPlayer() {
 
           const searchQuery = `${songInfo.song_name} ${songInfo.artists[0]}`;
           try {
-            const id = await YouTubePlayer(searchQuery);
+            // Old method using direct import (commented out)
+            // const id = await YouTubePlayer(searchQuery);
+            
+            // New method using backend API
+            const id = await searchYouTube(searchQuery);
+            
             if (id) {
             //   console.log("Video Id is:", id);
               setVideoId(id);

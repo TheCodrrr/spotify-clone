@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import playlistRoutes from "./routes/playlistRoutes.js";
 import bodyParser from "body-parser";
+import spotifyRoutes from "./routes/spotifyRoutes.js"
+import youtubeRoutes from "./routes/youtubeRoutes.js"
 
 dotenv.config();
 
@@ -44,6 +46,8 @@ app.get("/", (req, res) => {
 
 // Playlist Routes
 app.use("/api/playlists", playlistRoutes);
+app.use("/api/spotify", spotifyRoutes);
+app.use("/api/youtube", youtubeRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

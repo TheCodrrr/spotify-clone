@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import './EnlargedBrowseCard.css'
-import fetchCategoriesWithImages from "./EnlargedBrowseDetails";
+// import fetchCategoriesWithImages from "./EnlargedBrowseDetails"; // Commented out - using backend API instead
 import EnlargedBrowseCardLoader from "./EnlargedBrowseCardLoader";
+
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function EnlargedBrowseCard(props) {
     const [loading, setLoading] = useState(true);
@@ -49,21 +51,53 @@ export default function EnlargedBrowseCard(props) {
         if (location.pathname === '/search') {
             setLoading(true);
 
+            // Old method using direct import (commented out)
+            // async function loadData() {
+            //     const loadedData = await fetchCategoriesWithImages();
+
+            //     // Fetch colors and update the category objects
+            //     // const updatedCategories = await Promise.all(loadedData.map(async (category) => {
+            //     //     try {
+            //     //         const color = await getDominantBrightColor(category.image);
+            //     //         return { ...category, backgroundColor: color }; // Add color to category object
+            //     //     } catch {
+            //     //         return { ...category, backgroundColor: "#FFFFFF" }; // Default white on error
+            //     //     }
+            //     // }));
+
+            //     setFetchedCategory(loadedData);
+            //     setLoading(false);
+            // }
+
+            // New method using backend API
             async function loadData() {
-                const loadedData = await fetchCategoriesWithImages();
+                try {
+                    const response = await fetch(`${SPOTIFY_API_URL}/categories`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const loadedData = await response.json();
 
-                // Fetch colors and update the category objects
-                // const updatedCategories = await Promise.all(loadedData.map(async (category) => {
-                //     try {
-                //         const color = await getDominantBrightColor(category.image);
-                //         return { ...category, backgroundColor: color }; // Add color to category object
-                //     } catch {
-                //         return { ...category, backgroundColor: "#FFFFFF" }; // Default white on error
-                //     }
-                // }));
+                    // Fetch colors and update the category objects
+                    // const updatedCategories = await Promise.all(loadedData.map(async (category) => {
+                    //     try {
+                    //         const color = await getDominantBrightColor(category.image);
+                    //         return { ...category, backgroundColor: color }; // Add color to category object
+                    //     } catch {
+                    //         return { ...category, backgroundColor: "#FFFFFF" }; // Default white on error
+                    //     }
+                    // }));
 
-                setFetchedCategory(loadedData);
-                setLoading(false);
+                    if (loadedData) {
+                        setFetchedCategory(loadedData);
+                        // console.log("Hello Hello: ", loadedData);
+                    }
+                } catch (error) {
+                    console.error("Error fetching categories:", error);
+                    setFetchedCategory([]);
+                } finally {
+                    setLoading(false);
+                }
             }
 
             loadData();

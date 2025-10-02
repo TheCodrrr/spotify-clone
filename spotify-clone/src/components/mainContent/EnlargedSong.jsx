@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Footer from "./centreContent/Footer";
-import { fetchSongDetails } from "./fetchSongDetails";
+// import { fetchSongDetails } from "./fetchSongDetails"; // Commented out - using backend API instead
 import { useParams } from "react-router-dom";
 import './EnlargedSong.css'
+
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function EnlargedSong(props) {
 
@@ -22,35 +24,65 @@ export default function EnlargedSong(props) {
     useEffect(() => {
         setLoading(true);
 
-        fetchSongDetails(id)
-            .then((fetchedSongDetails) => {
+        // Old method using direct import (commented out)
+        // fetchSongDetails(id)
+        //     .then((fetchedSongDetails) => {
+        //         if (fetchedSongDetails) {
+        //             setSongDetails(fetchedSongDetails);
+        //             setSongArtist(fetchedSongDetails.artists);
+        //         }
+        //     })
+        //     .catch((error) => console.error("Error:", error))
+        //     .finally(() => setLoading(false));
+
+        // New method using backend API
+        const fetchSongFromAPI = async () => {
+            try {
+                const response = await fetch(`${SPOTIFY_API_URL}/song/${id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const fetchedSongDetails = await response.json();
+                
                 if (fetchedSongDetails) {
                     setSongDetails(fetchedSongDetails);
                     setSongArtist(fetchedSongDetails.artists);
                 }
-            })
-            .catch((error) => console.error("Error:", error))
-            .finally(() => setLoading(false));
+            } catch (error) {
+                console.error("Error fetching song details:", error);
+                setSongDetails({});
+                setSongArtist([]);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            const img_url = songDetails.album_image;
-            const img = new Image();
-            img.crossOrigin = "Anonymous"; // Enable CORS for cross-origin images
-            img.src = img_url;
-            img.onload = () => {
-                // Create a canvas dynamically
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
+        fetchSongFromAPI();
+    }, [id]);
 
-                // Set canvas size to match the image
-                canvas.width = img.width;
-                canvas.height = img.height;
+    // Separate useEffect for image processing that depends on songDetails.album_image
+    useEffect(() => {
+        if (!songDetails.album_image) return;
 
-                // Draw the image on the canvas
-                ctx.drawImage(img, 0, 0, img.width, img.height);
+        const img_url = songDetails.album_image;
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // Enable CORS for cross-origin images
+        img.src = img_url;
+        img.onload = () => {
+            // Create a canvas dynamically
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
 
-                // Extract pixel data
-                const imageData = ctx.getImageData(0, 0, img.width, img.height);
-                const dominantColor = getDominantColor(imageData);
+            // Set canvas size to match the image
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // Draw the image on the canvas
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+
+            // Extract pixel data
+            const imageData = ctx.getImageData(0, 0, img.width, img.height);
+            const dominantColor = getDominantColor(imageData);
 
                 // Generate 10 shades of the dominant color
                 const shades = generateShades(dominantColor, 10);

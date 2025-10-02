@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./EnlargedPlaylistCard.css";
 import "react-loading-skeleton/dist/skeleton.css";
-import { getAllPlaylistsWithSongs, getSongDetails } from "./EnlargedPlaylistDetails";
+// import { getAllPlaylistsWithSongs, getSongDetails } from "./EnlargedPlaylistDetails"; // Commented out - using backend API instead
 import Footer from "./centreContent/Footer";
+
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function EnlargedPlaylistCard(props) {
   const { name } = useParams();
@@ -16,8 +18,23 @@ export default function EnlargedPlaylistCard(props) {
 
   async function getSongDetailsObject(songFullName) {
     try {
-      // Call getSongDetails to fetch the song details
-      const songDetails = await getSongDetails(songFullName);
+      // Old method using direct import (commented out)
+      // const songDetails = await getSongDetails(songFullName);
+
+      // New method using backend API
+      const response = await fetch(`${SPOTIFY_API_URL}/song/details`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ songName: songFullName })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const songDetails = await response.json();
   
       // Check if the song details were fetched successfully
       if (songDetails) {
@@ -55,10 +72,21 @@ export default function EnlargedPlaylistCard(props) {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const playlists = await getAllPlaylistsWithSongs();
-      const selectedPlaylist = playlists.find(
-        (playlist) => playlist.playlist_name === name
-      );
+      
+      try {
+        // Old method using direct import (commented out)
+        // const playlists = await getAllPlaylistsWithSongs();
+
+        // New method using backend API
+        const response = await fetch(`${SPOTIFY_API_URL}/playlists/songs`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const playlists = await response.json();
+        
+        const selectedPlaylist = playlists.find(
+          (playlist) => playlist.playlist_name === name
+        );
 
       const img_url = selectedPlaylist.main_image;
       const img = new Image();
@@ -270,7 +298,12 @@ export default function EnlargedPlaylistCard(props) {
           ))
         );
       }
-      setLoading(false);
+      } catch (error) {
+        console.error("Error fetching playlists:", error);
+        setPlaylist(null);
+      } finally {
+        setLoading(false);
+      }
     }
 
     fetchData();

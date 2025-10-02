@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import './CentreContentItemsContainer.css';
 import MyPlaylistContainer from "./MyPlaylistContainer";
-import category_details from "./category_details";
+// import category_details from "./category_details";
 import MediumCategoryCard from "./MediumCategoryCard";
 import LargeCardContainer from "./LargeCardContainer";
-import { fetchRandomPlaylistsOrPodcasts } from "./medium_category_card_details";
+// import { fetchRandomPlaylistsOrPodcasts } from "./medium_category_card_details"; // Commented out - using backend API instead
 import MediumCategoryLoadCard from "./MediumCategoryLoadCard";
 
 const API_URL = "http://localhost:5000/api/playlists";
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function CentreContentItemsContainer() {
     const [loading, setLoading] = useState(true);
@@ -35,11 +36,31 @@ export default function CentreContentItemsContainer() {
 
     // Fetching Data on Mount
     useEffect(() => {
+        // Old method using direct import (commented out)
+        // const fetchData = async () => {
+        //     setLoading(true);
+        //     try {
+        //         const result = await fetchRandomPlaylistsOrPodcasts();
+        //         setMediumCategoryDetails(result);
+        //     } catch (error) {
+        //         console.error(`Error fetching mediumCategoryDetails:`, error);
+        //     } finally {
+        //         setLoading(false);
+        //     }
+        // };
+        // fetchData();
+
+        // New method using backend API
         const fetchData = async () => {
             setLoading(true);
             try {
-                const result = await fetchRandomPlaylistsOrPodcasts();
+                const response = await fetch(`${SPOTIFY_API_URL}/playpod/random`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
                 setMediumCategoryDetails(result);
+                // console.log("Hello Hello: ", result);
             } catch (error) {
                 console.error(`Error fetching mediumCategoryDetails:`, error);
             } finally {

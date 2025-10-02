@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./CreatePlaylist.css";
 import Footer from "./Footer";
-import { searchSpotify } from "../searchResult";
+// import { searchSpotify } from "../searchResult"; // Commented out - using backend API instead
 import axios from "axios"
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useMusicPlayer } from "../../musicPlayer/MusicPlayerContext";
 
 const API_URL = "http://localhost:5000/api/playlists";
 // const API_URL_SONG_ADD = "http://localhost:5000/api/playlists/"; // Updated API URL for adding songs
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function CreatePlaylist(props) {
     const { playSong } = useMusicPlayer();
@@ -111,6 +112,7 @@ export default function CreatePlaylist(props) {
   useEffect(() => {
     setLoading(true);
 
+    // Old method using direct import (commented out)
     // if (!searchType) {
     //     console.log("Fetching all results for:", id);
     //     searchSpotify(id)
@@ -127,16 +129,43 @@ export default function CreatePlaylist(props) {
     //     setFetchedParticularDetails([]);
 
     // console.log("Fetching specific type:", searchType, "for:", id);
-    searchSpotify(searchTerm, "track,album")
-      .then((fetchedDetails) => {
-        if (fetchedDetails) {
-          // console.log("Fetched details:", fetchedDetails);
-          setFetchedParticularDetails(fetchedDetails);
-          // console.log("FetchedParticularDetails:", fetchedParticularDetails);
+    // searchSpotify(searchTerm, "track,album")
+    //   .then((fetchedDetails) => {
+    //     if (fetchedDetails) {
+    //       // console.log("Fetched details:", fetchedDetails);
+    //       setFetchedParticularDetails(fetchedDetails);
+    //       // console.log("FetchedParticularDetails:", fetchedParticularDetails);
+    //     }
+    //   })
+    //   .catch((error) => console.error("Error:", error))
+    //   .finally(() => setLoading(false));
+
+    // New method using backend API
+    const searchFromAPI = async () => {
+      try {
+        const queryParams = new URLSearchParams({ 
+          query: searchTerm, 
+          type: "track,album" 
+        });
+        
+        const response = await fetch(`${SPOTIFY_API_URL}/search?${queryParams}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      })
-      .catch((error) => console.error("Error:", error))
-      .finally(() => setLoading(false));
+        const fetchedDetails = await response.json();
+        
+        if (fetchedDetails) {
+          setFetchedParticularDetails(fetchedDetails);
+        }
+      } catch (error) {
+        console.error("Error searching Spotify:", error);
+        setFetchedParticularDetails([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    searchFromAPI();
 
     // console.log(
     //   "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhheeeeeeeeeeellllllllllllooooooooo" +

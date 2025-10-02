@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import './RightMainContent.css';
 import SongCardNavbar from "./SongCardNavbar";
 import SongCardDetails from "./SongCardDetails";
-import { fetchRandomSong } from "./fetchUserPlayedSong";
+// import { fetchRandomSong } from "./fetchUserPlayedSong"; // Commented out - using backend API instead
 import RightMainContentLoader from "./RightMainContentLoader";
+
+const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function RightMainContent(props) {
     const [display, setDisplay] = useState(true);
@@ -11,15 +13,39 @@ export default function RightMainContent(props) {
     const [randomSongDetails, setRandomSongDetails] = useState({})
 
     useEffect(() => {
+        // Old method using direct import (commented out)
+        // setLoading(true);
+        // fetchRandomSong()
+        // .then((randomSongs) => {
+        //     if (randomSongs) {
+        //         setRandomSongDetails(randomSongs);
+        //     }
+        // })
+        // .catch((error) => console.error("Error:", error))
+        // .finally(() => setLoading(false))
+
+        // New method using backend API
         setLoading(true);
-        fetchRandomSong()
-        .then((randomSongs) => {
-            if (randomSongs) {
-                setRandomSongDetails(randomSongs);
+        const fetchSongFromAPI = async () => {
+            try {
+                const response = await fetch(`${SPOTIFY_API_URL}/song/random`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const randomSongs = await response.json();
+                if (randomSongs) {
+                    setRandomSongDetails(randomSongs);
+                    // console.log("Hello Hello: ", randomSongs);
+                }
+            } catch (error) {
+                console.error("Error fetching random song:", error);
+                setRandomSongDetails({});
+            } finally {
+                setLoading(false);
             }
-        })
-        .catch((error) => console.error("Error:", error))
-        .finally(() => setLoading(false))
+        };
+
+        fetchSongFromAPI();
     }, [])
 
     if (loading) {
