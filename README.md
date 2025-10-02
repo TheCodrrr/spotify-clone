@@ -4,6 +4,18 @@ A full-stack music streaming web application inspired by Spotify. Browse playlis
 
 ---
 
+## 📚 Documentation
+
+This project includes comprehensive technical documentation:
+
+- **[📖 Technical Documentation](./TECHNICAL_DOCUMENTATION.md)** - Complete technical overview, architecture, and API documentation
+- **[🔒 Security Analysis](./SECURITY_ANALYSIS.md)** - Security vulnerabilities and remediation steps
+- **[🚀 Improvements Guide](./IMPROVEMENTS.md)** - Recommended improvements and best practices
+
+> **⚠️ Important:** Please review the [Security Analysis](./SECURITY_ANALYSIS.md) before deploying to production. The application contains critical security vulnerabilities that must be addressed.
+
+---
+
 ## 🚀 Features
 
 - 🎧 Browse curated playlists from a specific Spotify account
@@ -18,16 +30,26 @@ A full-stack music streaming web application inspired by Spotify. Browse playlis
 ## 🛠️ Tech Stack
 
 ### 🖥️ Frontend
-- **React**
-- **React Router DOM**
+- **React** (18.3.1) - UI library
+- **Vite** (6.1.1) - Build tool and dev server
+- **React Router DOM** (6.27.0) - Client-side routing
+- **Axios** (1.8.4) - HTTP client
+- **React Player** (2.16.0) - YouTube playback
 
 ### 🔗 Backend
-- **Node.js** + **Express.js**
-- **Spotify Web API**
-- **YouTube Data API** (for song playback)
+- **Node.js** + **Express.js** (4.21.2) - Server framework
+- **MongoDB** + **Mongoose** (8.12.1) - Database
+- **Cloudinary** (1.41.3) - Image hosting
+- **Passport** (0.7.0) - Authentication middleware
+- **JWT** (9.0.2) - Token-based authentication
+
+### 🌐 External APIs
+- **Spotify Web API** - Music metadata and playlists
+- **YouTube Data API v3** - Song playback
+- **Genius API** - Song lyrics
 
 ### 🧠 State Management
-- **React Context API**
+- **React Context API** - Global state management
 
 ### 🗂️ Database
-- **MongoDB Atlas (Cloud)**
+- **MongoDB Atlas (Cloud)** - NoSQL database
