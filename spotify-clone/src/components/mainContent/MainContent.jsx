@@ -12,6 +12,7 @@ import EnlargedSong from "./EnlargedSong";
 import { HoverProvider } from "./centreContent/HoverContext";
 import EnlargedSearchResult from "./EnlargedSearchResult.jsx";
 import CreatePlaylist from "./centreContent/CreatePlaylist.jsx";
+import { PlaylistCacheProvider } from "./PlaylistCacheContext";
 
 let leftContentWidth = 20.9;
 let centreContentWidth = 56.3;
@@ -32,21 +33,23 @@ const rightMainContentStyle = {
 
 export default function MainContent() {
     return (
-        <HoverProvider>
-            <div className="main_content_container df-ai">
-                <LeftMainContent common_styles={commonStyles} specific_style={leftMainContentStyle} />
-                <Routes>
-                    <Route path="/" element={<CentreMainContent common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/find/:searchType?/:id" element={<EnlargedSearchResult common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/song/:id" element={<EnlargedSong common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/item/:id" element={<PublicPlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/playlist/create/:id" element={<CreatePlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/playlist/:name" element={<EnlargedPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/search" element={<EnlargedBrowseCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                    <Route path="/section" element={<EnlargedMediumPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
-                </Routes>
-                <RightMainContent common_styles={commonStyles} specific_style={rightMainContentStyle} />
-            </div>
-        </HoverProvider>
+        <PlaylistCacheProvider>
+            <HoverProvider>
+                <div className="main_content_container df-ai">
+                    <LeftMainContent common_styles={commonStyles} specific_style={leftMainContentStyle} />
+                    <Routes>
+                        <Route path="/" element={<CentreMainContent common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                        <Route path="/find/:searchType?/:id" element={<EnlargedSearchResult common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                        <Route path="/song/:id" element={<EnlargedSong common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                        <Route path="/item/:id" element={<PublicPlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                        <Route path="/playlist/create/:id" element={<CreatePlaylist common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                        <Route path="/playlist/:name" element={<EnlargedPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                        <Route path="/search" element={<EnlargedBrowseCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                        <Route path="/section" element={<EnlargedMediumPlaylistCard common_styles={commonStyles} specific_style={centreMainContentStyle} />} />
+                    </Routes>
+                    <RightMainContent common_styles={commonStyles} specific_style={rightMainContentStyle} />
+                </div>
+            </HoverProvider>
+        </PlaylistCacheProvider>
     )
 }

@@ -5,12 +5,14 @@ import "react-loading-skeleton/dist/skeleton.css";
 // import { getAllPlaylistsWithSongs, getSongDetails } from "./EnlargedPlaylistDetails"; // Commented out - using backend API instead
 import Footer from "./centreContent/Footer";
 import { useMusicPlayer } from "../musicPlayer/MusicPlayerContext";
+import { usePlaylistCache } from "./PlaylistCacheContext";
 
 const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 
 export default function EnlargedPlaylistCard(props) {
   const { playSong } = useMusicPlayer();
   const { name } = useParams();
+  const { getPlaylistData } = usePlaylistCache();
   const [playlist, setPlaylist] = useState(null);
   const [playListSongs, setPlayListSongs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,12 +112,8 @@ export default function EnlargedPlaylistCard(props) {
         // Old method using direct import (commented out)
         // const playlists = await getAllPlaylistsWithSongs();
 
-        // New method using backend API
-        const response = await fetch(`${SPOTIFY_API_URL}/playlists/songs`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const playlists = await response.json();
+        // New method using backend API with caching
+        const playlists = await getPlaylistData();
         // console.log("Hello hello 2: ", playlists);
         
         const selectedPlaylist = playlists.find(
