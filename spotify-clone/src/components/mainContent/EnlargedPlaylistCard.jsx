@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo, useLayoutEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./EnlargedPlaylistCard.css";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -12,9 +12,13 @@ const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
 export default function EnlargedPlaylistCard(props) {
   const { playSong } = useMusicPlayer();
   const { name } = useParams();
-  const { getPlaylistData } = usePlaylistCache();
+  const { getPlaylistSongs, loadMoreSongs } = usePlaylistCache();
   const [playlist, setPlaylist] = useState(null);
-  const [playListSongs, setPlayListSongs] = useState([]);
+  // Removed playListSongs state since we're using memoizedSongRows directly
+  const [allSongs, setAllSongs] = useState([]); // Store all loaded songs
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [linear_styles, setLinearStyles] = useState({});
   const [linear_styles2, setLinearStyles2] = useState({});
@@ -22,7 +26,16 @@ export default function EnlargedPlaylistCard(props) {
   const [audioURL, setAudioURL] = useState("");
   const [audioLoading, setAudioLoading] = useState(true);
   const [audioError, setAudioError] = useState("");
+  const tableBodyRef = useRef(null); // Ref for infinite scroll
+  const playlistContainerRef = useRef(null); // Ref for the playlist container scroll
+  const prevSongsLengthRef = useRef(0); // Track previous songs length for scroll preservation
+  const scrollPositionRef = useRef(0); // Store scroll position during updates
+  const lastScrollTimeRef = useRef(0); // For throttling scroll events
+  const dataLoadedRef = useRef(false); // Track if initial data has been loaded to prevent resets
 
+  // Commented out problematic YouTube API call that was causing infinite re-renders
+  // and 404 errors since the endpoint doesn't exist
+  /*
   useEffect(() => {
     async function fetchSongFromYoutube(songName, artist, album, releaseYear) {
       setAudioLoading(true);
@@ -49,6 +62,7 @@ export default function EnlargedPlaylistCard(props) {
   
     fetchSongFromYoutube("Shape of You", "Ed Sheeran", "Divide", "2017");
   }, []);
+  */
 
 
   async function getSongDetailsObject(songFullName) {
@@ -95,6 +109,14 @@ export default function EnlargedPlaylistCard(props) {
     }
   }
 
+  // Utility function to cut strings to a maximum length
+  const cutString = (str, maxLength) => {
+    if (str.length > maxLength) {
+      return str.slice(0, maxLength) + "...";
+    }
+    return str;
+  };
+
   async function FetchSongInfo(song_full_name) {
   
     // Get song details by awaiting the promise
@@ -104,26 +126,253 @@ export default function EnlargedPlaylistCard(props) {
     setIndividualSongDetail(current_song_detail);
   }
 
+  // Function to process songs data (truncate long names, format times, etc.)
+  const processSongs = (songs) => {
+    return songs.map((element) => {
+      // Create a copy to avoid mutating original data
+      const processedElement = { ...element };
+      
+      processedElement.song_full_name = processedElement.song_name;
+      processedElement.song_name = cutString(processedElement.song_name, 25);
+      processedElement.song_singers = cutString(processedElement.song_singers, 20);
+      processedElement.song_album = cutString(processedElement.song_album, 20);
+      
+      const secLength = processedElement.song_length_sec.toString().length;
+      if (secLength == 1) {
+        processedElement.song_length_sec = "0" + processedElement.song_length_sec.toString();
+      }
+      
+      return processedElement;
+    });
+  };
+
+  // Function to load more songs when user scrolls - use refs to avoid dependency issues
+  const loadMoreSongsHandler = useCallback(async () => {
+    console.log('🔄 loadMoreSongsHandler called');
+    
+    // Access current values from state using callbacks to avoid closure issues
+    let currentLoadingMore, currentHasMore, currentCurrentPage, currentAllSongs;
+    
+    // Get current state values
+    setLoadingMore(loading => {
+      currentLoadingMore = loading;
+      console.log('Current loadingMore:', loading);
+      return loading;
+    });
+    
+    setHasMore(hasMore => {
+      currentHasMore = hasMore;
+      console.log('Current hasMore:', hasMore);
+      return hasMore;
+    });
+    
+    setCurrentPage(page => {
+      currentCurrentPage = page;
+      console.log('Current page:', page);
+      return page;
+    });
+    
+    setAllSongs(songs => {
+      currentAllSongs = songs;
+      console.log('Current songs count:', songs.length);
+      return songs;
+    });
+    
+    if (currentLoadingMore || !currentHasMore) {
+      console.log('⚠️ Skipping load: loadingMore =', currentLoadingMore, ', hasMore =', currentHasMore);
+      return;
+    }
+
+    // Store current scroll position before loading more
+    const container = playlistContainerRef.current;
+    if (container) {
+      const currentScrollTop = container.scrollTop;
+      scrollPositionRef.current = currentScrollTop;
+      
+      // Store backup data
+      const avgSongHeight = container.scrollHeight / (currentAllSongs.length || 1);
+      const scrolledSongs = Math.floor(currentScrollTop / avgSongHeight);
+      
+      container.dataset.savedScrollTop = currentScrollTop;
+      container.dataset.savedScrolledSongs = scrolledSongs;
+    }
+
+    setLoadingMore(true);
+    try {
+      console.log('📥 Loading next page:', currentCurrentPage + 1);
+      const nextPage = currentCurrentPage + 1;
+      const updatedPlaylistData = await loadMoreSongs(name, currentAllSongs, nextPage, 10);
+      
+      console.log('✅ Received more songs:', updatedPlaylistData.songs.length);
+      console.log('📊 Pagination info:', updatedPlaylistData.pagination);
+      
+      // Process the new songs before setting state
+      const processedSongs = processSongs(updatedPlaylistData.songs);
+      
+      setAllSongs(processedSongs);
+      setCurrentPage(nextPage);
+      setHasMore(updatedPlaylistData.pagination.hasMore);
+      
+    } catch (error) {
+      console.error('❌ Error loading more songs:', error);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [name, loadMoreSongs]); // Minimal dependencies
+
+  // Memoized song rows to prevent unnecessary re-renders and scroll position resets
+  const memoizedSongRows = useMemo(() => {
+    if (allSongs.length === 0) return [];
+    
+    return allSongs.map((element, index) => {
+      // Create ultra-stable key using song data + playlist name to prevent re-rendering
+      const stableKey = `${name}-${element.song_full_name || element.song_name}-${index}`;
+      
+      return (
+        <tr key={stableKey} className="table_row table_row_item df-ai" 
+            onDoubleClick={() => FetchSongInfo(element.song_full_name)} 
+            onClick={() => playSong({ 
+              song_name: element.song_full_name, 
+              artists: element.song_singers, 
+              image: element.song_image, 
+              duration: element.song_length_ms 
+            })}>
+          <td className="enlarged_card_col enlarged_card_col1 dff">
+            {index + 1}
+          </td>
+          <td className="enlarged_card_col enlarged_card_col2 df-ai">
+            <div className="enlarged_card_col_img_container dff">
+              <img
+                src={element.song_image}
+                alt="Song"
+                className="song-image"
+              />
+            </div>
+            <div className="enlarged_card_col_content df-jc">
+              <div className="enlarged_card_col_content_name">
+                {element.song_name}
+              </div>
+              <div className="enlarged_card_col_content_singer">
+                {element.song_singers}
+              </div>
+            </div>
+          </td>
+          <td className="enlarged_card_col enlarged_card_col3 df-ai">
+            {element.song_album}
+          </td>
+          <td className="enlarged_card_col enlarged_card_col4 df-ai">
+            {element.date_added}
+          </td>
+          <td className="enlarged_card_col enlarged_card_col5 dff">
+            {element?.song_length_min} : {element?.song_length_sec}
+          </td>
+        </tr>
+      );
+    });
+  }, [allSongs, name]); // Simplified dependencies to prevent infinite re-renders
+
+  // Removed problematic useEffect that was causing infinite re-renders
+  // The memoizedSongRows will automatically update when allSongs changes
+  // and we'll set playListSongs directly from memoizedSongRows when needed
+
+  // Aggressive scroll position restoration using useLayoutEffect (runs before paint)
+  useLayoutEffect(() => {
+    const container = playlistContainerRef.current;
+    if (container && scrollPositionRef.current > 0) {
+      const storedPosition = scrollPositionRef.current;
+      
+      // Method 1: Direct scroll restoration
+      container.scrollTop = storedPosition;
+      
+      // Method 2: Use the backup data if available
+      const savedScrollTop = container.dataset.savedScrollTop;
+      const savedScrolledSongs = container.dataset.savedScrolledSongs;
+      
+      if (savedScrollTop) {
+        container.scrollTop = parseInt(savedScrollTop);
+        
+        // Clear the backup data
+        delete container.dataset.savedScrollTop;
+        delete container.dataset.savedScrolledSongs;
+      }
+      
+      // Method 3: Multiple restoration attempts
+      setTimeout(() => {
+        if (container.scrollTop !== storedPosition && storedPosition > 0) {
+          container.scrollTop = storedPosition;
+        }
+      }, 0);
+      
+      setTimeout(() => {
+        if (container.scrollTop !== storedPosition && storedPosition > 0) {
+          container.scrollTop = storedPosition;
+        }
+      }, 10);
+      
+      // Reset after restoration
+      scrollPositionRef.current = 0;
+    }
+  }, [allSongs.length]);
+
+  // Backup scroll position restoration with regular useEffect
+  useEffect(() => {
+    if (playlistContainerRef.current && scrollPositionRef.current > 0 && allSongs.length > 10) {
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(() => {
+        if (playlistContainerRef.current) {
+          // Maintain scroll position near where user was when loading more songs
+          const containerHeight = playlistContainerRef.current.scrollHeight;
+          const targetPosition = Math.min(scrollPositionRef.current, containerHeight * 0.85);
+          
+          playlistContainerRef.current.scrollTop = targetPosition;
+          
+          // Reset stored position after restoration
+          scrollPositionRef.current = 0;
+        }
+      });
+    }
+  }, [allSongs.length]);
+
+  // Function to render songs as table rows (kept for backwards compatibility but not used)
+  const renderSongs = (songs) => {
+    // This function is no longer needed as we use useEffect above
+    // Keeping it for backwards compatibility but it won't be called
+  };
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       
       try {
-        // Old method using direct import (commented out)
-        // const playlists = await getAllPlaylistsWithSongs();
-
-        // New method using backend API with caching
-        const playlists = await getPlaylistData();
-        // console.log("Hello hello 2: ", playlists);
+        // Fetch first page of songs for the specific playlist
+        const playlistData = await getPlaylistSongs(name, 1, 10);
         
-        const selectedPlaylist = playlists.find(
-          (playlist) => playlist.playlist_name === name
-        );
+        if (!playlistData) {
+          setPlaylist(null);
+          return;
+        }
 
-      const img_url = selectedPlaylist.main_image;
-      const img = new Image();
-      img.crossOrigin = "Anonymous"; // Enable CORS for cross-origin images
-      img.src = img_url;
+        // Process songs data using the processSongs function
+        const processedSongs = processSongs(playlistData.songs);
+
+        // Set pagination state
+        setAllSongs(processedSongs);
+        setCurrentPage(1);
+        setHasMore(playlistData.pagination.hasMore);
+        
+        // Set playlist data
+        setPlaylist(playlistData);
+        
+        // Mark that data has been loaded for this playlist
+        dataLoadedRef.current = name;
+        
+        // Don't call renderSongs - the useEffect will handle it automatically
+
+        // Process playlist image for background gradient
+        const img_url = playlistData.main_image;
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // Enable CORS for cross-origin images
+        img.src = img_url;
       img.onload = () => {
         // Create a canvas dynamically
         const canvas = document.createElement("canvas");
@@ -268,89 +517,60 @@ export default function EnlargedPlaylistCard(props) {
         return shades;
       }
 
-      selectedPlaylist.songs.map((element) => {
-        element.song_full_name = element.song_name;
-        if (element.song_name.length > 25) {
-          element.song_name = element.song_name.slice(0, 25) + "..."; // Use .slice() to truncate
-        }
-        if (element.song_singers.length > 20) {
-          element.song_singers = element.song_singers.slice(0, 20) + "..."; // Use .slice() to truncate
-        }
-        if (element.song_album.length > 20) {
-          element.song_album = element.song_album.slice(0, 20) + "..."; // Use .slice() to truncate
-        }
-        const secLength = element.song_length_sec.toString().length;
-        if (secLength == 1) {
-          element.song_length_sec = "0" + element.song_length_sec.toString();
-        }
-      });
-
-      if (selectedPlaylist) {
-        selectedPlaylist.total_playtime_min = Math.floor(selectedPlaylist.total_playtime_sec / 60);
-        selectedPlaylist.total_playtime_sec = selectedPlaylist.total_playtime_sec % 60;
-        
-        selectedPlaylist.total_playtime_hr = Math.floor(selectedPlaylist.total_playtime_min / 60);
-        selectedPlaylist.total_playtime_min = selectedPlaylist.total_playtime_sec % 60;
-
-        setPlaylist(selectedPlaylist);
-
-        setPlayListSongs(
-          selectedPlaylist.songs.map((element, index) => (
-            <tr key={index} className="table_row table_row_item df-ai" onDoubleClick={() => FetchSongInfo(element.song_full_name)} onClick={() => playSong({ song_name: element.song_full_name, artists: element.song_singers, image: element.song_image, duration: element.song_length_ms })}>
-              <td className="enlarged_card_col enlarged_card_col1 dff">
-                {index + 1}
-              </td>
-              <td className="enlarged_card_col enlarged_card_col2 df-ai">
-                <div className="enlarged_card_col_img_container dff">
-                  <img
-                    src={element.song_image}
-                    alt="Song"
-                    className="song-image"
-                  />
-                </div>
-                <div className="enlarged_card_col_content df-jc">
-                  <div className="enlarged_card_col_content_name">
-                    {element.song_name}
-                  </div>
-                  <div className="enlarged_card_col_content_singer">
-                    {element.song_singers}
-                  </div>
-                </div>
-              </td>
-              <td className="enlarged_card_col enlarged_card_col3 df-ai">
-                {element.song_album}
-              </td>
-              <td className="enlarged_card_col enlarged_card_col4 df-ai">
-                {element.date_added}
-              </td>
-              <td className="enlarged_card_col enlarged_card_col5 dff">
-                {element?.song_length_min} : {element?.song_length_sec}
-              </td>
-            </tr>
-          ))
-        );
-      }
       } catch (error) {
         console.error("Error fetching playlists:", error);
         setPlaylist(null);
       } finally {
         setLoading(false);
       }
-      // console.log("Playlist data fetched successfully:", playlist.songs);
     }
 
     fetchData();
+  }, [name]); // Only depend on name, not getPlaylistSongs to prevent resets
+
+  // Reset data loaded flag when playlist name changes
+  useEffect(() => {
+    dataLoadedRef.current = false;
   }, [name]);
 
-  const formattedSongs = playlist?.songs?.map((song) => ({
-    song_name: song.song_name,
-    artists: song.song_singers,
-    image: song.song_image,
-    album: song.song_album,
-    // optionally add more fields like `date_added` or `id` if needed
-  }));
+  // Memoized scroll handler to prevent unnecessary re-renders with debouncing
+  const handleScroll = useCallback(() => {
+    const playlistContainer = playlistContainerRef.current;
+    if (!playlistContainer) {
+      return;
+    }
 
-  // console.log("This is the formatted songs: "+JSON.stringify(formattedSongs))
+    // Throttle scroll events to prevent rapid firing
+    const now = Date.now();
+    if (now - lastScrollTimeRef.current < 100) { // Throttle to 100ms
+      return;
+    }
+    lastScrollTimeRef.current = now;
+
+    const { scrollTop, scrollHeight, clientHeight } = playlistContainer;
+    const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+    
+    // Load more when user scrolls to 70% of the container content (earlier trigger for better UX)
+    // Add debouncing to prevent rapid calls
+    if (scrollPercentage >= 0.70 && hasMore && !loadingMore) {
+      // Store current scroll position before triggering load
+      scrollPositionRef.current = scrollTop;
+      loadMoreSongsHandler();
+    }
+  }, [hasMore, loadingMore, loadMoreSongsHandler, allSongs.length]);
+
+  // Infinite scroll effect - use playlist container scroll instead of window scroll
+  useEffect(() => {
+    const playlistContainer = playlistContainerRef.current;
+    if (!playlistContainer) {
+      return;
+    }
+
+    playlistContainer.addEventListener('scroll', handleScroll);
+    return () => {
+      playlistContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll]);
 
   if (loading) {
     return (
@@ -365,20 +585,19 @@ export default function EnlargedPlaylistCard(props) {
     );
   }
 
-  const cutString = (str, maxLength) => {
-    if (str.length > maxLength) {
-      return str.slice(0, maxLength) + "...";
-    }
-    return str;
-  };
-
 // console.log("This is the playlist: "+JSON.stringify(playlist))
 
   return playlist ? (
     <>
     <div
+      ref={playlistContainerRef}
       className="enlarged_playlist_container"
-      style={{ ...props.common_styles, ...props.specific_style }}
+      style={{ 
+        ...props.common_styles, 
+        ...props.specific_style,
+        overflowY: 'auto',
+        maxHeight: '100vh'
+      }}
     >
       <div
         className="enlarged_playlist_upper_container dff"
@@ -404,6 +623,7 @@ export default function EnlargedPlaylistCard(props) {
             <a
               href="#"
               className="enlarged_content_other_details_child enlarged_content_owner_name"
+              // style={{background: 'red'}}
             >
               {playlist.playlist_owner}
             </a>
@@ -456,7 +676,28 @@ export default function EnlargedPlaylistCard(props) {
             </tr>
           </thead>
           <hr className="table_head_divider" />
-          <tbody>{playListSongs}</tbody>
+          <tbody ref={tableBodyRef}>
+            {memoizedSongRows}
+            {loadingMore && (
+              <tr className="loading_row">
+                <td colSpan="5" style={{ textAlign: 'center', padding: '30px', backgroundColor: 'rgba(255,255,255,0.05)' }}>
+                  <div className="loading_indicator" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                    <div className="load_btn_circle load_btn_circle1"></div>
+                    <div className="load_btn_circle load_btn_circle2"></div>
+                    <div className="load_btn_circle load_btn_circle3"></div>
+                    <span style={{ color: '#b3b3b3', marginLeft: '10px' }}>Loading more songs...</span>
+                  </div>
+                </td>
+              </tr>
+            )}
+            {!hasMore && allSongs.length > 0 && (
+              <tr className="end_row">
+                <td colSpan="5" style={{ textAlign: 'center', padding: '30px', color: '#b3b3b3', backgroundColor: 'rgba(255,255,255,0.03)' }}>
+                  🎵 All songs loaded ({allSongs.length} total)
+                </td>
+              </tr>
+            )}
+          </tbody>
         </table>
       </div>
       <Footer/>

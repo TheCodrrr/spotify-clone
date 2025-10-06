@@ -7,6 +7,8 @@ let cache = {
     cachedPlaylists2: null,
     cachedPlaylists3: null,
     cachedSongPromise: null,
+    allPlaylistsWithSongs: null,
+    allPlaylistsWithSongs_timestamp: null,
     categoriesCache: {
         data: null,
         timestamp: null,

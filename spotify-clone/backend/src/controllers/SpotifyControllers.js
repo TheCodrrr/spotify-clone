@@ -596,49 +596,95 @@ async function fetchPlaylistSongs(accessToken, playlistId) {
 }
 
 // EnlargedPlaylistDetails.js
-async function getAllPlaylistsWithSongs(_, res) {
+async function getAllPlaylistsWithSongs(req, res) {
+  const { page = 1, limit = 10, playlistName } = req.query;
   const accessToken = await getAccessToken();
   if (!accessToken) return res.status(401).json([]);
 
   try {
-    const playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', {
-      headers: { 'Authorization': 'Bearer ' + accessToken }
-    });
-    const playlistsData = await playlistsResponse.json();
+    // Check if we have cached playlist data
+    const cacheKey = 'allPlaylistsWithSongs';
+    if (!cache[cacheKey] || (Date.now() - cache[`${cacheKey}_timestamp`] > 10 * 60 * 1000)) {
+      // Fetch and cache all playlists with songs
+      const playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', {
+        headers: { 'Authorization': 'Bearer ' + accessToken }
+      });
+      const playlistsData = await playlistsResponse.json();
 
-    if (!playlistsData.items) return res.status(400).json([]);
+      if (!playlistsData.items) return res.status(400).json([]);
 
-    const playlistDetails = [];
-    for (const playlist of playlistsData.items) {
-      try {
-        // console.log(`Fetching songs for playlist: ${playlist.name} with ID ${playlist.id}`);
-        const songs = await fetchPlaylistSongs(accessToken, playlist.id);
+      const playlistDetails = [];
+      for (const playlist of playlistsData.items) {
+        try {
+          // console.log(`Fetching songs for playlist: ${playlist.name} with ID ${playlist.id}`);
+          const songs = await fetchPlaylistSongs(accessToken, playlist.id);
 
-        const totalPlaytimeSec = songs.reduce(
-          (acc, song) => acc + song.song_length_min * 60 + song.song_length_sec,
-          
-        );
+          const totalPlaytimeSec = songs.reduce(
+            (acc, song) => acc + song.song_length_min * 60 + song.song_length_sec,
+            0
+          );
 
-        playlistDetails.push({
-          content_type: 'playlist',
-          playlist_name: playlist.name,
-          main_image: playlist.images?.[0]?.url || '', // Check if images array exists and has at least one item
-          playlist_owner_image: playlist.owner?.images?.[0]?.url || '', // Check if owner and images exist
-          playlist_owner: playlist.owner?.display_name || 'Unknown', // Fallback to 'Unknown' if display_name is missing
-          playlist_saves: playlist.followers?.total || 0,
-          no_of_songs: playlist.tracks.total,
-          total_playtime_hr: Math.floor(songs.reduce((acc, song) => acc + song.song_length_min, 0) / 60),
-          total_playtime_min: songs.reduce((acc, song) => acc + song.song_length_min, 0) % 60,
-          total_playtime_sec: totalPlaytimeSec, // Added total playtime in seconds
-          songs: songs
-        });
-      } catch (error) {
-        console.error(`Error fetching songs for playlist ${playlist.name}:`, error);
+          playlistDetails.push({
+            content_type: 'playlist',
+            playlist_name: playlist.name,
+            main_image: playlist.images?.[0]?.url || '', 
+            playlist_owner_image: playlist.owner?.images?.[0]?.url || '', 
+            playlist_owner: playlist.owner?.display_name || 'Unknown', 
+            playlist_saves: playlist.followers?.total || 0,
+            no_of_songs: playlist.tracks.total,
+            total_playtime_hr: Math.floor(songs.reduce((acc, song) => acc + song.song_length_min, 0) / 60),
+            total_playtime_min: songs.reduce((acc, song) => acc + song.song_length_min, 0) % 60,
+            total_playtime_sec: totalPlaytimeSec, 
+            songs: songs // Store all songs in cache
+          });
+        } catch (error) {
+          console.error(`Error fetching songs for playlist ${playlist.name}:`, error);
+        }
       }
+
+      // Cache the complete data
+      cache[cacheKey] = playlistDetails;
+      cache[`${cacheKey}_timestamp`] = Date.now();
+      console.log('✅ All playlists with songs cached');
     }
 
-    // return playlistDetails;
-    return res.status(200).json(playlistDetails);
+    // If no specific playlist is requested, return all playlists with basic info (no songs)
+    if (!playlistName) {
+      const playlistsWithoutSongs = cache[cacheKey].map(playlist => ({
+        ...playlist,
+        songs: [] // Don't send songs in general list
+      }));
+      return res.status(200).json(playlistsWithoutSongs);
+    }
+
+    // Find the specific playlist and paginate its songs
+    const selectedPlaylist = cache[cacheKey].find(
+      playlist => playlist.playlist_name === playlistName
+    );
+
+    if (!selectedPlaylist) {
+      return res.status(404).json({ error: 'Playlist not found' });
+    }
+
+    // Calculate pagination
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + parseInt(limit);
+    const paginatedSongs = selectedPlaylist.songs.slice(startIndex, endIndex);
+
+    // Prepare response with pagination info
+    const response = {
+      ...selectedPlaylist,
+      songs: paginatedSongs,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(selectedPlaylist.songs.length / limit),
+        totalSongs: selectedPlaylist.songs.length,
+        hasMore: endIndex < selectedPlaylist.songs.length,
+        limit: parseInt(limit)
+      }
+    };
+
+    return res.status(200).json(response);
   } catch (error) {
     console.error('Error fetching playlists:', error);
     return res.status(500).json([]);

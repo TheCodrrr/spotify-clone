@@ -36,7 +36,7 @@ router.get("/categories", fetchCategoriesWithImages);
 // Get song details by name (POST since it uses req.body)
 router.post("/song/details", getSongDetails);
 
-// Get all playlists with songs
+// Get all playlists with songs (supports pagination)
 router.get("/playlists/songs", getAllPlaylistsWithSongs);
 
 // Get public playlist by ID

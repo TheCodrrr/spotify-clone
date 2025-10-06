@@ -12,6 +12,7 @@ export const usePlaylistCache = () => {
 
 export const PlaylistCacheProvider = ({ children }) => {
   const [playlistCache, setPlaylistCache] = useState(new Map());
+  const [playlistSongsCache, setPlaylistSongsCache] = useState(new Map()); // New cache for paginated songs
   const [isLoading, setIsLoading] = useState(false);
 
   const SPOTIFY_API_URL = "http://localhost:5000/api/spotify";
@@ -24,6 +25,7 @@ export const PlaylistCacheProvider = ({ children }) => {
 
     setIsLoading(true);
     try {
+      // Prefetch the general playlists list (without songs for listing)
       const response = await fetch(`${SPOTIFY_API_URL}/playlists/songs`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -36,7 +38,6 @@ export const PlaylistCacheProvider = ({ children }) => {
         timestamp: Date.now()
       }));
       
-      console.log('Playlist data prefetched and cached');
     } catch (error) {
       console.error('Error prefetching playlists:', error);
     } finally {
@@ -49,12 +50,10 @@ export const PlaylistCacheProvider = ({ children }) => {
     
     // Check if cache exists and is less than 5 minutes old
     if (cached && (Date.now() - cached.timestamp < 5 * 60 * 1000)) {
-      console.log('Using cached playlist data');
       return cached.data;
     }
 
     // If no cache or cache is stale, fetch fresh data
-    console.log('Fetching fresh playlist data');
     setIsLoading(true);
     try {
       const response = await fetch(`${SPOTIFY_API_URL}/playlists/songs`);
@@ -78,13 +77,69 @@ export const PlaylistCacheProvider = ({ children }) => {
     }
   }, [playlistCache]);
 
+  // New function to get paginated playlist songs
+  const getPlaylistSongs = useCallback(async (playlistName, page = 1, limit = 10) => {
+    const cacheKey = `${playlistName}_page_${page}`;
+    const cached = playlistSongsCache.get(cacheKey);
+    
+    // Check if this page is cached and less than 5 minutes old
+    if (cached && (Date.now() - cached.timestamp < 5 * 60 * 1000)) {
+      return cached.data;
+    }
+
+    setIsLoading(true);
+    try {
+      const url = `${SPOTIFY_API_URL}/playlists/songs?playlistName=${encodeURIComponent(playlistName)}&page=${page}&limit=${limit}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const playlistData = await response.json();
+      
+      // Cache this page
+      setPlaylistSongsCache(prev => new Map(prev).set(cacheKey, {
+        data: playlistData,
+        timestamp: Date.now()
+      }));
+      
+      return playlistData;
+    } catch (error) {
+      console.error(`Error fetching songs for ${playlistName}:`, error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [playlistSongsCache]);
+
+  // Function to load more songs (for infinite scroll)
+  const loadMoreSongs = useCallback(async (playlistName, currentSongs, nextPage, limit = 10) => {
+    try {
+      const response = await getPlaylistSongs(playlistName, nextPage, limit);
+      
+      // Merge new songs with existing ones
+      const updatedPlaylistData = {
+        ...response,
+        songs: [...currentSongs, ...response.songs]
+      };
+      
+      return updatedPlaylistData;
+    } catch (error) {
+      console.error('Error loading more songs:', error);
+      throw error;
+    }
+  }, [getPlaylistSongs]);
+
   const clearCache = useCallback(() => {
     setPlaylistCache(new Map());
+    setPlaylistSongsCache(new Map());
   }, []);
 
   const value = {
     prefetchPlaylistData,
     getPlaylistData,
+    getPlaylistSongs,
+    loadMoreSongs,
     clearCache,
     isLoading,
     isCached: playlistCache.has('playlists')
